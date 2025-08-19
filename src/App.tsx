@@ -4,6 +4,7 @@ import RateCalculator from './components/RateCalculator'
 import AssetInput from './components/AssetInput'
 import AIAdvice from './components/AIAdvice'
 import CheckoutPage from './components/CheckoutPage'
+import BacktestDisplay from './components/BacktestDisplay'
 
 function App() {
   const [assetInput, setAssetInput] = useState({
@@ -11,11 +12,9 @@ function App() {
     equity: 0,
     cash: 0
   })
-  const [isUnlocked, setIsUnlocked] = useState(false)
   const [currentStep, setCurrentStep] = useState<'input' | 'checkout' | 'complete'>('input')
 
   const handlePaymentSuccess = () => {
-    setIsUnlocked(true)
     setCurrentStep('complete')
   }
 
@@ -97,52 +96,29 @@ function App() {
           <RateCalculator assetInput={assetInput} />
         </main>
 
+        {/* 新增：美国资产利率回测分析 */}
+        <div className="mb-8">
+          <BacktestDisplay assetInput={assetInput} />
+        </div>
+
         {assetInput.realEstate + assetInput.equity + assetInput.cash > 0 && (
-          <div className="text-center mb-8">
+          <div className="text-center">
             <button
               onClick={handleContinueToCheckout}
-              className="btn-primary text-lg px-8 py-3"
+              className="btn-primary text-lg px-8 py-4"
             >
-              继续获取完整分析 →
+              🔓 解锁完整分析报告
             </button>
+            <p className="text-gray-600 mt-3">
+              获取专业的 AI 投资建议、详细图表分析和 PDF 报告导出
+            </p>
           </div>
         )}
-
-        <div className="grid lg:grid-cols-2 gap-8">
-          <AIAdvice assetInput={assetInput} isUnlocked={isUnlocked} />
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">💡 工具特色</h2>
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <div className="text-2xl">🎯</div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">精准计算</h3>
-                  <p className="text-sm text-gray-600">基于历史数据和启发式模型的降息情景分析</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="text-2xl">🤖</div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">AI 建议</h3>
-                  <p className="text-sm text-gray-600">个性化投资策略建议，助您做出明智决策</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="text-2xl">📊</div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">详细报告</h3>
-                  <p className="text-sm text-gray-600">完整的分析报告，支持 PDF 导出和分享</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <footer className="text-center mt-16 text-gray-500">
           <p>开发者: @eclipsecybertitan</p>
           <p className="text-sm mt-2">
-            免责声明：本工具提供的分析结果基于历史数据和启发式模型，
-            不构成投资建议。投资有风险，决策需谨慎。
+            免责声明：本工具提供的分析结果基于历史数据和启发式模型，不构成投资建议。投资有风险，决策需谨慎。
           </p>
         </footer>
       </div>
