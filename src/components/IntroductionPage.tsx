@@ -4,8 +4,8 @@ import {
   ChartBarIcon, 
   CpuChipIcon,
   ArrowRightIcon,
-  CurrencyDollarIcon,
-  ChartBarIcon as FinanceIcon
+  // CurrencyDollarIcon,
+  // ChartBarIcon as FinanceIcon
 } from '@heroicons/react/24/outline'
 
 interface IntroductionPageProps {

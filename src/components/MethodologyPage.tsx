@@ -5,7 +5,9 @@ import {
   SparklesIcon,
   LightBulbIcon,
   ArrowLeftIcon,
-  ArrowRightIcon
+  ArrowRightIcon,
+  MusicalNoteIcon,
+  PlayIcon
 } from '@heroicons/react/24/outline'
 
 interface MethodologyPageProps {
@@ -21,6 +23,7 @@ interface InvestmentBelief {
   icon: any
   color: string
   imageUrl: string
+  musicUrl: string
   riskLevels: {
     low: {
       realEstate: number
@@ -64,7 +67,8 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
       description: '基于现代投资组合理论和有效市场假说的传统投资方法',
       icon: AcademicCapIcon,
       color: 'from-blue-500 to-cyan-500',
-      imageUrl: '/images/philosophy/professor.png',
+      imageUrl: '/images/methodology/textbook.png',
+      musicUrl: 'https://music.youtube.com/watch?v=6_eKJysJk1Y&si=o4swT9HcCxQlO5OV',
       riskLevels: {
         low: {
           realEstate: 40,
@@ -101,7 +105,8 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
       description: '基于机构投资者经验和市场微观结构的实战策略',
       icon: BuildingLibraryIcon,
       color: 'from-purple-500 to-pink-500',
-      imageUrl: '/images/philosophy/wallstreet.png',
+      imageUrl: '/images/methodology/wallstreet.png',
+      musicUrl: 'https://music.youtube.com/watch?v=xA7D0X92WPI&si=9WnK06mYDDha88JB',
       riskLevels: {
         low: {
           realEstate: 35,
@@ -138,7 +143,8 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
       description: '基于群体心理和宏观趋势的逆向投资哲学',
       icon: SparklesIcon,
       color: 'from-orange-500 to-red-500',
-      imageUrl: '/images/philosophy/cyberbot.png',
+      imageUrl: '/images/methodology/psychohistory.png',
+      musicUrl: 'https://www.youtube.com/watch?v=ZE5zXLOyEOQ&list=RDKs61Ay4dJ_s&index=11&pp=8AUBoAcB',
       riskLevels: {
         low: {
           realEstate: 25,
@@ -210,6 +216,22 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
           <div className="w-24"></div>
         </div>
 
+        {/* 趣味选择提示 */}
+        <div className="max-w-4xl mx-auto mb-8">
+          <div className="bg-gradient-to-r from-yellow-900/20 to-orange-900/20 p-6 rounded-2xl border border-yellow-600/30 text-center">
+            <div className="flex items-center justify-center mb-3">
+              <MusicalNoteIcon className="w-8 h-8 text-yellow-400 mr-3" />
+              <h3 className="text-xl font-bold text-yellow-300">不知道怎么选择流派？</h3>
+            </div>
+            <p className="text-yellow-200 text-lg">
+              试着听听下面的音乐，喜欢哪个就选哪个吧。
+            </p>
+            <p className="text-yellow-300 text-sm mt-2">
+              每个投资哲学都有对应的音乐风格，让音乐指引您的选择
+            </p>
+          </div>
+        </div>
+
         {/* 投资信念选择 - 大卡片化居中显示 */}
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8 mb-12">
@@ -224,13 +246,29 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
                 }`}
               >
                 {/* 图片区域 - 左侧放置插画/图像 */}
-                <div className={`w-full h-48 rounded-2xl mb-6 flex items-center justify-center ${
+                <div className={`w-full h-48 rounded-2xl mb-6 flex items-center justify-center relative overflow-hidden ${
                   selectedBelief === belief.id ? 'bg-white/20' : 'bg-gray-700'
                 }`}>
-                  {/* 图片占位符 - 后续替换为真实图片 */}
-                  <belief.icon className={`w-24 h-24 ${
-                    selectedBelief === belief.id ? 'text-white' : 'text-gray-400'
-                  }`} />
+                  {/* 真实图片 */}
+                  <img 
+                    src={belief.imageUrl} 
+                    alt={belief.name}
+                    className="w-full h-full object-cover rounded-2xl"
+                  />
+                  
+                  {/* 音乐试听按钮 */}
+                  <div className="absolute top-3 right-3">
+                    <a
+                      href={belief.musicUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-lg"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <PlayIcon className="w-5 h-5 text-white" />
+                    </a>
+                  </div>
+                  
                   {/* 图片说明 */}
                   <div className="absolute bottom-2 right-2 text-xs text-gray-400">
                     {belief.id === 'textbook' && 'professor.png'}
@@ -251,6 +289,16 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
                   }`}>
                     {belief.description}
                   </p>
+                  
+                  {/* 音乐风格提示 */}
+                  <div className="mt-3 flex items-center text-xs text-gray-400">
+                    <MusicalNoteIcon className="w-4 h-4 mr-1" />
+                    <span>
+                      {belief.id === 'textbook' && '古典学术风格'}
+                      {belief.id === 'wallstreet' && '现代商业风格'}
+                      {belief.id === 'psychohistory' && '未来科技风格'}
+                    </span>
+                  </div>
                 </div>
               </button>
             ))}
@@ -262,7 +310,7 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
           <div className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-3xl p-8 border border-gray-600 mb-8">
             <div className="flex items-center justify-between mb-8">
               <h3 className="text-xl font-bold text-white flex items-center">
-                <LightBulbIcon className="w-6 h-6 mr-2 text-yellow-400" />
+                <LightBulbIcon className="w-8 h-8 mr-2 text-yellow-400" />
                 {selectedBeliefData.name} - 投资配置建议
               </h3>
               <div className="flex items-center space-x-4">

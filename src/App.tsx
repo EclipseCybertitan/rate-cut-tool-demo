@@ -7,7 +7,7 @@ import RateCalculator from './components/RateCalculator'
 import AIAdvice from './components/AIAdvice'
 import CheckoutPage from './components/CheckoutPage'
 import BacktestDisplay from './components/BacktestDisplay'
-import InvestmentMethodology from './components/InvestmentMethodology'
+// import InvestmentMethodology from './components/InvestmentMethodology'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 
 type PageStep = 'introduction' | 'methodology' | 'configuration' | 'analysis' | 'checkout' | 'complete'
