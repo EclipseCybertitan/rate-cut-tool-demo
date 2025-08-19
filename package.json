@@ -1,6 +1,6 @@
 {
   "name": "rate-cut-tool-demo",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "description": "降息资产配置博弈工具 - 在线演示版",
   "type": "module",
   "scripts": {
