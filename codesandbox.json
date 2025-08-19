@@ -1,0 +1,11 @@
+{
+  "name": "rate-cut-tool-demo",
+  "template": "vite",
+  "framework": "react",
+  "language": "typescript",
+  "title": "降息资产配置博弈工具",
+  "description": "专业的降息情景资产配置分析工具",
+  "tags": ["vite", "react", "typescript", "tailwindcss"],
+  "environment": "node",
+  "node": "18"
+}
