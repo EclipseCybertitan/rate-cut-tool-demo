@@ -5,12 +5,16 @@ import AssetInput from './components/AssetInput'
 import AIAdvice from './components/AIAdvice'
 import CheckoutPage from './components/CheckoutPage'
 import BacktestDisplay from './components/BacktestDisplay'
+import InvestmentMethodology from './components/InvestmentMethodology'
 
 function App() {
   const [assetInput, setAssetInput] = useState({
     realEstate: 0,
     equity: 0,
-    cash: 0
+    cash: 0,
+    fund: 0,
+    crypto: 0,
+    insurance: 0
   })
   const [currentStep, setCurrentStep] = useState<'input' | 'checkout' | 'complete'>('input')
 
@@ -88,6 +92,14 @@ function App() {
           </div>
         </header>
 
+        {/* 投资方法论 */}
+        <div className="mb-8">
+          <InvestmentMethodology 
+            assetInput={assetInput} 
+            onAssetChange={setAssetInput} 
+          />
+        </div>
+
         <main className="grid lg:grid-cols-2 gap-8 mb-8">
           <AssetInput 
             assetInput={assetInput} 
@@ -96,12 +108,12 @@ function App() {
           <RateCalculator assetInput={assetInput} />
         </main>
 
-        {/* 新增：美国资产利率回测分析 */}
+        {/* 美国资产利率回测分析 */}
         <div className="mb-8">
           <BacktestDisplay assetInput={assetInput} />
         </div>
 
-        {assetInput.realEstate + assetInput.equity + assetInput.cash > 0 && (
+        {Object.values(assetInput).some(value => value > 0) && (
           <div className="text-center">
             <button
               onClick={handleContinueToCheckout}
