@@ -5,10 +5,9 @@ import {
   DocumentTextIcon,
   CalendarIcon,
   LockClosedIcon,
-  SparklesIcon,
-  CurrencyDollarIcon
+  SparklesIcon
 } from '@heroicons/react/24/outline'
-import { BACKTEST_DATA, getFreeBacktestData, getPremiumBacktestData } from '../lib/backtest-data'
+import { BACKTEST_DATA, getFreeBacktestData } from '../lib/backtest-data'
 
 interface BacktestDisplayProps {
   assetInput: {
@@ -29,7 +28,6 @@ export default function BacktestDisplay({ assetInput, isUnlocked = false }: Back
 
   // 根据解锁状态显示数据
   const displayData = isUnlocked ? BACKTEST_DATA : getFreeBacktestData()
-  const premiumData = getPremiumBacktestData()
 
   const filteredData = selectedAsset === 'all' 
     ? displayData 
