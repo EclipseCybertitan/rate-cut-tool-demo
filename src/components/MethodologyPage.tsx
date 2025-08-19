@@ -64,7 +64,7 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
       description: '基于现代投资组合理论和有效市场假说的传统投资方法',
       icon: AcademicCapIcon,
       color: 'from-blue-500 to-cyan-500',
-      imageUrl: '/images/methodology/textbook-professor.jpg',
+      imageUrl: '/images/philosophy/professor.png',
       riskLevels: {
         low: {
           realEstate: 40,
@@ -101,7 +101,7 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
       description: '基于机构投资者经验和市场微观结构的实战策略',
       icon: BuildingLibraryIcon,
       color: 'from-purple-500 to-pink-500',
-      imageUrl: '/images/methodology/wallstreet-elite.jpg',
+      imageUrl: '/images/philosophy/wallstreet.png',
       riskLevels: {
         low: {
           realEstate: 35,
@@ -138,7 +138,7 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
       description: '基于群体心理和宏观趋势的逆向投资哲学',
       icon: SparklesIcon,
       color: 'from-orange-500 to-red-500',
-      imageUrl: '/images/methodology/cyber-robot.jpg',
+      imageUrl: '/images/philosophy/cyberbot.png',
       riskLevels: {
         low: {
           realEstate: 25,
@@ -210,51 +210,61 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
           <div className="w-24"></div>
         </div>
 
-        {/* 投资信念选择 */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          {investmentBeliefs.map((belief) => (
-            <button
-              key={belief.id}
-              onClick={() => handleBeliefSelection(belief.id)}
-              className={`group p-8 rounded-3xl border-2 transition-all duration-500 text-left h-96 flex flex-col ${
-                selectedBelief === belief.id
-                  ? `border-purple-500 bg-gradient-to-br ${belief.color} shadow-2xl transform scale-105`
-                  : 'border-gray-600 bg-gray-800 hover:border-gray-500 hover:bg-gray-700 hover:scale-105'
-              }`}
-            >
-              {/* 图片占位符 */}
-              <div className={`w-full h-48 rounded-2xl mb-6 flex items-center justify-center ${
-                selectedBelief === belief.id ? 'bg-white/20' : 'bg-gray-700'
-              }`}>
-                <belief.icon className={`w-24 h-24 ${
-                  selectedBelief === belief.id ? 'text-white' : 'text-gray-400'
-                }`} />
-              </div>
-              
-              <div className="flex-1">
-                <h3 className={`text-xl font-bold mb-3 ${
-                  selectedBelief === belief.id ? 'text-white' : 'text-white'
+        {/* 投资信念选择 - 大卡片化居中显示 */}
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            {investmentBeliefs.map((belief) => (
+              <button
+                key={belief.id}
+                onClick={() => handleBeliefSelection(belief.id)}
+                className={`group p-8 rounded-3xl border-2 transition-all duration-500 text-left h-96 flex flex-col ${
+                  selectedBelief === belief.id
+                    ? `border-purple-500 bg-gradient-to-br ${belief.color} shadow-2xl transform scale-105 ring-4 ring-purple-500/30`
+                    : 'border-gray-600 bg-gray-800 hover:border-gray-500 hover:bg-gray-700 hover:scale-105'
+                }`}
+              >
+                {/* 图片区域 - 左侧放置插画/图像 */}
+                <div className={`w-full h-48 rounded-2xl mb-6 flex items-center justify-center ${
+                  selectedBelief === belief.id ? 'bg-white/20' : 'bg-gray-700'
                 }`}>
-                  {belief.name}
-                </h3>
-                <p className={`text-sm ${
-                  selectedBelief === belief.id ? 'text-white/90' : 'text-gray-300'
-                }`}>
-                  {belief.description}
-                </p>
-              </div>
-            </button>
-          ))}
+                  {/* 图片占位符 - 后续替换为真实图片 */}
+                  <belief.icon className={`w-24 h-24 ${
+                    selectedBelief === belief.id ? 'text-white' : 'text-gray-400'
+                  }`} />
+                  {/* 图片说明 */}
+                  <div className="absolute bottom-2 right-2 text-xs text-gray-400">
+                    {belief.id === 'textbook' && 'professor.png'}
+                    {belief.id === 'wallstreet' && 'wallstreet.png'}
+                    {belief.id === 'psychohistory' && 'cyberbot.png'}
+                  </div>
+                </div>
+                
+                {/* 文字说明区域 - 右侧文字说明 */}
+                <div className="flex-1">
+                  <h3 className={`text-xl font-bold mb-3 ${
+                    selectedBelief === belief.id ? 'text-white' : 'text-white'
+                  }`}>
+                    {belief.name}
+                  </h3>
+                  <p className={`text-sm ${
+                    selectedBelief === belief.id ? 'text-white/90' : 'text-gray-300'
+                  }`}>
+                    {belief.description}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* 投资建议展示 */}
         {showRecommendations && selectedBeliefData && (
           <div className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-3xl p-8 border border-gray-600 mb-8">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold text-white flex items-center">
-                <LightBulbIcon className="w-8 h-8 mr-3 text-yellow-400" />
+              <h3 className="text-xl font-bold text-white flex items-center">
+                <LightBulbIcon className="w-6 h-6 mr-2 text-yellow-400" />
                 {selectedBeliefData.name} - 投资配置建议
-              </h2>
+              </h3>
               <div className="flex items-center space-x-4">
                 {/* 风险等级选择 */}
                 <div className="flex items-center space-x-2">
@@ -356,7 +366,7 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
           </div>
         )}
 
-        {/* 继续按钮 */}
+        {/* 继续按钮 - 保持居中 */}
         <div className="text-center">
           <button
             onClick={onNext}
