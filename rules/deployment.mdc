@@ -1,0 +1,46 @@
+目标：
+- 支持多平台部署
+- 环境变量管理
+- 构建优化
+- 性能监控
+
+Vercel配置：
+```json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
+```
+
+Netlify配置：
+```toml
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_ENV = "production"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+环境变量管理：
+```bash
+# .env.local
+VITE_API_URL=http://localhost:3000/api
+VITE_STRIPE_PUBLIC_KEY=pk_test_...
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_key
+```
+description:
+globs:
+alwaysApply: false
+---

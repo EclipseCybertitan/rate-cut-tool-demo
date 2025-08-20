@@ -1,0 +1,42 @@
+目标：
+- 每个回合代表一个月。
+- 输入：用户资产组合 + 宏观环境参数（利率、通胀、黑天鹅事件）。
+- 输出：各类资产收益率（按年化换算）。
+- 保持函数纯净（不依赖外部状态），便于测试。
+- 单元测试覆盖率需 >80%。
+
+核心函数签名：
+```typescript
+interface SimulationInput {
+  assets: AssetPortfolio
+  macroEnvironment: MacroEnvironment
+  timeHorizon: number // 月数
+}
+
+interface SimulationOutput {
+  monthlyReturns: MonthlyReturn[]
+  totalReturn: number
+  riskMetrics: RiskMetrics
+}
+
+function simulatePortfolio(input: SimulationInput): SimulationOutput
+```
+
+资产类型定义：
+```typescript
+type AssetType = 'realEstate' | 'equity' | 'cash' | 'fund' | 'crypto' | 'insurance'
+
+interface AssetPortfolio {
+  [key in AssetType]: number
+}
+
+interface MacroEnvironment {
+  interestRate: number // 基准利率
+  inflation: number // 通胀率
+  blackSwanEvents: BlackSwanEvent[]
+}
+```
+description:
+globs:
+alwaysApply: false
+---

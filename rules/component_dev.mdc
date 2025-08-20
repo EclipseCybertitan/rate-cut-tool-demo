@@ -1,0 +1,271 @@
+目标：
+- 统一的组件结构
+- 完整的TypeScript类型定义
+- 响应式设计优先
+- 无障碍访问支持
+- 三主题支持
+- 按功能分目录
+
+## 1. 组件目录结构
+
+所有组件位于 src/components/，按功能分目录：
+
+```
+src/components/
+├── ui/           # 基础UI组件
+│   ├── Button.tsx
+│   ├── Input.tsx
+│   └── Modal.tsx
+├── forms/        # 表单组件
+│   ├── AssetForm.tsx
+│   └── PaymentForm.tsx
+├── charts/       # 图表组件
+│   ├── PortfolioChart.tsx
+│   └── PerformanceChart.tsx
+├── cards/        # 卡片组件
+│   ├── AssetCard.tsx
+│   └── InvestmentCard.tsx
+├── layout/       # 布局组件
+│   ├── Header.tsx
+│   ├── Sidebar.tsx
+│   └── Footer.tsx
+└── business/     # 业务组件
+    ├── ThemeSwitcher.tsx
+    └── InvestmentAdvisor.tsx
+```
+
+## 2. 组件模板规范
+
+所有组件必须使用标准模板：
+
+```tsx
+import { useState, useEffect } from 'react'
+import { ComponentProps } from './types'
+
+/**
+ * 组件名称
+ * @param props 组件属性
+ * @returns JSX元素
+ * @author @eclipsecybertitan
+ */
+export default function ComponentName({ 
+  prop1, 
+  prop2, 
+  className = '',
+  ...props 
+}: ComponentProps) {
+  const [state, setState] = useState(initialState)
+  
+  useEffect(() => {
+    // 副作用逻辑
+  }, [])
+  
+  const handleEvent = () => {
+    // 事件处理
+  }
+  
+  return (
+    <div 
+      className={`component-name ${className}`}
+      {...props}
+      role="region"
+      aria-label="组件描述"
+    >
+      {/* 组件内容 */}
+    </div>
+  )
+}
+
+// 开发者签名: @eclipsecybertitan
+```
+
+## 3. Props类型定义规范
+
+必须定义 Props 接口，注明必选/可选字段，禁止 any：
+
+```typescript
+export interface ComponentProps {
+  // 必选属性
+  prop1: string
+  prop2: number
+  
+  // 可选属性
+  prop3?: boolean
+  prop4?: React.ReactNode
+  
+  // 通用属性
+  className?: string
+  onClick?: () => void
+  disabled?: boolean
+  
+  // 无障碍属性
+  'aria-label'?: string
+  'aria-describedby'?: string
+  role?: string
+  
+  // 主题相关
+  theme?: 'dusk' | 'day' | 'dawn'
+  variant?: 'primary' | 'secondary' | 'outline'
+  
+  // 事件处理
+  onFocus?: () => void
+  onBlur?: () => void
+  onKeyDown?: (event: React.KeyboardEvent) => void
+}
+```
+
+## 4. 主题支持要求
+
+全部组件必须支持三主题（DUSK=学院雅典，DAY=华尔街黑金，DAWN=赛博像素），样式通过 /src/app/globals.css 中的 CSS 变量：
+
+```tsx
+// 使用CSS变量，禁止硬编码颜色
+<div className="bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
+  <button className="bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-hover)]">
+    按钮
+  </button>
+</div>
+
+// 支持主题切换
+const { theme } = useTheme()
+
+return (
+  <div className={`theme-${theme} bg-[var(--color-bg-primary)]`}>
+    {/* 组件内容 */}
+  </div>
+)
+```
+
+## 5. 无障碍访问要求
+
+组件需包含 aria-* 标签、键盘导航支持、对比度合规：
+
+```tsx
+export default function AccessibleButton({ 
+  children, 
+  onClick, 
+  disabled = false,
+  'aria-label': ariaLabel,
+  ...props 
+}: AccessibleButtonProps) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={ariaLabel}
+      aria-disabled={disabled}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onClick?.()
+        }
+      }}
+      className={`
+        px-4 py-2 rounded-lg font-medium transition-all
+        focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-primary)]
+        disabled:opacity-50 disabled:cursor-not-allowed
+        ${disabled 
+          ? 'bg-[var(--color-bg-disabled)] text-[var(--color-text-disabled)]'
+          : 'bg-[var(--color-accent-primary)] text-[var(--color-text-on-accent)] hover:bg-[var(--color-accent-hover)]'
+        }
+      `}
+      {...props}
+    >
+      {children}
+    </button>
+  )
+}
+```
+
+## 6. 响应式设计规范
+
+所有组件必须支持响应式设计：
+
+```tsx
+// 使用Tailwind响应式类
+<div className="
+  w-full 
+  md:w-1/2 
+  lg:w-1/3 
+  xl:w-1/4
+  p-4 
+  md:p-6 
+  lg:p-8
+">
+  {/* 内容 */}
+</div>
+
+// 使用CSS变量实现响应式
+<div className="
+  text-[var(--font-size-mobile)] 
+  md:text-[var(--font-size-tablet)] 
+  lg:text-[var(--font-size-desktop)]
+">
+  {/* 内容 */}
+</div>
+```
+
+## 7. 性能优化要求
+
+组件必须考虑性能优化：
+
+```tsx
+import { memo, useCallback, useMemo } from 'react'
+
+// 使用memo避免不必要的重渲染
+export default memo(function ExpensiveComponent({ data, onUpdate }: Props) {
+  // 使用useMemo缓存计算结果
+  const processedData = useMemo(() => {
+    return data.map(item => ({
+      ...item,
+      processed: heavyComputation(item)
+    }))
+  }, [data])
+  
+  // 使用useCallback缓存函数
+  const handleUpdate = useCallback((id: string) => {
+    onUpdate(id)
+  }, [onUpdate])
+  
+  return (
+    <div>
+      {processedData.map(item => (
+        <div key={item.id} onClick={() => handleUpdate(item.id)}>
+          {item.processed}
+        </div>
+      ))}
+    </div>
+  )
+})
+```
+
+## 8. 测试要求
+
+每个组件必须包含测试文件：
+
+```typescript
+// ComponentName.test.tsx
+import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import ComponentName from './ComponentName'
+
+describe('ComponentName', () => {
+  it('应该正确渲染', () => {
+    render(<ComponentName prop1="test" prop2={42} />)
+    expect(screen.getByText('test')).toBeInTheDocument()
+  })
+  
+  it('应该处理用户交互', () => {
+    const mockOnClick = vi.fn()
+    render(<ComponentName prop1="test" prop2={42} onClick={mockOnClick} />)
+    
+    fireEvent.click(screen.getByRole('button'))
+    expect(mockOnClick).toHaveBeenCalledTimes(1)
+  })
+  
+  it('应该支持无障碍访问', () => {
+    render(<ComponentName prop1="test" prop2={42} aria-label="测试按钮" />)
+    expect(screen.getByLabelText('测试按钮')).toBeInTheDocument()
+  })
+})
+```

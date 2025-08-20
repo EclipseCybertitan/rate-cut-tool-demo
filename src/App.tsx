@@ -7,10 +7,11 @@ import RateCalculator from './components/RateCalculator'
 import AIAdvice from './components/AIAdvice'
 import CheckoutPage from './components/CheckoutPage'
 import BacktestDisplay from './components/BacktestDisplay'
+import MVPDemo from './components/MVPDemo'
 // import InvestmentMethodology from './components/InvestmentMethodology'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 
-type PageStep = 'introduction' | 'methodology' | 'configuration' | 'analysis' | 'checkout' | 'complete'
+type PageStep = 'introduction' | 'methodology' | 'configuration' | 'analysis' | 'checkout' | 'complete' | 'mvp'
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageStep>('introduction')
@@ -98,6 +99,9 @@ function App() {
           onBack={handleBackToAnalysis}
         />
       )
+    
+    case 'mvp':
+      return <MVPDemo />
     
     case 'complete':
       return (
@@ -291,7 +295,7 @@ function App() {
             )}
 
             {Object.values(assetInput).some(value => value > 0) && (
-              <div className="text-center">
+              <div className="text-center space-y-4">
                 <button
                   onClick={handleContinueToCheckout}
                   className="btn-primary text-lg px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-300"
@@ -301,6 +305,18 @@ function App() {
                 <p className="text-gray-400 mt-3">
                   获取专业的 AI 投资建议、详细图表分析和 PDF 报告导出
                 </p>
+                
+                <div className="border-t border-gray-700 pt-4">
+                  <button
+                    onClick={() => setCurrentPage('mvp')}
+                    className="btn-secondary text-lg px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-300"
+                  >
+                  🚀 体验MVP功能演示
+                  </button>
+                  <p className="text-gray-400 mt-3">
+                    体验完整的投资分析工具，包括用户权限控制、订阅计划等功能
+                  </p>
+                </div>
               </div>
             )}
 

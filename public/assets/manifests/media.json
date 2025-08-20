@@ -1,0 +1,254 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-12-19",
+  "description": "人类介入资产入口 - 媒体资源配置文件",
+  "license": "MIT",
+  "author": "@eclipsecybertitan",
+  
+  "music": {
+    "dusk": {
+      "name": "学院雅典风",
+      "description": "古典学术氛围，适合思考投资哲学",
+      "tracks": [
+        {
+          "id": "dusk_01",
+          "title": "雅典学院",
+          "artist": "古典音乐集",
+          "url": "/assets/audio/dusk/athens_academy.mp3",
+          "duration": "3:45",
+          "mood": "contemplative",
+          "license": "CC BY-NC-SA 3.0"
+        },
+        {
+          "id": "dusk_02",
+          "title": "哲学沉思",
+          "artist": "冥想音乐",
+          "url": "/assets/audio/dusk/philosophical_meditation.mp3",
+          "duration": "4:20",
+          "mood": "meditative",
+          "license": "CC BY-NC-SA 3.0"
+        }
+      ]
+    },
+    "day": {
+      "name": "华尔街黑金风",
+      "description": "现代商务节奏，体现金融专业感",
+      "tracks": [
+        {
+          "id": "day_01",
+          "title": "交易大厅",
+          "artist": "商务音乐",
+          "url": "/assets/audio/day/trading_floor.mp3",
+          "duration": "3:15",
+          "mood": "energetic",
+          "license": "CC BY-NC-SA 3.0"
+        },
+        {
+          "id": "day_02",
+          "title": "成功之路",
+          "artist": "激励音乐",
+          "url": "/assets/audio/day/path_to_success.mp3",
+          "duration": "4:05",
+          "mood": "motivational",
+          "license": "CC BY-NC-SA 3.0"
+        }
+      ]
+    },
+    "dawn": {
+      "name": "赛博像素风",
+      "description": "未来科技感，展现数字化投资",
+      "tracks": [
+        {
+          "id": "dawn_01",
+          "title": "数字未来",
+          "artist": "电子音乐",
+          "url": "/assets/audio/dawn/digital_future.mp3",
+          "duration": "3:55",
+          "mood": "futuristic",
+          "license": "CC BY-NC-SA 3.0"
+        },
+        {
+          "id": "dawn_02",
+          "title": "像素世界",
+          "artist": "游戏音乐",
+          "url": "/assets/audio/dawn/pixel_world.mp3",
+          "duration": "4:10",
+          "mood": "playful",
+          "license": "CC BY-NC-SA 3.0"
+        }
+      ]
+    }
+  },
+  
+  "fonts": {
+    "dusk": {
+      "name": "学院雅典风字体",
+      "description": "古典学术风格，体现传统投资智慧",
+      "fonts": [
+        {
+          "id": "dusk_serif",
+          "name": "Athens Serif",
+          "url": "/assets/fonts/dusk/athens-serif.woff2",
+          "weight": "400",
+          "style": "normal",
+          "license": "OFL 1.1"
+        },
+        {
+          "id": "dusk_display",
+          "name": "Academy Display",
+          "url": "/assets/fonts/dusk/academy-display.woff2",
+          "weight": "700",
+          "style": "normal",
+          "license": "OFL 1.1"
+        }
+      ]
+    },
+    "day": {
+      "name": "华尔街黑金风字体",
+      "description": "现代商务风格，体现金融专业性",
+      "fonts": [
+        {
+          "id": "day_sans",
+          "name": "Wall Street Sans",
+          "url": "/assets/fonts/day/wall-street-sans.woff2",
+          "weight": "400",
+          "style": "normal",
+          "license": "OFL 1.1"
+        },
+        {
+          "id": "day_mono",
+          "name": "Trading Mono",
+          "url": "/assets/fonts/day/trading-mono.woff2",
+          "weight": "500",
+          "style": "normal",
+          "license": "OFL 1.1"
+        }
+      ]
+    },
+    "dawn": {
+      "name": "赛博像素风字体",
+      "description": "未来科技风格，体现数字化创新",
+      "fonts": [
+        {
+          "id": "dawn_pixel",
+          "name": "Cyber Pixel",
+          "url": "/assets/fonts/dawn/cyber-pixel.woff2",
+          "weight": "400",
+          "style": "normal",
+          "license": "OFL 1.1"
+        },
+        {
+          "id": "dawn_future",
+          "name": "Future Tech",
+          "url": "/assets/fonts/dawn/future-tech.woff2",
+          "weight": "600",
+          "style": "normal",
+          "license": "OFL 1.1"
+        }
+      ]
+    }
+  },
+  
+  "images": {
+    "dusk": {
+      "name": "学院雅典风图片",
+      "description": "古典学术风格插图",
+      "images": [
+        {
+          "id": "dusk_philosophy",
+          "title": "投资哲学",
+          "url": "/assets/images/dusk/investment_philosophy.png",
+          "alt": "古典投资哲学插图",
+          "size": "800x600",
+          "format": "PNG",
+          "license": "CC BY-NC-SA 3.0"
+        },
+        {
+          "id": "dusk_wisdom",
+          "title": "智慧传承",
+          "url": "/assets/images/dusk/wisdom_legacy.png",
+          "alt": "传统投资智慧传承",
+          "size": "800x600",
+          "format": "PNG",
+          "license": "CC BY-NC-SA 3.0"
+        }
+      ]
+    },
+    "day": {
+      "name": "华尔街黑金风图片",
+      "description": "现代商务风格插图",
+      "images": [
+        {
+          "id": "day_trading",
+          "title": "交易场景",
+          "url": "/assets/images/day/trading_scene.png",
+          "alt": "现代金融交易场景",
+          "size": "800x600",
+          "format": "PNG",
+          "license": "CC BY-NC-SA 3.0"
+        },
+        {
+          "id": "day_success",
+          "title": "成功投资",
+          "url": "/assets/images/day/successful_investment.png",
+          "alt": "成功投资案例展示",
+          "size": "800x600",
+          "format": "PNG",
+          "license": "CC BY-NC-SA 3.0"
+        }
+      ]
+    },
+    "dawn": {
+      "name": "赛博像素风图片",
+      "description": "未来科技风格插图",
+      "images": [
+        {
+          "id": "dawn_cyber",
+          "title": "赛博世界",
+          "url": "/assets/images/dawn/cyber_world.png",
+          "alt": "未来赛博世界场景",
+          "size": "800x600",
+          "format": "PNG",
+          "license": "CC BY-NC-SA 3.0"
+        },
+        {
+          "id": "dawn_digital",
+          "title": "数字资产",
+          "url": "/assets/images/dawn/digital_assets.png",
+          "alt": "数字化资产概念图",
+          "size": "800x600",
+          "format": "PNG",
+          "license": "CC BY-NC-SA 3.0"
+        }
+      ]
+    }
+  },
+  
+  "fallbacks": {
+    "music": {
+      "dusk": "/assets/audio/default/dusk_default.mp3",
+      "day": "/assets/audio/default/day_default.mp3",
+      "dawn": "/assets/audio/default/dawn_default.mp3"
+    },
+    "fonts": {
+      "dusk": "Georgia, serif",
+      "day": "Arial, sans-serif",
+      "dawn": "Courier New, monospace"
+    },
+    "images": {
+      "dusk": "/assets/images/default/dusk_default.png",
+      "day": "/assets/images/default/day_default.png",
+      "dawn": "/assets/images/default/dawn_default.png"
+    }
+  },
+  
+  "metadata": {
+    "totalTracks": 6,
+    "totalFonts": 6,
+    "totalImages": 6,
+    "supportedThemes": ["dusk", "day", "dawn"],
+    "updateFrequency": "weekly",
+    "cdnEnabled": true,
+    "compressionEnabled": true
+  }
+}

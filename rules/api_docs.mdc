@@ -1,0 +1,184 @@
+目标：
+- 统一API响应格式
+- 完整的错误处理
+- 类型安全的请求/响应
+- 支持分页和过滤
+- 统一错误代码管理
+
+## 1. 统一响应格式
+
+所有 API 必须返回 ApiResponse<T>，包含 data、error、meta 三部分：
+
+```typescript
+interface ApiResponse<T = any> {
+  success: boolean
+  data?: T
+  error?: ApiError
+  meta: {
+    timestamp: string
+    requestId: string
+    version: string
+    pagination?: PaginationInfo
+  }
+}
+
+interface ApiError {
+  code: string // 错误代码枚举
+  message: string
+  details?: any
+  field?: string
+  stack?: string
+}
+
+interface PaginationInfo {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+  hasNext: boolean
+  hasPrev: boolean
+}
+```
+
+## 2. 错误处理规范
+
+错误代码统一在 src/lib/errors.ts 管理：
+
+```typescript
+export enum ErrorCode {
+  // 验证错误
+  ERR_VALIDATION = 'ERR_VALIDATION',
+  ERR_INVALID_INPUT = 'ERR_INVALID_INPUT',
+  
+  // 认证错误
+  ERR_UNAUTHORIZED = 'ERR_UNAUTHORIZED',
+  ERR_FORBIDDEN = 'ERR_FORBIDDEN',
+  
+  // 业务错误
+  ERR_PAYMENT_FAILED = 'ERR_PAYMENT_FAILED',
+  ERR_INSUFFICIENT_FUNDS = 'ERR_INSUFFICIENT_FUNDS',
+  ERR_ASSET_NOT_FOUND = 'ERR_ASSET_NOT_FOUND',
+  
+  // 系统错误
+  ERR_INTERNAL_SERVER = 'ERR_INTERNAL_SERVER',
+  ERR_SERVICE_UNAVAILABLE = 'ERR_SERVICE_UNAVAILABLE'
+}
+
+export class AppError extends Error {
+  constructor(
+    public code: ErrorCode,
+    public message: string,
+    public details?: any,
+    public statusCode: number = 500
+  ) {
+    super(message)
+    this.name = 'AppError'
+  }
+}
+```
+
+## 3. 类型安全要求
+
+所有请求/响应都使用 Zod 校验和 TypeScript 类型：
+
+```typescript
+import { z } from 'zod'
+
+// 请求参数校验
+const CreateUserSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(2).max(50),
+  age: z.number().min(18).max(120)
+})
+
+type CreateUserRequest = z.infer<typeof CreateUserSchema>
+
+// API 函数
+export async function createUser(data: CreateUserRequest): Promise<ApiResponse<UserData>> {
+  // 验证输入
+  const validatedData = CreateUserSchema.parse(data)
+  
+  try {
+    // 业务逻辑
+    const user = await userService.create(validatedData)
+    
+    return {
+      success: true,
+      data: user,
+      meta: {
+        timestamp: new Date().toISOString(),
+        requestId: generateRequestId(),
+        version: '1.0.0'
+      }
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: {
+        code: ErrorCode.ERR_INTERNAL_SERVER,
+        message: '用户创建失败',
+        details: error
+      },
+      meta: {
+        timestamp: new Date().toISOString(),
+        requestId: generateRequestId(),
+        version: '1.0.0'
+      }
+    }
+  }
+}
+```
+
+## 4. 分页与过滤规范
+
+列表 API 必须支持 page、limit、sort、filter 参数：
+
+```typescript
+interface ListParams {
+  page?: number // 默认 1
+  limit?: number // 默认 20，最大 100
+  sort?: string // 格式: "field:direction"，如 "createdAt:desc"
+  filter?: Record<string, any> // 过滤条件
+}
+
+interface ListResponse<T> {
+  items: T[]
+  pagination: PaginationInfo
+  filters: Record<string, any>
+  sorting: string
+}
+```
+
+## 5. HTTP状态码规范
+
+- 200: 成功
+- 201: 创建成功
+- 400: 请求参数错误
+- 401: 未授权
+- 403: 禁止访问
+- 404: 资源不存在
+- 422: 验证失败
+- 429: 请求频率限制
+- 500: 服务器内部错误
+- 503: 服务不可用
+
+## 6. 中间件要求
+
+所有 API 路由必须包含：
+
+```typescript
+// 错误处理中间件
+app.use(errorHandler)
+
+// 请求日志中间件
+app.use(requestLogger)
+
+// 速率限制中间件
+app.use(rateLimiter)
+
+// CORS 中间件
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
+  credentials: true
+}))
+```

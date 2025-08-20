@@ -1,0 +1,58 @@
+目标：
+- 测试覆盖率 >80%
+- 使用Vitest测试框架
+- 模拟所有外部依赖
+- 测试边界条件
+
+测试文件结构：
+```typescript
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen, fireEvent } from '@testing-library/react'
+import ComponentName from './ComponentName'
+
+describe('ComponentName', () => {
+  beforeEach(() => {
+    // 设置测试环境
+  })
+  
+  it('应该正确渲染组件', () => {
+    render(<ComponentName prop1="test" />)
+    expect(screen.getByText('test')).toBeInTheDocument()
+  })
+  
+  it('应该处理用户交互', () => {
+    const mockOnClick = vi.fn()
+    render(<ComponentName onClick={mockOnClick} />)
+    
+    fireEvent.click(screen.getByRole('button'))
+    expect(mockOnClick).toHaveBeenCalledTimes(1)
+  })
+})
+```
+
+模拟规则：
+```typescript
+// 模拟API调用
+vi.mock('./api', () => ({
+  fetchData: vi.fn(() => Promise.resolve(mockData))
+}))
+
+// 模拟浏览器API
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+})
+```
+description:
+globs:
+alwaysApply: false
+---

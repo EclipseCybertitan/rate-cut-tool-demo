@@ -1,0 +1,45 @@
+目标：
+- 确保所有 UI 组件支持三主题：DUSK=学院雅典风，DAY=黑金商务风，DAWN=赛博像素风。
+- 所有样式必须引用 /src/app/globals.css 中的 CSS 变量。
+- 图标来自 /src/components/icons/{dusk|day|dawn}/。
+- 不允许写内联样式。
+
+主题变量定义：
+```css
+:root[data-theme="dusk"] {
+  --primary-bg: #1a1a2e;
+  --secondary-bg: #16213e;
+  --accent-color: #0f3460;
+  --text-primary: #e94560;
+  --text-secondary: #533483;
+}
+
+:root[data-theme="day"] {
+  --primary-bg: #1a1a1a;
+  --secondary-bg: #2d2d2d;
+  --accent-color: #d4af37;
+  --text-primary: #ffffff;
+  --text-secondary: #d4af37;
+}
+
+:root[data-theme="dawn"] {
+  --primary-bg: #0a0a0a;
+  --secondary-bg: #1a1a1a;
+  --accent-color: #00ff41;
+  --text-primary: #00ff41;
+  --text-secondary: #008f11;
+}
+```
+
+组件主题切换示例：
+```tsx
+const [theme, setTheme] = useState<'dusk' | 'day' | 'dawn'>('dusk')
+
+useEffect(() => {
+  document.documentElement.setAttribute('data-theme', theme)
+}, [theme])
+```
+description:
+globs:
+alwaysApply: false
+---

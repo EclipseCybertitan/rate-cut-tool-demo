@@ -1,0 +1,403 @@
+# 🚀 版本1.3.0 新里程碑3 - 全局开发规范
+
+## 🎭 角色分工系统
+
+本项目采用角色分工开发模式，确保代码质量和开发效率：
+
+### 👑 执政官(Orchestrator)
+- **职责**: 需求分析、任务分配、跨角色协调、质量把控
+- **权限**: 全栈开发、角色切换、架构决策
+- **特点**: 全局视角、高效协调、质量优先
+
+### 🎨 前端工程师(Frontend Engineer)
+- **职责**: React组件开发、UI交互设计、主题系统实现
+- **技术栈**: React 18 + TypeScript + Tailwind CSS
+- **输出**: 组件文件、样式文件、交互逻辑
+
+### ⚙️ 后端工程师(Backend Engineer)
+- **职责**: API路由开发、数据库操作、业务逻辑实现
+- **技术栈**: Node.js + Express + Prisma + PostgreSQL
+- **输出**: API端点、数据模型、业务服务
+
+### 🧮 算法工程师(Algorithm Engineer)
+- **职责**: 模拟引擎开发、计算逻辑、数据处理算法
+- **技术栈**: TypeScript + 数学库 + 性能优化
+- **输出**: 核心算法、模拟函数、计算模块
+
+### 🧪 测试工程师(QA Engineer)
+- **职责**: 单元测试、集成测试、质量保证
+- **技术栈**: Vitest + Testing Library + 测试策略
+- **输出**: 测试用例、测试报告、质量指标
+
+### 🎯 架构师(Architect)
+- **职责**: 系统设计、技术选型、架构决策
+- **技术栈**: 系统设计 + 技术评估 + 架构规划
+- **输出**: 架构文档、技术方案、设计决策
+
+## 📋 开发工作流
+
+### 1. 需求接收
+- 接收用户或GPT助理的反馈需求
+- 分析需求的技术复杂度和影响范围
+
+### 2. 角色判断
+- 确定主要执行角色
+- 评估是否需要跨角色协作
+
+### 3. 代码输出
+- 输出对应角色的代码实现
+- 确保符合项目规范和最佳实践
+
+### 4. 测试生成
+- 自动生成必要的单元测试
+- 确保测试覆盖率符合要求
+
+### 5. 规范确认
+- 验证代码符合RULES.md规范
+- 确保代码质量和一致性
+
+## 🔄 角色切换规则
+
+### 弱约束原则
+- 执政官可以在必要时切换角色
+- 跨角色协作时优先保持角色专注
+- 复杂任务允许角色间协调开发
+
+### 角色专注原则
+- 每个角色专注于自己的职责范围
+- 避免角色职责混淆和代码混乱
+- 保持代码的清晰性和可维护性
+
+## 🎯 项目概述
+
+**项目名称**: 降息资产配置博弈工具  
+**版本**: 1.2.4  
+**里程碑**: 完善前后端MVP架构  
+**开发者**: @eclipsecybertitan  
+
+## 📋 核心规则
+
+### 1. 架构原则
+
+- **前后端分离**: 前端React + 后端API
+- **类型安全**: 全面使用TypeScript + Zod
+- **主题系统**: 三主题支持（DUSK/DAY/DAWN）
+- **响应式设计**: 移动优先，支持所有设备
+- **无障碍访问**: WCAG 2.1 AA级别合规
+
+### 2. 代码质量
+
+- **ESLint**: 严格代码规范检查
+- **Prettier**: 统一代码格式化
+- **TypeScript**: 严格类型检查
+- **测试覆盖**: 单元测试覆盖率 ≥80%
+- **文档完整**: 所有函数和组件必须有文档
+
+### 3. 性能要求
+
+- **首屏加载**: <3秒
+- **交互响应**: <100ms
+- **包大小**: 生产环境 <500KB
+- **PWA支持**: 离线访问，主屏幕安装
+- **缓存策略**: 智能缓存，减少重复请求
+
+## 🎨 UI/UX 规范
+
+### 主题系统
+
+```css
+/* 三主题CSS变量 */
+:root[data-theme="dusk"] {
+  --color-bg-primary: #1a1a2e;
+  --color-bg-secondary: #16213e;
+  --color-accent-primary: #e94560;
+  --color-text-primary: #e94560;
+  --color-text-secondary: #533483;
+}
+
+:root[data-theme="day"] {
+  --color-bg-primary: #1a1a1a;
+  --color-bg-secondary: #2d2d2d;
+  --color-accent-primary: #d4af37;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #d4af37;
+}
+
+:root[data-theme="dawn"] {
+  --color-bg-primary: #0a0a0a;
+  --color-bg-secondary: #1a1a1a;
+  --color-accent-primary: #00ff41;
+  --color-text-primary: #00ff41;
+  --color-text-secondary: #008f11;
+}
+```
+
+### 设计风格
+
+- **主风格**: 电幻国度（neon cyberpunk）
+- **金融感**: 保持专业性和权威性
+- **视觉层次**: 清晰的信息架构
+- **交互反馈**: 即时、流畅的用户反馈
+
+## 🔧 技术栈规范
+
+### 前端技术
+
+- **框架**: React 18 + TypeScript
+- **构建工具**: Vite
+- **样式**: Tailwind CSS + CSS变量
+- **状态管理**: React Context + Zustand
+- **路由**: React Router v6
+- **测试**: Vitest + Testing Library
+
+### 后端技术
+
+- **运行时**: Node.js 18+
+- **框架**: Express.js / Fastify
+- **数据库**: PostgreSQL + Prisma ORM
+- **验证**: Zod schemas
+- **认证**: JWT + Supabase Auth
+- **支付**: Stripe + 加密货币API
+
+### 部署技术
+
+- **平台**: Vercel / Netlify
+- **容器化**: Docker
+- **监控**: Sentry + LogRocket
+- **CDN**: Cloudflare
+- **CI/CD**: GitHub Actions
+
+## 📁 目录结构规范
+
+```
+src/
+├── components/          # React组件
+│   ├── ui/             # 基础UI组件
+│   ├── forms/          # 表单组件
+│   ├── charts/         # 图表组件
+│   ├── cards/          # 卡片组件
+│   ├── layout/         # 布局组件
+│   └── business/       # 业务组件
+├── contexts/           # React Context
+├── hooks/              # 自定义Hooks
+├── lib/                # 工具库
+│   ├── api/            # API客户端
+│   ├── simulation/     # 模拟引擎
+│   ├── database/       # 数据库操作
+│   └── utils/          # 通用工具
+├── types/              # TypeScript类型
+├── styles/             # 样式文件
+└── app/                # 应用入口
+
+public/
+├── assets/             # 静态资源
+│   ├── audio/          # 音频文件
+│   ├── fonts/          # 字体文件
+│   ├── images/         # 图片资源
+│   └── manifests/      # PWA清单
+└── locales/            # 多语言文件
+    ├── en/             # 英文
+    └── zh/             # 中文
+```
+
+## 🎮 游戏逻辑规范
+
+### 模拟引擎
+
+- **时间单位**: 每回合 = 1个月
+- **模拟周期**: 6-12回合
+- **输入参数**: 资产组合 + 宏观环境
+- **输出结果**: 收益率 + 风险指标 + 战斗结算
+
+### 战斗系统
+
+- **资产卡组**: 卡牌形式
+- **现金系统**: 费用能源
+- **卡牌交易**: 可买卖
+- **场景模式**: PVE + PVP
+
+### 付费模式
+
+- **基础功能**: 免费（加息/降息/贸易战）
+- **高级功能**: 付费DLC（战争/末日场景）
+- **推广分成**: 金融服务跳转
+
+## 💰 商业规则
+
+### 用户分层
+
+- **免费用户**: 基础模拟功能
+- **付费用户**: 完整分析报告、AI建议
+- **VIP用户**: 个性化服务、优先支持
+
+### 支付方式
+
+- **传统支付**: Stripe（信用卡）、Apple Pay、Google Pay
+- **加密货币**: OKX API、Binance API
+- **本地支付**: 支付宝、微信支付
+
+## 🧪 测试规范
+
+### 测试要求
+
+- **覆盖率**: 单元测试 ≥80%
+- **框架**: Vitest
+- **模拟**: 所有外部依赖必须Mock
+- **边界测试**: 极值、错误输入必须测试
+- **E2E测试**: 关键用户流程
+
+### 测试结构
+
+```typescript
+// 测试文件命名
+ComponentName.test.tsx
+ComponentName.spec.tsx
+
+// 测试组织
+describe('ComponentName', () => {
+  describe('功能测试', () => {
+    it('应该正确渲染', () => {})
+    it('应该处理用户交互', () => {})
+  })
+  
+  describe('边界测试', () => {
+    it('应该处理空数据', () => {})
+    it('应该处理错误状态', () => {})
+  })
+  
+  describe('无障碍测试', () => {
+    it('应该支持键盘导航', () => {})
+    it('应该包含正确的ARIA标签', () => {})
+  })
+})
+```
+
+## 🚀 部署规范
+
+### 环境配置
+
+```bash
+# 环境变量
+NODE_ENV=production
+DATABASE_URL=postgresql://...
+STRIPE_SECRET_KEY=sk_...
+SUPABASE_URL=https://...
+SUPABASE_ANON_KEY=eyJ...
+```
+
+### 构建优化
+
+- **代码分割**: 按路由分割
+- **Tree Shaking**: 移除未使用代码
+- **压缩**: Gzip + Brotli
+- **缓存**: 长期缓存静态资源
+
+### 监控告警
+
+- **性能监控**: Core Web Vitals
+- **错误监控**: Sentry
+- **用户行为**: LogRocket
+- **API监控**: 响应时间、错误率
+
+## 🌍 国际化规范
+
+### 多语言支持
+
+- **默认语言**: 英文
+- **支持语言**: 中文、英文
+- **文件结构**: /locales/{lang}/common.json
+- **动态切换**: 支持运行时切换
+
+### 本地化内容
+
+```json
+{
+  "en": {
+    "common": {
+      "theme": {
+        "dusk": "DUSK - Academic Athens",
+        "day": "DAY - Wall Street Gold",
+        "dawn": "DAWN - Cyber Pixel"
+      }
+    }
+  },
+  "zh": {
+    "common": {
+      "theme": {
+        "dusk": "DUSK - 学院雅典风",
+        "day": "DAY - 华尔街黑金风",
+        "dawn": "DAWN - 赛博像素风"
+      }
+    }
+  }
+}
+```
+
+## 🔒 安全规范
+
+### 数据安全
+
+- **输入验证**: Zod schema验证
+- **SQL注入**: Prisma ORM防护
+- **XSS防护**: React内置防护
+- **CSRF防护**: 同源策略
+
+### 认证授权
+
+- **JWT令牌**: 短期访问令牌
+- **刷新令牌**: 长期刷新令牌
+- **权限控制**: 基于角色的访问控制
+- **会话管理**: 安全的会话处理
+
+## 📚 文档规范
+
+### 代码文档
+
+```typescript
+/**
+ * 函数描述
+ * @param param1 参数1描述
+ * @param param2 参数2描述
+ * @returns 返回值描述
+ * @example
+ * ```typescript
+ * const result = functionName('value1', 42)
+ * ```
+ * @author @eclipsecybertitan
+ * @since 1.2.4
+ */
+```
+
+### 项目文档
+
+- **README.md**: 项目介绍、快速开始
+- **DEVELOPER.md**: 开发者指南
+- **API.md**: API文档
+- **DEPLOYMENT.md**: 部署指南
+
+## 🎯 里程碑目标
+
+### 第一阶段（本周）
+- [x] 创建项目规则库
+- [x] 实现主题切换系统
+- [x] 建立角色分工系统
+- [ ] 完善组件类型定义
+- [ ] 建立API路由框架
+
+### 第二阶段（下周）
+- [ ] 实现数据持久化
+- [ ] 完善错误处理系统
+- [ ] 添加加载状态管理
+- [ ] 优化移动端体验
+
+### 第三阶段（下下周）
+- [ ] 编写单元测试
+- [ ] 性能优化
+- [ ] 无障碍访问改进
+- [ ] 部署配置优化
+
+---
+
+**最后更新**: 2024-12-19  
+**版本**: 1.3.0  
+**开发者**: @eclipsecybertitan

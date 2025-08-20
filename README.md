@@ -2,6 +2,74 @@
 
 专业的降息情景资产配置分析工具，为投资者提供数据驱动的决策支持。
 
+## 🎭 角色分工系统
+
+本项目采用角色分工开发模式，确保代码质量和开发效率：
+
+### 👑 执政官(Orchestrator)
+- **职责**: 需求分析、任务分配、跨角色协调、质量把控
+- **权限**: 全栈开发、角色切换、架构决策
+- **特点**: 全局视角、高效协调、质量优先
+
+### 🎨 前端工程师(Frontend Engineer)
+- **职责**: React组件开发、UI交互设计、主题系统实现
+- **技术栈**: React 18 + TypeScript + Tailwind CSS
+- **输出**: 组件文件、样式文件、交互逻辑
+
+### ⚙️ 后端工程师(Backend Engineer)
+- **职责**: API路由开发、数据库操作、业务逻辑实现
+- **技术栈**: Node.js + Express + Prisma + PostgreSQL
+- **输出**: API端点、数据模型、业务服务
+
+### 🧮 算法工程师(Algorithm Engineer)
+- **职责**: 模拟引擎开发、计算逻辑、数据处理算法
+- **技术栈**: TypeScript + 数学库 + 性能优化
+- **输出**: 核心算法、模拟函数、计算模块
+
+### 🧪 测试工程师(QA Engineer)
+- **职责**: 单元测试、集成测试、质量保证
+- **技术栈**: Vitest + Testing Library + 测试策略
+- **输出**: 测试用例、测试报告、质量指标
+
+### 🎯 架构师(Architect)
+- **职责**: 系统设计、技术选型、架构决策
+- **技术栈**: 系统设计 + 技术评估 + 架构规划
+- **输出**: 架构文档、技术方案、设计决策
+
+## 📋 开发工作流
+
+### 1. 需求接收
+- 接收用户或GPT助理的反馈需求
+- 分析需求的技术复杂度和影响范围
+
+### 2. 角色判断
+- 确定主要执行角色
+- 评估是否需要跨角色协作
+
+### 3. 代码输出
+- 输出对应角色的代码实现
+- 确保符合项目规范和最佳实践
+
+### 4. 测试生成
+- 自动生成必要的单元测试
+- 确保测试覆盖率符合要求
+
+### 5. 规范确认
+- 验证代码符合RULES.md规范
+- 确保代码质量和一致性
+
+## 🔄 角色切换规则
+
+### 弱约束原则
+- 执政官可以在必要时切换角色
+- 跨角色协作时优先保持角色专注
+- 复杂任务允许角色间协调开发
+
+### 角色专注原则
+- 每个角色专注于自己的职责范围
+- 避免角色职责混淆和代码混乱
+- 保持代码的清晰性和可维护性
+
 ## ✨ 功能特色
 
 - 🎯 **精准计算**: 基于历史数据和启发式模型的降息情景分析
@@ -9,13 +77,19 @@
 - 📊 **详细报告**: 完整的分析报告，支持 PDF 导出和分享
 - 💰 **多种支付**: 支持 Coinbase Commerce、NOWPayments、BTCPay Server
 - 🔒 **安全可靠**: 企业级安全标准，保护您的隐私和数据
+- 🎨 **三主题系统**: DUSK学院雅典风、DAY华尔街黑金风、DAWN赛博像素风
+- 🎵 **多媒体支持**: 主题音乐、字体、图片资源管理
 
 ## 🛠️ 技术栈
 
 - **前端**: Vite + React + TypeScript
-- **样式**: Tailwind CSS
+- **样式**: Tailwind CSS + CSS变量主题系统
+- **后端**: Node.js + Express + Prisma ORM
+- **数据库**: PostgreSQL + Supabase
 - **部署**: Vercel / Netlify / CodeSandbox
 - **支付**: Coinbase Commerce, NOWPayments, BTCPay Server
+- **媒体**: 自定义媒体加载器 + 字体注入系统
+- **测试**: Vitest + Testing Library
 
 ## 🚀 快速开始
 
@@ -40,6 +114,201 @@ npm run dev
 ```bash
 npm run build
 npm run preview
+```
+
+## 🎨 人类介入资产入口操作指南
+
+### 📁 媒体资源管理
+
+项目支持人类介入的媒体资源配置，所有资源文件位于 `/public/assets/` 目录：
+
+```
+public/assets/
+├── audio/           # 音频文件
+│   ├── dusk/        # DUSK主题音频
+│   ├── day/         # DAY主题音频
+│   └── dawn/        # DAWN主题音频
+├── fonts/           # 字体文件
+│   ├── dusk/        # DUSK主题字体
+│   ├── day/         # DAY主题字体
+│   └── dawn/        # DAWN主题字体
+├── images/          # 图片资源
+│   ├── dusk/        # DUSK主题图片
+│   ├── day/         # DAY主题图片
+│   └── dawn/        # DAWN主题图片
+└── manifests/       # 配置文件
+    └── media.json   # 媒体资源配置
+```
+
+### 🔧 如何添加新资源
+
+#### 1. 添加音频文件
+
+```bash
+# 将音频文件放入对应主题目录
+cp your_audio.mp3 public/assets/audio/dusk/
+cp your_audio.mp3 public/assets/audio/day/
+cp your_audio.mp3 public/assets/audio/dawn/
+```
+
+#### 2. 添加字体文件
+
+```bash
+# 将字体文件放入对应主题目录（推荐.woff2格式）
+cp your_font.woff2 public/assets/fonts/dusk/
+cp your_font.woff2 public/assets/fonts/day/
+cp your_font.woff2 public/assets/fonts/dawn/
+```
+
+#### 3. 添加图片资源
+
+```bash
+# 将图片文件放入对应主题目录
+cp your_image.png public/assets/images/dusk/
+cp your_image.png public/assets/images/day/
+cp your_image.png public/assets/images/dawn/
+```
+
+#### 4. 更新配置文件
+
+编辑 `public/assets/manifests/media.json`，添加新资源信息：
+
+```json
+{
+  "music": {
+    "dusk": {
+      "tracks": [
+        {
+          "id": "dusk_new_track",
+          "title": "新音频标题",
+          "artist": "艺术家名称",
+          "url": "/assets/audio/dusk/your_audio.mp3",
+          "duration": "3:45",
+          "mood": "contemplative",
+          "license": "CC BY-NC-SA 3.0"
+        }
+      ]
+    }
+  }
+}
+```
+
+### 📋 资源检查
+
+项目包含自动资源检查脚本：
+
+```bash
+# 检查媒体资源完整性
+npm run check-media
+
+# 构建后自动检查
+npm run build
+```
+
+### 🎯 主题配置
+
+#### CSS变量系统
+
+主题通过CSS变量实现，在 `src/app/globals.css` 中定义：
+
+```css
+:root[data-theme="dusk"] {
+  --color-bg-primary: #1a1a2e;
+  --color-bg-secondary: #16213e;
+  --color-accent-primary: #e94560;
+  --color-text-primary: #e94560;
+  --color-text-secondary: #533483;
+}
+```
+
+#### 组件主题支持
+
+所有组件必须支持主题切换：
+
+```tsx
+import { useTheme } from '../contexts/ThemeContext'
+
+export default function MyComponent() {
+  const { theme } = useTheme()
+  
+  return (
+    <div className={`theme-${theme} bg-[var(--color-bg-primary)]`}>
+      {/* 组件内容 */}
+    </div>
+  )
+}
+```
+
+### 🔄 动态资源加载
+
+#### 媒体加载器
+
+```tsx
+import { mediaLoader } from '../lib/media'
+
+// 加载主题音乐
+const tracks = await mediaLoader.getThemeMusic('dusk')
+
+// 预加载资源
+await mediaLoader.preloadResources('dusk')
+```
+
+#### 字体注入器
+
+```tsx
+import { fontInjector } from '../lib/fonts'
+
+// 注入主题字体
+await fontInjector.injectThemeFonts('dusk')
+
+// 预加载字体
+await fontInjector.preloadFonts('dusk')
+```
+
+### 📱 音频播放器
+
+项目支持多种音频源：
+
+```tsx
+import AudioSlot from '../components/AudioSlot'
+
+// HTML5音频
+<AudioSlot type="html5" theme="dusk" trackId="dusk_01" />
+
+// Spotify嵌入
+<AudioSlot type="spotify" trackId="spotify_track_id" />
+
+// SoundCloud嵌入
+<AudioSlot type="soundcloud" trackId="soundcloud_track_id" />
+```
+
+### ⚠️ 注意事项
+
+1. **文件格式**: 音频推荐MP3，字体推荐WOFF2，图片推荐PNG/WebP
+2. **文件大小**: 单个文件建议不超过10MB
+3. **许可证**: 确保所有资源有合适的许可证
+4. **回退资源**: 提供默认回退资源以防加载失败
+5. **性能优化**: 启用CDN和压缩以提高加载速度
+
+### 🚀 部署配置
+
+#### 环境变量
+
+```bash
+# .env.local
+VITE_MEDIA_CDN_URL=https://your-cdn.com
+VITE_MEDIA_COMPRESSION=true
+VITE_MEDIA_CACHE_ENABLED=true
+```
+
+#### 构建优化
+
+```bash
+# 构建时检查资源
+npm run build
+
+# 手动检查资源
+npm run check-media
 ```
 
 ## 🌐 部署指南
@@ -111,6 +380,11 @@ OPENAI_API_KEY=your_key
 
 # 应用配置
 NODE_ENV=development
+
+# 媒体资源配置
+VITE_MEDIA_CDN_URL=https://your-cdn.com
+VITE_MEDIA_COMPRESSION=true
+VITE_MEDIA_CACHE_ENABLED=true
 ```
 
 ## 🧪 测试
@@ -119,11 +393,62 @@ NODE_ENV=development
 # 运行测试
 npm test
 
+# 运行测试并显示UI
+npm run test:ui
+
+# 生成测试覆盖率报告
+npm run test:coverage
+
+# 运行测试（不监听）
+npm run test:run
+
 # 代码检查
 npm run lint
 
 # 类型检查
 npx tsc --noEmit
+
+# 媒体资源检查
+npm run check-media
+
+# 代码格式化
+npm run format
+```
+
+### 测试覆盖率要求
+
+- **单元测试覆盖率**: ≥80%
+- **测试框架**: Vitest + Testing Library
+- **测试环境**: jsdom (浏览器环境模拟)
+- **覆盖率报告**: HTML + JSON + 控制台输出
+
+### 测试结构
+
+```
+src/
+├── __tests__/           # 测试文件目录
+│   ├── components/      # 组件测试
+│   ├── lib/            # 库函数测试
+│   └── api/            # API测试
+├── test/               # 测试配置和工具
+│   └── setup.ts        # 测试环境设置
+└── vitest.config.ts    # Vitest配置
+```
+
+### 运行测试示例
+
+```bash
+# 运行所有测试
+npm test
+
+# 运行特定测试文件
+npm test engine.test.ts
+
+# 运行特定测试套件
+npm test -- --grep "模拟引擎"
+
+# 生成覆盖率报告
+npm run test:coverage
 ```
 
 ## 📱 PWA 支持
@@ -157,7 +482,57 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 
 ---
 
+## 💰 商业定价体系
+
+### 🎯 目标用户与服务层级
+
+| 用户类型 | 使用场景 | 定价模式 | 收费区间 | 附加服务 |
+|---------|---------|---------|---------|---------|
+| **个人投资者** | 想快速了解降息周期对自己资产的影响 | 一次性报告（按次付费） | **\$5–10/次** | PDF 报告导出、基础 AI 建议 |
+| **进阶用户** | 持续追踪资产配置与利率变化 | 月度订阅制 | **\$20–30/月** | 无限次生成报告、历史回测、个性化投资建议 |
+| **专业理财顾问** | 为客户提供投资组合建议 | 高级订阅 / 帐号制 | **\$99–199/月/账号** | AI 辅助顾问、客户资产批量管理、白标报告 |
+| **金融机构 / B2B** | 内部风控/客户教育/投资培训 | 定制化 License | **\$10k–50k/年** | API 接口集成、专属支持、私有部署 |
+
+### 🔒 功能访问控制
+
+- **免费用户**: 基础模拟、有限次数
+- **付费用户**: 完整功能、无限次数、高级分析
+- **企业用户**: 定制化功能、API访问、专属支持
+
+### 📊 收入模型
+
+- **订阅收入**: 月度/年度订阅服务
+- **按次付费**: 单次报告生成
+- **企业授权**: 定制化解决方案
+- **API服务**: 第三方集成接口
+- **咨询服务**: 专业投资建议
+
 ## 📋 版本历史
+
+### v1.3.0 (2024-12-19)
+- 🚀 **新增**: 商业定价体系与用户分层
+- 💰 **新增**: 多层级收费模式设计
+- 🎯 **新增**: 目标用户画像与使用场景
+- 🔒 **新增**: 功能访问控制机制
+- 📊 **新增**: 收入模型规划
+- 🎭 **新增**: 角色分工系统和工作流程
+- 🎨 **新增**: 三主题系统（DUSK/DAY/DAWN）
+- 🎵 **新增**: 人类介入资产入口系统
+- 🔤 **新增**: 动态字体注入和主题字体切换
+- 🎧 **新增**: 多源音频播放器（HTML5/Spotify/SoundCloud）
+- 📁 **新增**: 媒体资源管理系统
+- 🔧 **新增**: 媒体资源检查脚本
+- 📚 **新增**: 完整的项目规则库
+
+### v1.2.4 (2024-12-19)
+- 🎨 **新增**: 三主题系统（DUSK/DAY/DAWN）
+- 🎵 **新增**: 人类介入资产入口系统
+- 🔤 **新增**: 动态字体注入和主题字体切换
+- 🎧 **新增**: 多源音频播放器（HTML5/Spotify/SoundCloud）
+- 📁 **新增**: 媒体资源管理系统
+- 🔧 **新增**: 媒体资源检查脚本
+- 📚 **新增**: 完整的项目规则库
+- 🎭 **新增**: 角色分工系统和工作流程
 
 ### v1.2.3 (2024-12-19)
 - ✨ **新增**: 投资哲学页面集成真实插图
@@ -178,5 +553,5 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 - 📊 **新增**: 风险等级配置建议
 
 **开发者**: @eclipsecybertitan  
-**版本**: 1.2.3  
+**版本**: 1.3.0  
 **最后更新**: 2024-12-19 

@@ -2,13 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 三主题CSS变量定义 */
+:root[data-theme="dusk"] {
+  --primary-bg: #1a1a2e;
+  --secondary-bg: #16213e;
+  --accent-color: #0f3460;
+  --text-primary: #e94560;
+  --text-secondary: #533483;
+  --border-color: #0f3460;
+  --card-bg: #16213e;
+  --input-bg: #1a1a2e;
+  --button-primary: #e94560;
+  --button-secondary: #533483;
+}
+
+:root[data-theme="day"] {
+  --primary-bg: #1a1a1a;
+  --secondary-bg: #2d2d2d;
+  --accent-color: #d4af37;
+  --text-primary: #ffffff;
+  --text-secondary: #d4af37;
+  --border-color: #d4af37;
+  --card-bg: #2d2d2d;
+  --input-bg: #1a1a1a;
+  --button-primary: #d4af37;
+  --button-secondary: #2d2d2d;
+}
+
+:root[data-theme="dawn"] {
+  --primary-bg: #0a0a0a;
+  --secondary-bg: #1a1a1a;
+  --accent-color: #00ff41;
+  --text-primary: #00ff41;
+  --text-secondary: #008f11;
+  --border-color: #00ff41;
+  --card-bg: #1a1a1a;
+  --input-bg: #0a0a0a;
+  --button-primary: #00ff41;
+  --button-secondary: #008f11;
+}
+
+/* 默认主题（dusk） */
+:root {
+  --primary-bg: #1a1a2e;
+  --secondary-bg: #16213e;
+  --accent-color: #0f3460;
+  --text-primary: #e94560;
+  --text-secondary: #533483;
+  --border-color: #0f3460;
+  --card-bg: #16213e;
+  --input-bg: #1a1a2e;
+  --button-primary: #e94560;
+  --button-secondary: #533483;
+}
+
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
   }
   
   body {
-    @apply bg-gray-50 text-gray-900;
+    background-color: var(--primary-bg);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 
