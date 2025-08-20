@@ -477,13 +477,16 @@ export default function RateCutAnalysisPage({
           <ArrowLeftIcon className="w-5 h-5" />
           <span>{language === 'en' ? 'New Analysis' : '重新分析'}</span>
         </button>
-        <button
-          onClick={() => window.print()}
-          className="flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white transition-colors rounded-lg"
-        >
-          <ArrowDownTrayIcon className="w-5 h-5" />
-          <span>{language === 'en' ? 'Print Report' : '打印报告'}</span>
-        </button>
+        {/* Print Report按钮已隐藏，保留功能但不显示 */}
+        <div className="hidden">
+          <button
+            onClick={() => window.print()}
+            className="flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white transition-colors rounded-lg"
+          >
+            <ArrowDownTrayIcon className="w-5 h-5" />
+            <span>{language === 'en' ? 'Print Report' : '打印报告'}</span>
+          </button>
+        </div>
       </div>
 
       {/* 打印Logo - 只在打印时显示 */}
@@ -756,7 +759,7 @@ export default function RateCutAnalysisPage({
             
             <button 
               onClick={() => shareToSocial('facebook')}
-              className="flex flex-col items-center space-y-2 p-4 bg-blue-800 hover:bg-blue-900 text-white rounded-lg transition-all duration-300 transform hover:scale-105"
+              className="flex flex-col items-center space-x-2 p-4 bg-blue-800 hover:bg-blue-900 text-white rounded-lg transition-all duration-300 transform hover:scale-105"
             >
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
                 <span className="text-blue-800 font-bold text-sm">f</span>
@@ -766,7 +769,7 @@ export default function RateCutAnalysisPage({
             
             <button 
               onClick={() => shareToSocial('instagram')}
-              className="flex flex-col items-center space-y-2 p-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg transition-all duration-300 transform hover:scale-105"
+              className="flex flex-col items-center space-x-2 p-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg transition-all duration-300 transform hover:scale-105"
             >
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
                 <span className="text-pink-500 font-bold text-sm">📷</span>
@@ -776,7 +779,7 @@ export default function RateCutAnalysisPage({
             
             <button 
               onClick={() => copyLink()}
-              className="flex flex-col items-center space-y-2 p-4 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-300 transform hover:scale-105"
+              className="flex flex-col items-center space-x-2 p-4 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-300 transform hover:scale-105"
             >
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
                 <span className="text-gray-600 font-bold text-sm">🔗</span>
@@ -785,11 +788,61 @@ export default function RateCutAnalysisPage({
             </button>
           </div>
           
-          <div className="text-center">
+          {/* 邀请码系统 */}
+          <div className="mt-6 p-4 bg-gradient-to-r from-amber-900/30 to-orange-900/30 border border-amber-600/30 rounded-lg">
+            <div className="text-center mb-4">
+              <h4 className="text-lg font-semibold text-amber-300 mb-2">
+                {language === 'en' ? '🌟 Invitation Code System' : '🌟 邀请码系统'}
+              </h4>
+              <p className="text-amber-200 text-sm">
+                {language === 'en' 
+                  ? 'Invite friends to register and earn free premium report opportunities!'
+                  : '邀请朋友注册，获得免费高级报告机会！'
+                }
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-amber-400 mb-2">
+                  {language === 'en' ? 'Your Invitation Code' : '您的邀请码'}
+                </div>
+                <div className="bg-amber-900/50 p-3 rounded-lg border border-amber-600/30">
+                  <code className="text-amber-300 font-mono text-lg">ECLIPSE2024</code>
+                </div>
+                <p className="text-amber-200 text-xs mt-2">
+                  {language === 'en' ? 'Share this code with friends' : '将此码分享给朋友'}
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-400 mb-2">
+                  {language === 'en' ? 'Free Reports' : '免费报告'}
+                </div>
+                <div className="bg-green-900/50 p-3 rounded-lg border border-green-600/30">
+                  <span className="text-green-300 font-bold text-2xl">3</span>
+                  <span className="text-green-200 text-sm ml-2">
+                    {language === 'en' ? 'Available' : '可用'}
+                  </span>
+                </div>
+                <p className="text-green-200 text-xs mt-2">
+                  {language === 'en' ? '1 registration = 1 free report' : '1人注册 = 1次免费报告'}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center mt-4">
             <p className="text-purple-200 text-xs">
               {language === 'en' 
                 ? 'After sharing, refresh the page to unlock premium features!'
                 : '分享后刷新页面即可解锁高级功能！'
+              }
+            </p>
+            <p className="text-amber-200 text-xs mt-1">
+              {language === 'en' 
+                ? 'Download PDF reports and send emails for free after sharing!'
+                : '分享后免费下载PDF报告和发送邮件！'
               }
             </p>
           </div>

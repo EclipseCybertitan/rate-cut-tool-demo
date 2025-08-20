@@ -10,7 +10,10 @@ import {
   ArrowRightIcon,
   InformationCircleIcon,
   ChartBarIcon as AnalysisIcon,
-  SparklesIcon
+  SparklesIcon,
+  StarIcon,
+  AcademicCapIcon,
+  TrophyIcon
 } from '@heroicons/react/24/outline'
 import LanguageSwitcher from './LanguageSwitcher'
 import { useLanguage } from '../contexts/LanguageContext'
@@ -389,6 +392,14 @@ export default function AssetConfigurationPage({
 
   // const riskProfile = getRiskLevel()
 
+  const getAssetDisplayName = (assetId: string) => {
+    const category = assetCategories.find(cat => cat.options?.some(opt => opt.id === assetId));
+    if (category) {
+      return category.name;
+    }
+    return assetId.charAt(0).toUpperCase() + assetId.slice(1);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
       {/* 背景装饰 */}
@@ -654,165 +665,252 @@ export default function AssetConfigurationPage({
           </div>
         </div>
 
-        {/* 策略匹配分析 */}
-        {totalAssets > 0 && recommendedAllocation && (
-          <div className="bg-gradient-to-r from-purple-900/20 to-pink-900/20 p-8 rounded-2xl border border-purple-600/30 mb-8">
-            <h3 className="text-xl font-semibold text-white mb-6 flex items-center">
-              <SparklesIcon className="w-6 h-6 mr-3 text-purple-400" />
-              Strategy Match Analysis
+        {/* 推荐配置 */}
+        <div className="bg-gradient-to-br from-green-900/20 via-emerald-900/20 to-green-800/20 border border-green-600/30 rounded-2xl p-6 mb-8">
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="relative">
+              <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                <TrophyIcon className="w-5 h-5 text-white" />
+              </div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
+            </div>
+            <h3 className="text-xl font-bold text-green-300">
+              {language === 'en' ? 'Recommended Allocation' : '推荐配置'}
             </h3>
-            
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* 推荐配置 */}
-              <div className="space-y-4">
-                <h4 className="text-lg font-medium text-purple-300">🎯 Recommended Allocation</h4>
-                <div className="space-y-4">
-                  {Object.entries(recommendedAllocation).map(([asset, percentage]) => {
-                    const currentValue = localInput[asset as keyof typeof localInput] || 0
-                    const currentPercentage = totalAssets > 0 ? (currentValue / totalAssets) * 100 : 0
-                    const deviation = ((currentPercentage - percentage) / percentage) * 100
-                    
-                    return (
-                      <div key={asset} className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-300 capitalize text-sm font-medium">
-                            {asset === 'realEstate' ? 'Real Estate' : 
-                             asset === 'equity' ? 'Equity' : 
-                             asset === 'cash' ? 'Cash' : 
-                             asset === 'fund' ? 'Funds' : 
-                             asset === 'crypto' ? 'Crypto' : 'Insurance'}
-                          </span>
-                          <div className="flex items-center space-x-2">
-                            <span className="text-white font-medium text-sm">{percentage}%</span>
-                            <span className={`text-xs px-2 py-1 rounded-full ${
-                              Math.abs(deviation) <= 10 ? 'bg-green-500/20 text-green-400' :
-                              Math.abs(deviation) <= 25 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'
-                            }`}>
-                              {deviation > 0 ? '+' : ''}{deviation.toFixed(1)}%
-                            </span>
-                          </div>
-                        </div>
-                        
-                        {/* 先进动态条形图 */}
-                        <div className="relative">
-                          {/* 推荐配置条形图 */}
-                          <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
-                            <div 
-                              className="bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 h-3 rounded-full transition-all duration-1000 ease-out relative"
-                              style={{ width: `${percentage}%` }}
-                            >
-                              {/* 动态光效 */}
-                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
-                              {/* 科技感装饰 */}
-                              <div className="absolute right-0 top-0 w-1 h-3 bg-white/30 rounded-full"></div>
-                            </div>
-                          </div>
-                          
-                          {/* 当前配置指示器 - 只在有值且不为0时显示 */}
-                          {currentPercentage > 0 && (
-                            <>
-                              <div 
-                                className="absolute top-0 w-1 h-3 bg-white border border-gray-300 rounded-full transform -translate-y-0.5 transition-all duration-500 ease-out"
-                                style={{ left: `${Math.min(currentPercentage, 100)}%` }}
-                              >
-                                <div className="absolute -top-1 -left-1 w-3 h-3 bg-white rounded-full border-2 border-blue-400 animate-ping"></div>
-                              </div>
-                              
-                              {/* 百分比标签 - 只在有值且不为0时显示 */}
-                              <div className="absolute -top-6 text-xs text-gray-400" style={{ left: `${Math.min(currentPercentage, 100)}%` }}>
-                                {currentPercentage.toFixed(1)}%
-                              </div>
-                            </>
-                          )}
-                        </div>
-                        
-                        {/* 对比说明 */}
-                        <div className="text-xs text-gray-400 ml-2">
-                          {Math.abs(deviation) <= 10 ? '✅ Optimal' : 
-                           Math.abs(deviation) <= 25 ? '⚠️ Consider adjustment' : '🚨 Significant deviation'}
-                        </div>
-                      </div>
-                    )
-                  })}
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-4">
+            {Object.entries(recommendedAllocation).map(([asset, percentage]) => (
+              <div key={asset} className="bg-gradient-to-br from-gray-800/50 to-gray-700/50 rounded-xl p-4 border border-gray-600/30">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-300 font-medium text-sm">
+                    {getAssetDisplayName(asset)}
+                  </span>
+                  <span className="text-green-400 font-bold text-lg">
+                    {percentage}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="h-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full transition-all duration-500"
+                    style={{ width: `${percentage}%` }}
+                  ></div>
                 </div>
               </div>
-              
-              {/* 偏差分析 */}
+            ))}
+          </div>
+        </div>
+
+        {/* 偏差分析 */}
+        <div className="bg-gradient-to-r from-purple-900/20 to-pink-900/20 p-8 rounded-2xl border border-purple-600/30 mb-8">
+          <h3 className="text-xl font-semibold text-white mb-6 flex items-center">
+            <SparklesIcon className="w-6 h-6 mr-3 text-purple-400" />
+            Configuration Deviation Analysis
+          </h3>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* 推荐配置 */}
+            <div className="space-y-4">
+              <h4 className="text-lg font-medium text-purple-300">🎯 Recommended Allocation</h4>
               <div className="space-y-4">
-                <h4 className="text-lg font-medium text-purple-300">
-                  📊 Configuration Deviation Analysis
-                </h4>
-                <div className="space-y-3">
-                  {deviations && Object.entries(deviations).map(([asset, deviation]) => {
-                    const currentValue = localInput[asset as keyof typeof localInput] || 0
-                    const recommendedValue = totalAssets * (selectedBeliefData?.riskLevels[selectedRiskLevel][asset as keyof typeof selectedBeliefData.riskLevels[typeof selectedRiskLevel]] || 0) / 100
-                    const adjustmentAmount = recommendedValue - currentValue
-                    
-                    return (
-                      <div key={asset} className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-300 capitalize">
-                            {asset === 'realEstate' ? 'Real Estate' : 
-                             asset === 'equity' ? 'Equity' : 
-                             asset === 'cash' ? 'Cash' : 
-                             asset === 'fund' ? 'Funds' : 
-                             asset === 'crypto' ? 'Crypto' : 'Insurance'}
+                {recommendedAllocation && Object.entries(recommendedAllocation).map(([asset, percentage]) => {
+                  const currentValue = localInput[asset as keyof typeof localInput] || 0
+                  const currentPercentage = totalAssets > 0 ? (currentValue / totalAssets) * 100 : 0
+                  const deviation = ((currentPercentage - percentage) / percentage) * 100
+                  
+                  return (
+                    <div key={asset} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-300 capitalize text-sm font-medium">
+                          {asset === 'realEstate' ? 'Real Estate' : 
+                           asset === 'equity' ? 'Equity' : 
+                           asset === 'cash' ? 'Cash' : 
+                           asset === 'fund' ? 'Funds' : 
+                           asset === 'crypto' ? 'Crypto' : 'Insurance'}
+                        </span>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-white font-medium text-sm">{percentage}%</span>
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            Math.abs(deviation) <= 10 ? 'bg-green-500/20 text-green-400' :
+                            Math.abs(deviation) <= 25 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'
+                          }`}>
+                            {deviation > 0 ? '+' : ''}{deviation.toFixed(1)}%
                           </span>
-                          <div className="flex items-center space-x-2">
-                            <span className={`text-sm font-medium ${
-                              Math.abs(deviation) <= 10 ? 'text-green-400' :
-                              Math.abs(deviation) <= 25 ? 'text-yellow-400' : 'text-red-400'
-                            }`}>
-                              {deviation > 0 ? '+' : ''}{deviation.toFixed(1)}%
-                            </span>
-                            <div className={`w-2 h-2 rounded-full ${
-                              Math.abs(deviation) <= 10 ? 'bg-green-400' :
-                              Math.abs(deviation) <= 25 ? 'bg-yellow-400' : 'bg-red-400'
-                            }`}></div>
+                        </div>
+                      </div>
+                      
+                      {/* 先进动态条形图 */}
+                      <div className="relative">
+                        {/* 推荐配置条形图 */}
+                        <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
+                          <div 
+                            className="bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 h-3 rounded-full transition-all duration-1000 ease-out relative"
+                            style={{ width: `${percentage}%` }}
+                          >
+                            {/* 动态光效 */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
+                            {/* 科技感装饰 */}
+                            <div className="absolute right-0 top-0 w-1 h-3 bg-white/30 rounded-full"></div>
                           </div>
                         </div>
                         
-                        {/* 具体金额建议 */}
-                        <div className="ml-4 text-sm">
-                          {adjustmentAmount > 0 ? (
-                            <div className="text-green-400">
-                              Recommend increasing by ${adjustmentAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                        {/* 当前配置指示器 - 只在有值且不为0时显示 */}
+                        {currentPercentage > 0 && (
+                          <>
+                            <div 
+                              className="absolute top-0 w-1 h-3 bg-white border border-gray-300 rounded-full transform -translate-y-0.5 transition-all duration-500 ease-out"
+                              style={{ left: `${Math.min(currentPercentage, 100)}%` }}
+                            >
+                              <div className="absolute -top-1 -left-1 w-3 h-3 bg-white rounded-full border-2 border-blue-400 animate-ping"></div>
                             </div>
-                          ) : adjustmentAmount < 0 ? (
-                            <div className="text-red-400">
-                              Recommend reducing by ${Math.abs(adjustmentAmount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                            
+                            {/* 百分比标签 - 只在有值且不为0时显示 */}
+                            <div className="absolute -top-6 text-xs text-gray-400" style={{ left: `${Math.min(currentPercentage, 100)}%` }}>
+                              {currentPercentage.toFixed(1)}%
                             </div>
-                          ) : (
-                            <div className="text-gray-400">
-                              Configuration optimal
-                            </div>
-                          )}
+                          </>
+                        )}
+                      </div>
+                      
+                      {/* 对比说明 */}
+                      <div className="text-xs text-gray-400 ml-2">
+                        {Math.abs(deviation) <= 10 ? '✅ Optimal' : 
+                         Math.abs(deviation) <= 25 ? '⚠️ Consider adjustment' : '🚨 Significant deviation'}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+            
+            {/* 偏差分析 */}
+            <div className="space-y-4">
+              <h4 className="text-lg font-medium text-purple-300">
+                📊 Configuration Deviation Analysis
+              </h4>
+              <div className="space-y-3">
+                {deviations && Object.entries(deviations).map(([asset, deviation]) => {
+                  const currentValue = localInput[asset as keyof typeof localInput] || 0
+                  const recommendedValue = totalAssets * (selectedBeliefData?.riskLevels[selectedRiskLevel][asset as keyof typeof selectedBeliefData.riskLevels[typeof selectedRiskLevel]] || 0) / 100
+                  const adjustmentAmount = recommendedValue - currentValue
+                  
+                  return (
+                    <div key={asset} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-300 capitalize">
+                          {asset === 'realEstate' ? 'Real Estate' : 
+                           asset === 'equity' ? 'Equity' : 
+                           asset === 'cash' ? 'Cash' : 
+                           asset === 'fund' ? 'Funds' : 
+                           asset === 'crypto' ? 'Crypto' : 'Insurance'}
+                        </span>
+                        <div className="flex items-center space-x-2">
+                          <span className={`text-sm font-medium ${
+                            Math.abs(deviation) <= 10 ? 'text-green-400' :
+                            Math.abs(deviation) <= 25 ? 'text-yellow-400' : 'text-red-400'
+                          }`}>
+                            {deviation > 0 ? '+' : ''}{deviation.toFixed(1)}%
+                          </span>
+                          <div className={`w-2 h-2 rounded-full ${
+                            Math.abs(deviation) <= 10 ? 'bg-green-400' :
+                            Math.abs(deviation) <= 25 ? 'bg-yellow-400' : 'bg-red-400'
+                          }`}></div>
                         </div>
                       </div>
-                    )
-                  })}
-                </div>
-                
-                <div className="mt-4 p-3 bg-gray-800/50 rounded-lg border border-gray-600">
-                  <div className="text-sm text-gray-300">
-                    <p className="mb-2">
-                      <span className="text-green-400">●</span> 
-                      Deviation ≤10%: Excellent configuration
-                    </p>
-                    <p className="mb-2">
-                      <span className="text-yellow-400">●</span> 
-                      Deviation ≤25%: Good configuration
-                    </p>
-                                          <p>
-                        <span className="text-red-400">●</span> 
-                        Deviation {'>'}25%: Needs adjustment
-                      </p>
-                  </div>
+                      
+                      {/* 具体金额建议 */}
+                      <div className="ml-4 text-sm">
+                        {adjustmentAmount > 0 ? (
+                          <div className="text-green-400">
+                            Recommend increasing by ${adjustmentAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                          </div>
+                        ) : adjustmentAmount < 0 ? (
+                          <div className="text-red-400">
+                            Recommend reducing by ${Math.abs(adjustmentAmount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                          </div>
+                        ) : (
+                          <div className="text-green-400">
+                            Configuration optimal
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+              
+              <div className="mt-4 p-3 bg-gray-800/50 rounded-lg border border-gray-600">
+                <div className="text-sm text-gray-300">
+                  <p className="mb-2">
+                    <span className="text-green-400">●</span> 
+                    Deviation ≤10%: Excellent configuration
+                  </p>
+                  <p className="mb-2">
+                    <span className="text-yellow-400">●</span> 
+                    Deviation ≤25%: Good configuration
+                  </p>
+                  <p>
+                    <span className="text-red-400">●</span> 
+                    Deviation {'>'}25%: Needs adjustment
+                  </p>
                 </div>
               </div>
             </div>
           </div>
-        )}
+        </div>
+
+        {/* 资产诊断需求 */}
+        <div className="bg-gradient-to-br from-amber-900/20 via-yellow-900/20 to-orange-900/20 border border-amber-600/30 rounded-2xl p-6 mb-8">
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="relative">
+              <AcademicCapIcon className="w-8 h-8 text-amber-400" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
+            </div>
+            <h3 className="text-xl font-bold text-amber-300">
+              {language === 'en' ? 'Asset Diagnosis Required' : '资产诊断需求'}
+            </h3>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* 基础诊断 */}
+            <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/50 rounded-xl p-4 border border-gray-600/30">
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="relative">
+                  <StarIcon className="w-6 h-6 text-blue-400" />
+                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                </div>
+                <h4 className="text-lg font-semibold text-blue-300">
+                  {language === 'en' ? 'Based on Deviation Analysis' : '基于偏差分析'}
+                </h4>
+              </div>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                {language === 'en' 
+                  ? 'Comprehensive portfolio health assessment using advanced deviation algorithms.'
+                  : '使用高级偏差算法进行全面的投资组合健康评估。'
+                }
+              </p>
+            </div>
+            
+            {/* 高级诊断 */}
+            <div className="bg-gradient-to-br from-purple-800/50 to-pink-800/50 rounded-xl p-4 border border-purple-600/30">
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="relative">
+                  <TrophyIcon className="w-6 h-6 text-purple-400" />
+                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                </div>
+                <h4 className="text-lg font-semibold text-purple-300">
+                  {language === 'en' ? 'Premium Asset Diagnosis' : '高级资产诊断'}
+                </h4>
+              </div>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                {language === 'en' 
+                  ? 'Exclusive AI-powered insights with personalized optimization strategies.'
+                  : '独家AI驱动的洞察，提供个性化优化策略。'
+                }
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* 资产总计和风险分析 */}
         {totalAssets > 0 && (
