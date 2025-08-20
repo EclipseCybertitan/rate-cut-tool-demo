@@ -172,17 +172,17 @@ export default function RateCutAnalysisPage({
 
   // PDF报告下载功能
   const downloadPDFReport = () => {
-    // 创建报告内容
-    const reportContent = generateReportContent()
+    // 创建PDF报告内容
+    const reportContent = generatePDFReportContent()
     
     // 创建Blob对象
-    const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' })
+    const blob = new Blob([reportContent], { type: 'text/html;charset=utf-8' })
     
     // 创建下载链接
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `rate-cut-analysis-report-${new Date().toISOString().split('T')[0]}.txt`
+    link.download = `rate-cut-analysis-report-${new Date().toISOString().split('T')[0]}.html`
     
     // 触发下载
     document.body.appendChild(link)
@@ -193,12 +193,294 @@ export default function RateCutAnalysisPage({
     window.URL.revokeObjectURL(url)
     
     // 显示成功消息
-    alert(language === 'en' ? 'Report downloaded successfully!' : '报告下载成功！')
+    alert(language === 'en' ? 'PDF Report downloaded successfully!' : 'PDF报告下载成功！')
+  }
+
+  // 生成PDF报告内容
+  const generatePDFReportContent = () => {
+    const timestamp = new Date().toLocaleString()
+    const reportDate = new Date().toLocaleDateString()
+    
+    return `
+<!DOCTYPE html>
+<html lang="${language === 'en' ? 'en' : 'zh-CN'}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Cut Asset Allocation Analysis Report</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1in;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1f2937;
+            border-left: 4px solid #2563eb;
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f9fafb;
+        }
+        
+        .card-title {
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 10px;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+        }
+        
+        .label {
+            color: #6b7280;
+        }
+        
+        .value {
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        .positive { color: #059669; }
+        .negative { color: #dc2626; }
+        .neutral { color: #2563eb; }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 12px;
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .winners, .losers {
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .winners {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+        
+        .losers {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+        }
+        
+        .winners .section-title {
+            color: #059669;
+            border-left-color: #059669;
+        }
+        
+        .losers .section-title {
+            color: #dc2626;
+            border-left-color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <!-- 报告头部 -->
+    <div class="header">
+        <div class="logo">🏦 Rate Cut Asset Allocation Analysis</div>
+        <div class="subtitle">降息资产配置分析报告</div>
+        <div style="margin-top: 10px; color: #6b7280;">
+            Generated: ${timestamp} | 生成时间: ${timestamp}
+        </div>
+    </div>
+
+    <!-- 分析参数 -->
+    <div class="section">
+        <div class="section-title">📊 Analysis Parameters | 分析参数</div>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Rate Cut Scenario | 降息情景</div>
+                <div class="metric">
+                    <span class="label">Annual Rate Cut:</span>
+                    <span class="value">${scenario.basisPoints} basis points</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Cycle Duration:</span>
+                    <span class="value">${scenario.cycleDuration} years</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Total Cut Degree:</span>
+                    <span class="value">${scenario.totalCutDegree} basis points</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Investment Profile | 投资配置</div>
+                <div class="metric">
+                    <span class="label">Risk Level:</span>
+                    <span class="value">${selectedRiskLevel}</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Investment Philosophy:</span>
+                    <span class="value">${selectedMethodology}</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Analysis Date:</span>
+                    <span class="value">${reportDate}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 投资组合影响分析 -->
+    <div class="section">
+        <div class="section-title">💼 Portfolio Impact Analysis | 投资组合影响分析</div>
+        <div class="grid">
+            ${analysisResults.map((result, index) => `
+                <div class="card">
+                    <div class="card-title">${getAssetDisplayName(result.asset)}</div>
+                    <div class="metric">
+                        <span class="label">Current Value:</span>
+                        <span class="value">$${result.currentValue.toLocaleString()}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="label">Projected Change:</span>
+                        <span class="value ${result.projectedChange > 0 ? 'positive' : result.projectedChange < 0 ? 'negative' : 'neutral'}">
+                            ${result.projectedChange > 0 ? '+' : ''}$${result.projectedChange.toLocaleString()}
+                        </span>
+                    </div>
+                    <div class="metric">
+                        <span class="label">New Value:</span>
+                        <span class="value">$${result.newValue.toLocaleString()}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="label">Confidence:</span>
+                        <span class="value">${result.confidence}%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="label">Reasoning:</span>
+                        <span class="value" style="font-size: 12px;">${result.reasoning}</span>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    </div>
+
+    <!-- 策略建议 -->
+    <div class="section page-break">
+        <div class="section-title">🎯 Strategic Recommendations | 策略建议</div>
+        <div class="summary-grid">
+            <div class="winners">
+                <div class="section-title">Rate Cut Winners | 降息受益资产</div>
+                ${analysisResults
+                    .filter(result => result.projectedChange > 0)
+                    .sort((a, b) => b.projectedChange - a.projectedChange)
+                    .map((result, index) => `
+                        <div class="metric">
+                            <span class="label">${getAssetDisplayName(result.asset)}</span>
+                            <span class="value positive">
+                                +${((result.projectedChange / result.currentValue) * 100).toFixed(1)}%
+                            </span>
+                        </div>
+                    `).join('')}
+            </div>
+            <div class="losers">
+                <div class="section-title">Rate Cut Losers | 降息受损资产</div>
+                ${analysisResults
+                    .filter(result => result.projectedChange < 0)
+                    .sort((a, b) => a.projectedChange - b.projectedChange)
+                    .map((result, index) => `
+                        <div class="metric">
+                            <span class="label">${getAssetDisplayName(result.asset)}</span>
+                            <span class="value negative">
+                                ${((result.projectedChange / result.currentValue) * 100).toFixed(1)}%
+                            </span>
+                        </div>
+                    `).join('')}
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="footer">
+        <div style="margin-bottom: 10px;">
+            <strong>Powered by eclipsever</strong>
+        </div>
+        <div>https://eclipsever.online</div>
+        <div style="margin-top: 10px; font-size: 10px;">
+            This report was generated by the Rate Cut Asset Allocation Tool.
+            <br>本报告由降息资产配置工具生成。
+        </div>
+    </div>
+</body>
+</html>
+    `
   }
 
   // Email报告功能
   const emailReport = () => {
-    const reportContent = generateReportContent()
+    const reportContent = generatePDFReportContent()
     const subject = language === 'en' ? 'Rate Cut Analysis Report' : '降息分析报告'
     const body = encodeURIComponent(reportContent)
     
