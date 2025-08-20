@@ -1,6 +1,6 @@
 {
   "name": "rate-cut-tool-demo",
-  "version": "1.3.0",
+  "version": "1.3.2",
   "description": "专业的降息情景资产配置分析工具，为投资者提供数据驱动的决策支持",
   "type": "module",
   "scripts": {
@@ -34,11 +34,14 @@
   "license": "MIT",
   "dependencies": {
     "@heroicons/react": "^2.0.18",
+    "@supabase/supabase-js": "^2.38.0",
     "clsx": "^2.0.0",
+    "dotenv": "^17.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.1",
     "recharts": "^3.1.2",
+    "swr": "^2.2.4",
     "tailwind-merge": "^2.0.0",
     "zod": "^3.22.4",
     "zustand": "^4.4.1"

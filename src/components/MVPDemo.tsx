@@ -14,7 +14,7 @@ import PDFExporter from './PDFExporter'
 import MediaRegistry from './MediaRegistry'
 import PaymentSimulator from './PaymentSimulator'
 
-export default function MVPDemo() {
+export default function MVPDemo({ onNavigateToSupabaseTest }: { onNavigateToSupabaseTest?: () => void }) {
   const [currentUserType, setCurrentUserType] = useState<UserType>(UserType.FREE)
   const [usageCount, setUsageCount] = useState(0)
   const [showSubscriptionPlans, setShowSubscriptionPlans] = useState(false)
@@ -177,6 +177,24 @@ export default function MVPDemo() {
             reportType="simulation"
           />
         </div>
+
+        {/* Supabase测试按钮 */}
+        {onNavigateToSupabaseTest && (
+          <div className="mb-8">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-blue-900 mb-4">🔧 数据库集成测试</h3>
+              <p className="text-blue-700 mb-4">
+                测试Supabase数据库连接和基本功能，验证数据持久化是否正常工作。
+              </p>
+              <button
+                onClick={onNavigateToSupabaseTest}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              >
+                🚀 开始数据库测试
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* 媒体资源管理 */}
         <div className="mb-8">

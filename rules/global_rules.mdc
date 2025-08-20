@@ -1,4 +1,17 @@
-# 🚀 版本1.3.0 新里程碑3 - 全局开发规范
+# 全局开发规则 v1.3.0
+
+## 🌐 项目部署信息
+
+### 在线访问
+- **生产环境**: https://eclipsever.online
+- **Vercel部署**: https://rate-cut-tool-demo.vercel.app
+- **GitHub仓库**: https://github.com/EclipseCybertitan/rate-cut-tool-demo
+
+### 域名配置
+- **主域名**: eclipsever.online
+- **WWW子域名**: www.eclipsever.online
+- **DNS提供商**: Namecheap
+- **部署平台**: Vercel
 
 ## 🎭 角色分工系统
 

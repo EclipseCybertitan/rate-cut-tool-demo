@@ -7,6 +7,8 @@ import {
   // CurrencyDollarIcon,
   // ChartBarIcon as FinanceIcon
 } from '@heroicons/react/24/outline'
+// import { useLanguage } from '../contexts/LanguageContext'
+import LanguageSwitcher from './LanguageSwitcher'
 
 interface IntroductionPageProps {
   onNext: () => void
@@ -36,8 +38,14 @@ export default function IntroductionPage({ onNext }: IntroductionPageProps) {
     return () => clearInterval(interval)
   }, [dynamicTexts.length])
 
+  // const { t, language } = useLanguage()
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
+      {/* 语言切换器 */}
+      <div className="absolute top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
       {/* 动态粒子效果 */}
       <div className="absolute inset-0">
         {/* 流光点效果 */}

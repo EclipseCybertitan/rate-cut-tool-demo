@@ -9,6 +9,8 @@ import {
   MusicalNoteIcon,
   PlayIcon
 } from '@heroicons/react/24/outline'
+import { useLanguage } from '../contexts/LanguageContext'
+import LanguageSwitcher from './LanguageSwitcher'
 
 interface MethodologyPageProps {
   onBack: () => void
@@ -20,6 +22,7 @@ interface InvestmentBelief {
   id: string
   name: string
   description: string
+  longDescription: string
   icon: any
   color: string
   imageUrl: string
@@ -56,19 +59,23 @@ interface InvestmentBelief {
 }
 
 export default function MethodologyPage({ onBack, onNext, onAssetChange }: MethodologyPageProps) {
+  const { t, language } = useLanguage()
   const [selectedBelief, setSelectedBelief] = useState<string>('')
   const [selectedRiskLevel, setSelectedRiskLevel] = useState<'low' | 'medium' | 'high'>('medium')
   const [showRecommendations, setShowRecommendations] = useState(false)
+  const [hoveredBelief, setHoveredBelief] = useState<string>('')
+  const [selectedMusic, setSelectedMusic] = useState<string>('')
 
   const investmentBeliefs: InvestmentBelief[] = [
     {
-      id: 'textbook',
-      name: '教科书理念',
-      description: '基于现代投资组合理论和有效市场假说的传统投资方法',
+      id: 'academic',
+      name: t('methodology.academic.name'),
+      description: t('methodology.academic.description'),
+      longDescription: t('methodology.academic.longDescription'),
       icon: AcademicCapIcon,
-      color: 'from-blue-500 to-cyan-500',
+      color: 'from-yellow-400 to-amber-600',
       imageUrl: '/images/methodology/textbook.png',
-      musicUrl: 'https://music.youtube.com/watch?v=6_eKJysJk1Y&si=o4swT9HcCxQlO5OV',
+      musicUrl: 'https://open.spotify.com/embed/track/4uLU6hMCjMI75M1A2tKUQC?utm_source=generator',
       riskLevels: {
         low: {
           realEstate: 40,
@@ -95,18 +102,21 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
           insurance: 0
         }
       },
-      reasoning: '教科书理念严格遵循现代投资组合理论，强调资产配置的多样化和风险分散。在降息环境下，建议增加股票配置以捕捉降息带来的估值扩张机会，保持房产配置作为通胀对冲，现金配置提供流动性缓冲。',
-      riskProfile: '基于学术理论，追求长期稳定回报',
-      specialFeatures: ['严格遵循CAPM模型', '马科维茨投资组合理论', '有效市场假说应用']
+      reasoning: t('methodology.academic.reasoning'),
+      riskProfile: t('methodology.academic.riskProfile'),
+      specialFeatures: language === 'en' ? 
+        ['Strict CAPM model application', 'Markowitz portfolio theory', 'Efficient market hypothesis application'] :
+        ['严格遵循CAPM模型', '马科维茨投资组合理论', '有效市场假说应用']
     },
     {
-      id: 'wallstreet',
-      name: '华尔街标准战术',
-      description: '基于机构投资者经验和市场微观结构的实战策略',
+      id: 'business',
+      name: t('methodology.business.name'),
+      description: t('methodology.business.description'),
+      longDescription: t('methodology.business.longDescription'),
       icon: BuildingLibraryIcon,
-      color: 'from-purple-500 to-pink-500',
+      color: 'from-gray-900 to-red-800',
       imageUrl: '/images/methodology/wallstreet.png',
-      musicUrl: 'https://music.youtube.com/watch?v=xA7D0X92WPI&si=9WnK06mYDDha88JB',
+      musicUrl: 'https://open.spotify.com/embed/track/6rqhFgbbKwnb9MLmUQDhG6?utm_source=generator',
       riskLevels: {
         low: {
           realEstate: 35,
@@ -133,18 +143,21 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
           insurance: 0
         }
       },
-      reasoning: '华尔街战术在降息周期中更加激进，大幅增加股票配置以最大化降息红利，适度配置基金产品获取专业管理收益，减少现金配置以降低机会成本。注重工具应用和风险管理。',
-      riskProfile: '基于实战经验，追求超额收益',
-      specialFeatures: ['量化交易策略', '风险管理工具', '机构级投资组合']
+      reasoning: t('methodology.business.reasoning'),
+      riskProfile: t('methodology.business.riskProfile'),
+      specialFeatures: language === 'en' ? 
+        ['Quantitative trading strategies', 'Risk management tools', 'Institutional-level portfolios'] :
+        ['量化交易策略', '风险管理工具', '机构级投资组合']
     },
     {
-      id: 'psychohistory',
-      name: '心理史学派',
-      description: '基于群体心理和宏观趋势的逆向投资哲学',
+      id: 'psychologic',
+      name: t('methodology.psychologic.name'),
+      description: t('methodology.psychologic.description'),
+      longDescription: t('methodology.psychologic.longDescription'),
       icon: SparklesIcon,
-      color: 'from-orange-500 to-red-500',
+      color: 'from-cyan-400 via-blue-500 to-purple-600',
       imageUrl: '/images/methodology/psychohistory.png',
-      musicUrl: 'https://www.youtube.com/watch?v=ZE5zXLOyEOQ&list=RDKs61Ay4dJ_s&index=11&pp=8AUBoAcB',
+      musicUrl: 'https://open.spotify.com/embed/track/3HfB5hBU0dmBt8rDxw0ZJc?utm_source=generator',
       riskLevels: {
         low: {
           realEstate: 25,
@@ -171,9 +184,11 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
           insurance: 0
         }
       },
-      reasoning: '心理史学派认为降息周期中市场情绪过度乐观，建议适度配置股票，增加另类资产如基金和虚拟货币，保持房产配置作为价值锚定。未来将支持加密货币对赌功能。',
-      riskProfile: '基于心理学模型，追求非对称收益',
-      specialFeatures: ['群体心理学分析', '加密货币对赌', '未来趋势预测', 'OKX/Binance推广']
+      reasoning: t('methodology.psychologic.reasoning'),
+      riskProfile: t('methodology.psychologic.riskProfile'),
+      specialFeatures: language === 'en' ? 
+        ['Market sentiment analysis', 'Behavioral bias identification', 'Contrarian investment timing'] :
+        ['市场情绪分析', '行为偏差识别', '逆向投资时机']
     }
   ]
 
@@ -208,12 +223,13 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
             className="flex items-center text-gray-300 hover:text-white transition-colors"
           >
             <ArrowLeftIcon className="w-6 h-6 mr-2" />
-            返回介绍
+            {t('methodology.back')}
           </button>
           <h1 className="text-4xl font-bold text-white text-center flex-1">
-            选择您的投资哲学
+            {t('methodology.title')}
           </h1>
-          <div className="w-24"></div>
+          {/* 语言切换器 */}
+          <LanguageSwitcher />
         </div>
 
         {/* 趣味选择提示 */}
@@ -221,13 +237,15 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
           <div className="bg-gradient-to-r from-yellow-900/20 to-orange-900/20 p-6 rounded-2xl border border-yellow-600/30 text-center">
             <div className="flex items-center justify-center mb-3">
               <MusicalNoteIcon className="w-8 h-8 text-yellow-400 mr-3" />
-              <h3 className="text-xl font-bold text-yellow-300">不知道怎么选择流派？</h3>
+              <h3 className="text-xl font-bold text-yellow-300">
+                {language === 'en' ? 'Not sure which school to choose?' : '不知道怎么选择流派？'}
+              </h3>
             </div>
             <p className="text-yellow-200 text-lg">
-              试着听听下面的音乐，喜欢哪个就选哪个吧。
+              {language === 'en' ? 'Try listening to the music below, choose whichever one you like.' : '试着听听下面的音乐，喜欢哪个就选哪个吧。'}
             </p>
             <p className="text-yellow-300 text-sm mt-2">
-              每个投资哲学都有对应的音乐风格，让音乐指引您的选择
+              {language === 'en' ? 'Each investment philosophy has its corresponding music style, let music guide your choice' : '每个投资哲学都有对应的音乐风格，让音乐指引您的选择'}
             </p>
           </div>
         </div>
@@ -239,14 +257,19 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
               <button
                 key={belief.id}
                 onClick={() => handleBeliefSelection(belief.id)}
-                className={`group p-8 rounded-3xl border-2 transition-all duration-500 text-left h-96 flex flex-col ${
+                onMouseEnter={() => setHoveredBelief(belief.id)}
+                onMouseLeave={() => setHoveredBelief('')}
+                className={`group relative p-8 rounded-3xl border-2 transition-all duration-500 text-left flex flex-col cursor-pointer ${
                   selectedBelief === belief.id
                     ? `border-purple-500 bg-gradient-to-br ${belief.color} shadow-2xl transform scale-105 ring-4 ring-purple-500/30`
                     : 'border-gray-600 bg-gray-800 hover:border-gray-500 hover:bg-gray-700 hover:scale-105'
                 }`}
               >
-                {/* 图片区域 - 左侧放置插画/图像 */}
-                <div className={`w-full h-48 rounded-2xl mb-6 flex items-center justify-center relative overflow-hidden ${
+                {/* 闪光边框效果 */}
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm -z-10"></div>
+                
+                {/* 图片区域 - 扑克牌比例 (3:4) */}
+                <div className={`w-full aspect-[3/4] rounded-2xl mb-6 flex items-center justify-center relative overflow-hidden ${
                   selectedBelief === belief.id ? 'bg-white/20' : 'bg-gray-700'
                 }`}>
                   {/* 真实图片 */}
@@ -258,23 +281,18 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
                   
                   {/* 音乐试听按钮 */}
                   <div className="absolute top-3 right-3">
-                    <a
-                      href={belief.musicUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedMusic(selectedMusic === belief.id ? '' : belief.id)
+                      }}
                       className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-lg"
-                      onClick={(e) => e.stopPropagation()}
                     >
                       <PlayIcon className="w-5 h-5 text-white" />
-                    </a>
+                    </button>
                   </div>
                   
-                  {/* 图片说明 */}
-                  <div className="absolute bottom-2 right-2 text-xs text-gray-400">
-                    {belief.id === 'textbook' && 'professor.png'}
-                    {belief.id === 'wallstreet' && 'wallstreet.png'}
-                    {belief.id === 'psychohistory' && 'cyberbot.png'}
-                  </div>
+
                 </div>
                 
                 {/* 文字说明区域 - 右侧文字说明 */}
@@ -284,19 +302,28 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
                   }`}>
                     {belief.name}
                   </h3>
-                  <p className={`text-sm ${
-                    selectedBelief === belief.id ? 'text-white/90' : 'text-gray-300'
+                  <p className={`text-sm font-medium ${
+                    selectedBelief === belief.id ? 'text-white' : 'text-gray-100'
                   }`}>
                     {belief.description}
                   </p>
+                  
+                  {/* 动态浮现的详细描述 */}
+                  <div className={`transition-all duration-500 overflow-hidden ${
+                    hoveredBelief === belief.id ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'
+                  }`}>
+                                      <p className="text-xs text-white leading-relaxed border-l-2 border-cyan-400 pl-3 bg-black/20 p-2 rounded-r">
+                    {belief.longDescription}
+                  </p>
+                  </div>
                   
                   {/* 音乐风格提示 */}
                   <div className="mt-3 flex items-center text-xs text-gray-400">
                     <MusicalNoteIcon className="w-4 h-4 mr-1" />
                     <span>
-                      {belief.id === 'textbook' && '古典学术风格'}
-                      {belief.id === 'wallstreet' && '现代商业风格'}
-                      {belief.id === 'psychohistory' && '未来科技风格'}
+                      {belief.id === 'academic' && (language === 'en' ? 'Classical Academic Style' : '古典学术风格')}
+                      {belief.id === 'business' && (language === 'en' ? 'Modern Business Style' : '现代商业风格')}
+                      {belief.id === 'psychologic' && (language === 'en' ? 'Future Tech Style' : '未来科技风格')}
                     </span>
                   </div>
                 </div>
@@ -311,12 +338,12 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
             <div className="flex items-center justify-between mb-8">
               <h3 className="text-xl font-bold text-white flex items-center">
                 <LightBulbIcon className="w-8 h-8 mr-2 text-yellow-400" />
-                {selectedBeliefData.name} - 投资配置建议
+{selectedBeliefData.name} - {language === 'en' ? 'Investment Configuration Advice' : '投资配置建议'}
               </h3>
               <div className="flex items-center space-x-4">
                 {/* 风险等级选择 */}
                 <div className="flex items-center space-x-2">
-                  <span className="text-gray-300 text-sm">风险等级:</span>
+                  <span className="text-gray-300 text-sm">{language === 'en' ? 'Risk Level:' : '风险等级:'}</span>
                   <div className="flex bg-gray-800 rounded-lg p-1">
                     {(['low', 'medium', 'high'] as const).map((level) => (
                       <button
@@ -328,7 +355,7 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
                             : 'text-gray-300 hover:text-white'
                         }`}
                       >
-                        {level === 'low' ? '低风险' : level === 'medium' ? '中风险' : '高风险'}
+                        {level === 'low' ? t('methodology.riskLevels.low') : level === 'medium' ? t('methodology.riskLevels.medium') : t('methodology.riskLevels.high')}
                       </button>
                     ))}
                   </div>
@@ -338,24 +365,40 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
                   onClick={applyRecommendations}
                   className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-2 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 font-semibold"
                 >
-                  应用建议
+                  {t('methodology.applyRecommendations')}
                 </button>
               </div>
+            </div>
+            
+            {/* 风险等级投资逻辑描述 */}
+            <div className="mb-8 p-6 bg-gradient-to-r from-gray-900/50 to-gray-800/50 rounded-xl border border-gray-600">
+              <h4 className="text-lg font-semibold text-white mb-3">💡 {selectedRiskLevel === 'low' ? t('methodology.riskLevels.low') : selectedRiskLevel === 'medium' ? t('methodology.riskLevels.medium') : t('methodology.riskLevels.high')}{t('methodology.investmentLogic')}</h4>
+              <p className="text-gray-300 leading-relaxed">
+                {selectedRiskLevel === 'low' && t('methodology.riskLevels.lowLogic')}
+                {selectedRiskLevel === 'medium' && t('methodology.riskLevels.mediumLogic')}
+                {selectedRiskLevel === 'high' && t('methodology.riskLevels.highLogic')}
+              </p>
             </div>
 
             {/* 配置建议 */}
             <div className="grid md:grid-cols-2 gap-8 mb-8">
               <div>
-                <h4 className="text-lg font-semibold text-white mb-4">📊 建议配置比例</h4>
+                <h4 className="text-lg font-semibold text-white mb-4">📊 {t('methodology.suggestedAllocation')}</h4>
                 <div className="space-y-3">
                   {Object.entries(selectedBeliefData.riskLevels[selectedRiskLevel]).map(([asset, percentage]) => (
                     <div key={asset} className="flex justify-between items-center p-3 bg-gray-800 rounded-lg">
                       <span className="text-gray-300">
-                        {asset === 'realEstate' ? '房产' : 
-                         asset === 'equity' ? '股票' : 
-                         asset === 'cash' ? '现金' : 
-                         asset === 'fund' ? '基金' : 
-                         asset === 'crypto' ? '虚拟货币' : '保险'}
+{language === 'en' ? 
+                          (asset === 'realEstate' ? 'Real Estate' : 
+                           asset === 'equity' ? 'Equity' : 
+                           asset === 'cash' ? 'Cash' : 
+                           asset === 'fund' ? 'Fund' : 
+                           asset === 'crypto' ? 'Cryptocurrency' : 'Insurance') :
+                          (asset === 'realEstate' ? '房产' : 
+                           asset === 'equity' ? '股票' : 
+                           asset === 'cash' ? '现金' : 
+                           asset === 'fund' ? '基金' : 
+                           asset === 'crypto' ? '虚拟货币' : '保险')}
                       </span>
                       <span className="font-semibold text-lg text-green-400">
                         {percentage}%
@@ -366,18 +409,18 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
               </div>
 
               <div>
-                <h4 className="text-lg font-semibold text-white mb-4">💡 投资逻辑</h4>
+                <h4 className="text-lg font-semibold text-white mb-4">💡 {t('methodology.investmentLogic')}</h4>
                 <div className="space-y-4">
                   <div className="bg-gray-800 p-4 rounded-lg">
-                    <h5 className="font-semibold text-blue-400 mb-2">核心理念</h5>
+                    <h5 className="font-semibold text-blue-400 mb-2">{t('methodology.reasoning')}</h5>
                     <p className="text-sm text-gray-300">{selectedBeliefData.reasoning}</p>
                   </div>
                   <div className="bg-gray-800 p-4 rounded-lg">
-                    <h5 className="font-semibold text-yellow-400 mb-2">风险特征</h5>
+                    <h5 className="font-semibold text-yellow-400 mb-2">{t('methodology.riskProfile')}</h5>
                     <p className="text-sm text-gray-300">{selectedBeliefData.riskProfile}</p>
                   </div>
                   <div className="bg-gray-800 p-4 rounded-lg">
-                    <h5 className="font-semibold text-purple-400 mb-2">特色功能</h5>
+                    <h5 className="font-semibold text-purple-400 mb-2">{t('methodology.specialFeatures')}</h5>
                     <ul className="text-sm text-gray-300 space-y-1">
                       {selectedBeliefData.specialFeatures.map((feature, index) => (
                         <li key={index} className="flex items-center">
@@ -426,14 +469,43 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
             }`}
           >
             <span className="relative z-10 flex items-center">
-              继续配置资产
+{language === 'en' ? 'Continue Asset Configuration' : '继续配置资产'}
               <ArrowRightIcon className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform duration-300" />
             </span>
           </button>
           <p className="text-gray-400 mt-4 text-lg">
-            {selectedBelief ? '选择完成，继续下一步' : '请先选择投资哲学'}
+{selectedBelief ? 
+              (language === 'en' ? 'Selection completed, continue to next step' : '选择完成，继续下一步') : 
+              (language === 'en' ? 'Please select an investment philosophy first' : '请先选择投资哲学')}
           </p>
         </div>
+
+        {/* 音乐播放器 */}
+        {selectedMusic && (
+          <div className="fixed bottom-4 right-4 w-80 h-20 bg-gray-900/95 border border-gray-600 rounded-xl shadow-2xl backdrop-blur-sm z-50">
+            <div className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-white text-sm font-medium">
+                  {language === 'en' ? 'Now Playing' : '正在播放'}
+                </span>
+                <button
+                  onClick={() => setSelectedMusic('')}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  ×
+                </button>
+              </div>
+              <iframe
+                src={investmentBeliefs.find(b => b.id === selectedMusic)?.musicUrl}
+                width="100%"
+                height="80"
+                frameBorder="0"
+                allow="encrypted-media"
+                className="rounded"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -1,0 +1,40 @@
+{
+  "version": "1.3.2",
+  "lastUpdated": "2025-08-20T06:04:37Z",
+  "images": {
+    "methodology": {
+      "academic": {
+        "file": "textbook.png",
+        "path": "/images/methodology/textbook.png",
+        "size": "unknown",
+        "type": "image/png"
+      },
+      "business": {
+        "file": "wallstreet.png",
+        "path": "/images/methodology/wallstreet.png",
+        "size": "unknown",
+        "type": "image/png"
+      },
+      "psychologic": {
+        "file": "psychohistory.png",
+        "path": "/images/methodology/psychohistory.png",
+        "size": "unknown",
+        "type": "image/png"
+      }
+    }
+  },
+  "audio": {
+    "dusk": {
+      "count": 1
+    },
+    "day": {
+      "count": 1
+    },
+    "dawn": {
+      "count": 1
+    }
+  },
+  "video": {
+    "count": 0
+  }
+}

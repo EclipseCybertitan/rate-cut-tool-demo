@@ -8,12 +8,14 @@ import AIAdvice from './components/AIAdvice'
 import CheckoutPage from './components/CheckoutPage'
 import BacktestDisplay from './components/BacktestDisplay'
 import MVPDemo from './components/MVPDemo'
+import SupabaseTest from './components/SupabaseTest'
 // import InvestmentMethodology from './components/InvestmentMethodology'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
+import { LanguageProvider } from './contexts/LanguageContext'
 
-type PageStep = 'introduction' | 'methodology' | 'configuration' | 'analysis' | 'checkout' | 'complete' | 'mvp'
+type PageStep = 'introduction' | 'methodology' | 'configuration' | 'analysis' | 'checkout' | 'complete' | 'mvp' | 'supabase-test'
 
-function App() {
+function AppContent() {
   const [currentPage, setCurrentPage] = useState<PageStep>('introduction')
   const [assetInput, setAssetInput] = useState({
     realEstate: 0,
@@ -101,7 +103,10 @@ function App() {
       )
     
     case 'mvp':
-      return <MVPDemo />
+      return <MVPDemo onNavigateToSupabaseTest={() => setCurrentPage('supabase-test')} />
+    
+    case 'supabase-test':
+      return <SupabaseTest />
     
     case 'complete':
       return (
@@ -330,6 +335,14 @@ function App() {
         </div>
       )
   }
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
+  )
 }
 
 export default App
