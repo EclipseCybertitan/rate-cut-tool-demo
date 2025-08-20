@@ -29,7 +29,7 @@ const LanguageSwitcher: React.FC = () => {
               language === 'zh' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
             }`}
           >
-            🇨🇳 {t('common.chinese')}
+            🇸🇬 简体中文
           </button>
         </div>
       </div>

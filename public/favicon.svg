@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- 背景圆形 -->
+  <circle cx="16" cy="16" r="15" fill="url(#gradient)" stroke="url(#strokeGradient)" stroke-width="2"/>
+  
+  <!-- 中心六边形（代表投资组合） -->
+  <polygon points="16,8 20,12 20,20 16,24 12,20 12,12" fill="url(#hexGradient)" stroke="white" stroke-width="1"/>
+  
+  <!-- 中心点（代表核心资产） -->
+  <circle cx="16" cy="16" r="2" fill="white"/>
+  
+  <!-- 外围小圆点（代表多样化资产） -->
+  <circle cx="8" cy="16" r="1.5" fill="url(#dotGradient1)"/>
+  <circle cx="24" cy="16" r="1.5" fill="url(#dotGradient2)"/>
+  <circle cx="16" cy="8" r="1.5" fill="url(#dotGradient3)"/>
+  <circle cx="16" cy="24" r="1.5" fill="url(#dotGradient4)"/>
+  
+  <!-- 连接线（代表资产关联） -->
+  <line x1="16" y1="16" x2="8" y2="16" stroke="url(#lineGradient)" stroke-width="1" opacity="0.6"/>
+  <line x1="16" y1="16" x2="24" y2="16" stroke="url(#lineGradient)" stroke-width="1" opacity="0.6"/>
+  <line x1="16" y1="16" x2="16" y2="8" stroke="url(#lineGradient)" stroke-width="1" opacity="0.6"/>
+  <line x1="16" y1="16" x2="16" y2="24" stroke="url(#lineGradient)" stroke-width="1" opacity="0.6"/>
+  
+  <!-- 渐变定义 -->
+  <defs>
+    <!-- 主背景渐变 -->
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="50%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#1e40af"/>
+    </linearGradient>
+    
+    <!-- 边框渐变 -->
+    <linearGradient id="strokeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    
+    <!-- 六边形渐变 -->
+    <linearGradient id="hexGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    
+    <!-- 点渐变 -->
+    <linearGradient id="dotGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    
+    <linearGradient id="dotGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    
+    <linearGradient id="dotGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    
+    <linearGradient id="dotGradient4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+    
+    <!-- 连接线渐变 -->
+    <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+  </defs>
+</svg>

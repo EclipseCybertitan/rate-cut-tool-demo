@@ -3,6 +3,7 @@ import './App.css'
 import IntroductionPage from './components/IntroductionPage'
 import MethodologyPage from './components/MethodologyPage'
 import AssetConfigurationPage from './components/AssetConfigurationPage'
+import RateCutAnalysisPage from './components/RateCutAnalysisPage'
 import RateCalculator from './components/RateCalculator'
 import AIAdvice from './components/AIAdvice'
 import CheckoutPage from './components/CheckoutPage'
@@ -108,6 +109,16 @@ function AppContent() {
         />
       )
     
+    case 'analysis':
+      return (
+        <RateCutAnalysisPage
+          assetInput={assetInput}
+          selectedMethodology={selectedMethodology}
+          selectedRiskLevel={selectedRiskLevel}
+          onBack={handleBackPage}
+        />
+      )
+    
     case 'checkout':
       return (
         <CheckoutPage 
@@ -177,7 +188,7 @@ function AppContent() {
           <div className="container mx-auto px-4 py-8">
             <header className="text-center mb-12">
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                降息资产配置博弈工具
+                World of InvestCraft
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-8">
                 专业的降息情景资产配置分析工具，为投资者提供数据驱动的决策支持

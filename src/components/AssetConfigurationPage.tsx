@@ -14,6 +14,7 @@ import {
 } from '@heroicons/react/24/outline'
 import LanguageSwitcher from './LanguageSwitcher'
 import { useLanguage } from '../contexts/LanguageContext'
+import AssetDiagnosisReport from './AssetDiagnosisReport'
 
 interface AssetConfigurationPageProps {
   onBack: () => void
@@ -63,6 +64,7 @@ export default function AssetConfigurationPage({
   const [showTooltip, setShowTooltip] = useState<string | null>(null)
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>('')
   const [ignoreAgeRecommendation, setIgnoreAgeRecommendation] = useState(false)
+  const [showAssetDiagnosis, setShowAssetDiagnosis] = useState(false)
 
 
   // 计算推荐配置数据
@@ -156,6 +158,37 @@ export default function AssetConfigurationPage({
     { value: 'senior', label: { en: '51-65 years', zh: '51-65岁' }, description: { en: 'Pre-retirement, moderate risk', zh: '退休前，适度风险' } },
     { value: 'elderly', label: { en: '65+ years', zh: '65岁以上' }, description: { en: 'Retirement age, conservative approach', zh: '退休年龄，保守策略' } }
   ]
+
+  // 综合评价函数
+  const getAssessmentLevel = () => {
+    if (!deviations) return 'Analyzing...'
+    
+    const maxDeviation = Math.max(...Object.values(deviations).map(d => Math.abs(d)))
+    
+    if (maxDeviation <= 10) return 'Strong Recommendation'
+    if (maxDeviation <= 25) return 'Recommendation'
+    return 'Asset Diagnosis Required'
+  }
+
+  const getAssessmentColor = () => {
+    if (!deviations) return 'text-gray-400'
+    
+    const maxDeviation = Math.max(...Object.values(deviations).map(d => Math.abs(d)))
+    
+    if (maxDeviation <= 10) return 'text-green-400'
+    if (maxDeviation <= 25) return 'text-yellow-400'
+    return 'text-red-400'
+  }
+
+  const getAssessmentStyle = () => {
+    if (!deviations) return 'bg-gray-800'
+    
+    const maxDeviation = Math.max(...Object.values(deviations).map(d => Math.abs(d)))
+    
+    if (maxDeviation <= 10) return 'bg-green-900/30'
+    if (maxDeviation <= 25) return 'bg-yellow-900/30'
+    return 'bg-red-900/30'
+  }
 
   const assetCategories: AssetCategory[] = [
     {
@@ -340,20 +373,21 @@ export default function AssetConfigurationPage({
     return (value / totalAssets) * 100
   }
 
-  const getRiskLevel = () => {
-    const aggressiveAssets = localInput.equity + localInput.crypto
-    const conservativeAssets = localInput.cash + localInput.insurance
-    // const balancedAssets = localInput.realEstate + localInput.fund
-    
-    const aggressiveRatio = (aggressiveAssets / totalAssets) * 100
-    const conservativeRatio = (conservativeAssets / totalAssets) * 100
-    
-    if (aggressiveRatio > 60) return { level: '高风险', color: 'text-red-400', bg: 'bg-red-900/20' }
-    if (conservativeRatio > 60) return { level: '低风险', color: 'text-green-400', bg: 'bg-green-900/20' }
-    return { level: '中风险', color: 'text-yellow-400', bg: 'bg-yellow-900/20' }
-  }
+  // 计算风险等级（已移除，使用综合评价系统）
+  // const getRiskLevel = () => {
+  //   const aggressiveAssets = localInput.equity + localInput.crypto
+  //   const conservativeAssets = localInput.cash + localInput.insurance
+  //   // const balancedAssets = localInput.realEstate + localInput.fund
+  //   
+  //   const aggressiveRatio = (aggressiveAssets / totalAssets) * 100
+  //   const conservativeRatio = (conservativeAssets / totalAssets) * 100
+  //   
+  //   if (aggressiveRatio > 60) return { level: '高风险', color: 'text-red-400', bg: 'bg-red-900/20' }
+  //   if (conservativeRatio > 60) return { level: '低风险', color: 'text-green-400', bg: 'bg-green-900/20' }
+  //   return { level: '中风险', color: 'text-yellow-400', bg: 'bg-green-900/20' }
+  // }
 
-  const riskProfile = getRiskLevel()
+  // const riskProfile = getRiskLevel()
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
@@ -625,41 +659,88 @@ export default function AssetConfigurationPage({
           <div className="bg-gradient-to-r from-purple-900/20 to-pink-900/20 p-8 rounded-2xl border border-purple-600/30 mb-8">
             <h3 className="text-xl font-semibold text-white mb-6 flex items-center">
               <SparklesIcon className="w-6 h-6 mr-3 text-purple-400" />
-              策略匹配度分析
+              Strategy Match Analysis
             </h3>
             
             <div className="grid md:grid-cols-2 gap-8">
               {/* 推荐配置 */}
               <div className="space-y-4">
-                <h4 className="text-lg font-medium text-purple-300">🎯 推荐配置比例</h4>
-                <div className="space-y-3">
-                  {Object.entries(recommendedAllocation).map(([asset, percentage]) => (
-                    <div key={asset} className="flex items-center justify-between">
-                      <span className="text-gray-300 capitalize">
-                        {asset === 'realEstate' ? '房产' : 
-                         asset === 'equity' ? '股票' : 
-                         asset === 'cash' ? '现金' : 
-                         asset === 'fund' ? '基金' : 
-                         asset === 'crypto' ? '加密' : '保险'}
-                      </span>
-                      <div className="flex items-center space-x-3">
-                        <div className="w-24 bg-gray-700 rounded-full h-2">
-                          <div 
-                            className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
-                            style={{ width: `${percentage}%` }}
-                          ></div>
+                <h4 className="text-lg font-medium text-purple-300">🎯 Recommended Allocation</h4>
+                <div className="space-y-4">
+                  {Object.entries(recommendedAllocation).map(([asset, percentage]) => {
+                    const currentValue = localInput[asset as keyof typeof localInput] || 0
+                    const currentPercentage = totalAssets > 0 ? (currentValue / totalAssets) * 100 : 0
+                    const deviation = ((currentPercentage - percentage) / percentage) * 100
+                    
+                    return (
+                      <div key={asset} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-300 capitalize text-sm font-medium">
+                            {asset === 'realEstate' ? 'Real Estate' : 
+                             asset === 'equity' ? 'Equity' : 
+                             asset === 'cash' ? 'Cash' : 
+                             asset === 'fund' ? 'Funds' : 
+                             asset === 'crypto' ? 'Crypto' : 'Insurance'}
+                          </span>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-white font-medium text-sm">{percentage}%</span>
+                            <span className={`text-xs px-2 py-1 rounded-full ${
+                              Math.abs(deviation) <= 10 ? 'bg-green-500/20 text-green-400' :
+                              Math.abs(deviation) <= 25 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'
+                            }`}>
+                              {deviation > 0 ? '+' : ''}{deviation.toFixed(1)}%
+                            </span>
+                          </div>
                         </div>
-                        <span className="text-white font-medium w-12 text-right">{percentage}%</span>
+                        
+                        {/* 先进动态条形图 */}
+                        <div className="relative">
+                          {/* 推荐配置条形图 */}
+                          <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
+                            <div 
+                              className="bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 h-3 rounded-full transition-all duration-1000 ease-out relative"
+                              style={{ width: `${percentage}%` }}
+                            >
+                              {/* 动态光效 */}
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
+                              {/* 科技感装饰 */}
+                              <div className="absolute right-0 top-0 w-1 h-3 bg-white/30 rounded-full"></div>
+                            </div>
+                          </div>
+                          
+                          {/* 当前配置指示器 - 只在有值且不为0时显示 */}
+                          {currentPercentage > 0 && (
+                            <>
+                              <div 
+                                className="absolute top-0 w-1 h-3 bg-white border border-gray-300 rounded-full transform -translate-y-0.5 transition-all duration-500 ease-out"
+                                style={{ left: `${Math.min(currentPercentage, 100)}%` }}
+                              >
+                                <div className="absolute -top-1 -left-1 w-3 h-3 bg-white rounded-full border-2 border-blue-400 animate-ping"></div>
+                              </div>
+                              
+                              {/* 百分比标签 - 只在有值且不为0时显示 */}
+                              <div className="absolute -top-6 text-xs text-gray-400" style={{ left: `${Math.min(currentPercentage, 100)}%` }}>
+                                {currentPercentage.toFixed(1)}%
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        
+                        {/* 对比说明 */}
+                        <div className="text-xs text-gray-400 ml-2">
+                          {Math.abs(deviation) <= 10 ? '✅ Optimal' : 
+                           Math.abs(deviation) <= 25 ? '⚠️ Consider adjustment' : '🚨 Significant deviation'}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
               
               {/* 偏差分析 */}
               <div className="space-y-4">
                 <h4 className="text-lg font-medium text-purple-300">
-                  📊 {language === 'en' ? 'Configuration Deviation Analysis' : '配置偏差分析'}
+                  📊 Configuration Deviation Analysis
                 </h4>
                 <div className="space-y-3">
                   {deviations && Object.entries(deviations).map(([asset, deviation]) => {
@@ -671,17 +752,11 @@ export default function AssetConfigurationPage({
                       <div key={asset} className="space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="text-gray-300 capitalize">
-                            {language === 'en' ? 
-                              (asset === 'realEstate' ? 'Real Estate' : 
-                               asset === 'equity' ? 'Equity' : 
-                               asset === 'cash' ? 'Cash' : 
-                               asset === 'fund' ? 'Fund' : 
-                               asset === 'crypto' ? 'Crypto' : 'Insurance') :
-                              (asset === 'realEstate' ? '房产' : 
-                               asset === 'equity' ? '股票' : 
-                               asset === 'cash' ? '现金' : 
-                               asset === 'fund' ? '基金' : 
-                               asset === 'crypto' ? '加密' : '保险')}
+                            {asset === 'realEstate' ? 'Real Estate' : 
+                             asset === 'equity' ? 'Equity' : 
+                             asset === 'cash' ? 'Cash' : 
+                             asset === 'fund' ? 'Funds' : 
+                             asset === 'crypto' ? 'Crypto' : 'Insurance'}
                           </span>
                           <div className="flex items-center space-x-2">
                             <span className={`text-sm font-medium ${
@@ -701,19 +776,15 @@ export default function AssetConfigurationPage({
                         <div className="ml-4 text-sm">
                           {adjustmentAmount > 0 ? (
                             <div className="text-green-400">
-                              {language === 'en' 
-                                ? `Recommend increasing by $${adjustmentAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` 
-                                : `建议增持 $${adjustmentAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
+                              Recommend increasing by ${adjustmentAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                             </div>
                           ) : adjustmentAmount < 0 ? (
                             <div className="text-red-400">
-                              {language === 'en' 
-                                ? `Recommend reducing by $${Math.abs(adjustmentAmount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` 
-                                : `建议减持 $${Math.abs(adjustmentAmount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
+                              Recommend reducing by ${Math.abs(adjustmentAmount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                             </div>
                           ) : (
                             <div className="text-gray-400">
-                              {language === 'en' ? 'Configuration optimal' : '配置最优'}
+                              Configuration optimal
                             </div>
                           )}
                         </div>
@@ -726,16 +797,16 @@ export default function AssetConfigurationPage({
                   <div className="text-sm text-gray-300">
                     <p className="mb-2">
                       <span className="text-green-400">●</span> 
-                      {language === 'en' ? 'Deviation ≤10%: Excellent configuration' : '偏差≤10%: 配置优秀'}
+                      Deviation ≤10%: Excellent configuration
                     </p>
                     <p className="mb-2">
                       <span className="text-yellow-400">●</span> 
-                      {language === 'en' ? 'Deviation ≤25%: Good configuration' : '偏差≤25%: 配置良好'}
+                      Deviation ≤25%: Good configuration
                     </p>
-                    <p>
-                      <span className="text-red-400">●</span> 
-                      {language === 'en' ? 'Deviation >25%: Needs adjustment' : '偏差>25%: 需要调整'}
-                    </p>
+                                          <p>
+                        <span className="text-red-400">●</span> 
+                        Deviation {'>'}25%: Needs adjustment
+                      </p>
                   </div>
                 </div>
               </div>
@@ -747,7 +818,7 @@ export default function AssetConfigurationPage({
         {totalAssets > 0 && (
           <div className="bg-gradient-to-r from-gray-800 to-gray-700 p-8 rounded-2xl border border-gray-600 mb-8">
             <div className="flex justify-between items-center mb-6">
-              <span className="text-gray-300 font-semibold text-2xl">资产总计:</span>
+              <span className="text-gray-300 font-semibold text-2xl">Total Assets:</span>
               <span className="font-bold text-4xl text-white">
                 ${totalAssets.toLocaleString('en-US')}
               </span>
@@ -829,16 +900,26 @@ export default function AssetConfigurationPage({
                 </div>
               </div>
               
-              {/* 风险等级 */}
+              {/* 综合评价 */}
               <div className="space-y-3">
-                <h4 className="text-sm font-medium text-gray-400">Risk Level</h4>
-                <div className={`p-4 rounded-lg ${riskProfile.bg} border border-gray-600`}>
-                  <div className={`text-center text-2xl font-bold ${riskProfile.color}`}>
-                    {riskProfile.level}
+                <h4 className="text-sm font-medium text-gray-400">Comprehensive Assessment</h4>
+                <div className={`p-4 rounded-lg ${getAssessmentStyle()} border border-gray-600`}>
+                  <div className={`text-center text-2xl font-bold ${getAssessmentColor()}`}>
+                    {getAssessmentLevel()}
                   </div>
                   <div className="text-center text-sm text-gray-400 mt-1">
-                    Based on current configuration
+                    Based on deviation analysis
                   </div>
+                  <button
+                    onClick={() => setShowAssetDiagnosis(true)}
+                    className="mt-3 w-full px-4 py-2 bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 text-white text-sm font-medium rounded-lg hover:from-amber-700 hover:via-yellow-600 hover:to-amber-700 transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-xl border border-amber-400/30"
+                  >
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                      <span className="font-semibold">Premium Asset Diagnosis</span>
+                      <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    </div>
+                  </button>
                 </div>
               </div>
             </div>
@@ -879,6 +960,20 @@ export default function AssetConfigurationPage({
           )}
         </div>
       </div>
+
+      {/* 资产诊断报告 */}
+      <AssetDiagnosisReport
+        isOpen={showAssetDiagnosis}
+        onClose={() => setShowAssetDiagnosis(false)}
+        assetData={{
+          localInput,
+          totalAssets,
+          selectedMethodology,
+          selectedRiskLevel,
+          deviations,
+          recommendedAllocation
+        }}
+      />
     </div>
   )
 }
