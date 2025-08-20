@@ -12,6 +12,8 @@ import SupabaseTest from './components/SupabaseTest'
 // import InvestmentMethodology from './components/InvestmentMethodology'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 import { LanguageProvider } from './contexts/LanguageContext'
+import { MusicProvider } from './contexts/MusicContext'
+import GlobalMusicPlayer from './components/GlobalMusicPlayer'
 
 type PageStep = 'introduction' | 'methodology' | 'configuration' | 'analysis' | 'checkout' | 'complete' | 'mvp' | 'supabase-test'
 
@@ -352,7 +354,10 @@ function AppContent() {
 function App() {
   return (
     <LanguageProvider>
-      <AppContent />
+      <MusicProvider>
+        <AppContent />
+        <GlobalMusicPlayer />
+      </MusicProvider>
     </LanguageProvider>
   )
 }
