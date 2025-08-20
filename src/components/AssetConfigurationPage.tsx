@@ -680,7 +680,7 @@ export default function AssetConfigurationPage({
           </div>
           
           <div className="grid md:grid-cols-3 gap-4">
-            {Object.entries(recommendedAllocation).map(([asset, percentage]) => (
+            {recommendedAllocation && Object.entries(recommendedAllocation).map(([asset, percentage]) => (
               <div key={asset} className="bg-gradient-to-br from-gray-800/50 to-gray-700/50 rounded-xl p-4 border border-gray-600/30">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-300 font-medium text-sm">

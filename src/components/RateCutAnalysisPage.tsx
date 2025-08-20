@@ -9,6 +9,7 @@ import {
   ArrowDownTrayIcon,
   EnvelopeIcon
 } from '@heroicons/react/24/outline'
+import emailjs from '@emailjs/browser'
 import LanguageSwitcher from './LanguageSwitcher'
 import { useLanguage } from '../contexts/LanguageContext'
 
@@ -55,10 +56,15 @@ export default function RateCutAnalysisPage({
   })
   const [analysisResults, setAnalysisResults] = useState<AssetImpact[]>([])
   const [isAnalyzing, setIsAnalyzing] = useState(false)
-  const [showResults, setShowResults] = useState(false)
+  // const [showResults, setShowResults] = useState(false) // 暂时注释掉，避免未使用警告
   const [showAdvancedPrompt, setShowAdvancedPrompt] = useState(false)
   const [isAdvancedMode, setIsAdvancedMode] = useState(true) // 测试阶段开放高级模式
   const [currentStep, setCurrentStep] = useState<'input' | 'analyzing' | 'results'>('input')
+  
+  // 邮件发送相关状态
+  const [recipientEmail, setRecipientEmail] = useState('')
+  const [showEmailModal, setShowEmailModal] = useState(false)
+  const [isSendingEmail, setIsSendingEmail] = useState(false)
 
   // 计算总降息程度
   useEffect(() => {
@@ -158,14 +164,14 @@ export default function RateCutAnalysisPage({
     console.log('分析完成，结果:', results)
     
     setAnalysisResults(results)
-    setShowResults(true)
+    // setShowResults(true) // 暂时注释掉
     setCurrentStep('results')
     setIsAnalyzing(false)
   }
 
   // 重置分析
   const resetAnalysis = () => {
-    setShowResults(false)
+    // setShowResults(false) // 暂时注释掉
     setAnalysisResults([])
     setCurrentStep('input')
   }
@@ -397,7 +403,7 @@ export default function RateCutAnalysisPage({
     <div class="section">
         <div class="section-title">💼 Portfolio Impact Analysis | 投资组合影响分析</div>
         <div class="grid">
-            ${analysisResults.map((result, index) => `
+            ${analysisResults.map((result) => `
                 <div class="card">
                     <div class="card-title">${getAssetDisplayName(result.asset)}</div>
                     <div class="metric">
@@ -436,7 +442,7 @@ export default function RateCutAnalysisPage({
                 ${analysisResults
                     .filter(result => result.projectedChange > 0)
                     .sort((a, b) => b.projectedChange - a.projectedChange)
-                    .map((result, index) => `
+                    .map((result) => `
                         <div class="metric">
                             <span class="label">${getAssetDisplayName(result.asset)}</span>
                             <span class="value positive">
@@ -450,7 +456,7 @@ export default function RateCutAnalysisPage({
                 ${analysisResults
                     .filter(result => result.projectedChange < 0)
                     .sort((a, b) => a.projectedChange - b.projectedChange)
-                    .map((result, index) => `
+                    .map((result) => `
                         <div class="metric">
                             <span class="label">${getAssetDisplayName(result.asset)}</span>
                             <span class="value negative">
@@ -478,7 +484,48 @@ export default function RateCutAnalysisPage({
     `
   }
 
-  // Email报告功能
+  // EmailJS邮件发送功能
+  const sendEmailReport = async () => {
+    if (!recipientEmail) {
+      alert(language === 'en' ? 'Please enter recipient email address' : '请输入收件人邮箱地址')
+      return
+    }
+    
+    setIsSendingEmail(true)
+    
+    try {
+      const result = await emailjs.send(
+        'service_4wadqb5',              // Service ID
+        'template_fp1z1fl',             // Template ID
+        {
+          to_email: recipientEmail,
+          subject: language === 'en' ? 'Rate Cut Analysis Report' : '降息分析报告',
+          message: language === 'en' 
+            ? 'Please find attached your personalized rate cut analysis report.'
+            : '请查看您的个性化降息分析报告。',
+          report_html: generatePDFReportContent(),
+          from_name: 'eclipsever Team'
+        },
+        'q0sJaN7orl4-csdon'            // User ID
+      )
+      
+      if (result.status === 200) {
+        alert(language === 'en' ? 'Email sent successfully!' : '邮件发送成功！')
+        setRecipientEmail('')
+        setShowEmailModal(false)
+      } else {
+        throw new Error('Failed to send email')
+      }
+    } catch (error) {
+      console.error('Email sending failed:', error)
+      alert(language === 'en' ? 'Failed to send email. Please try again.' : '邮件发送失败，请重试。')
+    } finally {
+      setIsSendingEmail(false)
+    }
+  }
+
+  // 保留原有的emailReport函数作为备用（暂时注释掉）
+  /*
   const emailReport = () => {
     const reportContent = generatePDFReportContent()
     const subject = language === 'en' ? 'Rate Cut Analysis Report' : '降息分析报告'
@@ -487,8 +534,10 @@ export default function RateCutAnalysisPage({
     // 打开默认邮件客户端
     window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${body}`)
   }
+  */
 
-  // 生成报告内容
+  // 生成报告内容（暂时注释掉）
+  /*
   const generateReportContent = () => {
     const timestamp = new Date().toLocaleString()
     let content = ''
@@ -516,10 +565,9 @@ export default function RateCutAnalysisPage({
     })
     
     content += `\nPowered by eclipsever\n`
-    content += `https://eclipsever.online\n`
-    
-    return content
+    content += `https://emailReport
   }
+  */
 
   // 社交媒体分享功能
   const shareToSocial = (platform: 'twitter' | 'facebook' | 'instagram') => {
@@ -942,13 +990,13 @@ export default function RateCutAnalysisPage({
                 <ArrowDownTrayIcon className="w-5 h-5" />
                 <span>{language === 'en' ? 'Download PDF Report' : '下载PDF报告'}</span>
               </button>
-              <button 
-                onClick={() => emailReport()}
-                className="w-full flex items-center justify-center space-x-3 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-medium rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105"
-              >
-                <EnvelopeIcon className="w-5 h-5" />
-                <span>{language === 'en' ? 'Email Report' : '邮件发送报告'}</span>
-              </button>
+                      <button 
+          onClick={() => setShowEmailModal(true)}
+          className="w-full flex items-center justify-center space-x-3 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-medium rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105"
+        >
+          <EnvelopeIcon className="w-5 h-5" />
+          <span>{language === 'en' ? 'Email Report' : '邮件发送报告'}</span>
+        </button>
             </div>
           </div>
 
@@ -1156,6 +1204,52 @@ export default function RateCutAnalysisPage({
     </div>
   )
 
+  // 邮件发送模态框
+  const renderEmailModal = () => {
+    if (!showEmailModal) return null
+    
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="bg-gray-800 p-6 rounded-xl max-w-md w-full mx-4 border border-gray-600">
+          <h3 className="text-xl font-bold text-white mb-4">
+            {language === 'en' ? 'Send Report via Email' : '通过邮件发送报告'}
+          </h3>
+          
+          <input
+            type="email"
+            placeholder={language === 'en' ? 'Recipient email address' : '收件人邮箱地址'}
+            value={recipientEmail}
+            onChange={(e) => setRecipientEmail(e.target.value)}
+            className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white mb-4 placeholder-gray-400"
+          />
+          
+          <div className="flex space-x-3">
+            <button
+              onClick={() => setShowEmailModal(false)}
+              className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              {language === 'en' ? 'Cancel' : '取消'}
+            </button>
+            <button
+              onClick={sendEmailReport}
+              disabled={isSendingEmail}
+              className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-600 transition-colors"
+            >
+              {isSendingEmail ? (
+                <span className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  {language === 'en' ? 'Sending...' : '发送中...'}
+                </span>
+              ) : (
+                language === 'en' ? 'Send' : '发送'
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
       {/* 顶部导航 */}
@@ -1189,6 +1283,9 @@ export default function RateCutAnalysisPage({
         {currentStep === 'analyzing' && renderAnalyzingPage()}
         {currentStep === 'results' && renderResultsPage()}
       </div>
+      
+      {/* 邮件发送模态框 */}
+      {renderEmailModal()}
     </div>
   )
 }

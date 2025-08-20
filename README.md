@@ -97,6 +97,38 @@
 🌐 **生产环境**: https://eclipsever.online  
 🔗 **Vercel部署**: https://rate-cut-tool-demo.vercel.app
 
+### 📧 邮件服务配置
+
+#### EmailJS 配置信息
+- **Service ID**: `service_4wadqb5`
+- **Template ID**: `template_fp1z1fl`
+- **User ID**: `q0sJaN7orl4-csdon`
+
+#### Namecheap Private Email 配置
+- **SMTP Host**: `mail.privateemail.com`
+- **SMTP Port**: `587`
+- **SSL/TLS**: 使用 STARTTLS（不勾选"My SMTP server supports SSL"）
+- **邮箱地址**: `noreply@eclipsever.online`
+- **认证方式**: App Password
+
+#### 邮件模板配置
+- **模板类型**: Contact Us（已修改为报告发送模板）
+- **HTML内容**: 包含完整的降息分析报告HTML结构
+- **变量支持**: 
+  - `{{to_email}}`: 收件人邮箱
+  - `{{subject}}`: 邮件主题
+  - `{{message}}`: 邮件正文
+  - `{{report_html}}`: 报告HTML内容
+  - `{{from_name}}`: 发件人名称
+
+#### 邮件发送功能特性
+- ✅ **EmailJS集成**: 使用Namecheap SMTP服务
+- ✅ **收件人输入**: 用户友好的模态框界面
+- ✅ **发送状态**: 实时显示发送进度
+- ✅ **错误处理**: 完善的错误提示
+- ✅ **多语言支持**: 中英文界面
+- ✅ **品牌展示**: 包含eclipsever品牌信息
+
 ### 当前版本
 🎯 **v1.3.6**: 降息分析工具完善 + 高级功能解锁 + 品牌形象升级
 
@@ -603,14 +635,16 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 **版本**: 1.3.0  
 **最后更新**: 2024-12-19 
 
-## 🚀 最新版本 v1.3.7 (2024-12-19)
+## 🚀 最新版本 v1.3.8 (2024-12-19)
 
 ### ✨ 新功能
 - 🎨 **美化Export & Advanced Features界面**: 重新设计导出和高级功能界面
 - 🖨️ **优化打印功能**: 支持分页打印，避免内容割裂
 - 🏷️ **添加品牌Logo**: 所有报告和打印内容都包含"Powered by eclipsever"
-- 📥 **PDF报告下载**: 完整的分析报告下载功能（TXT格式）
-- 📧 **Email报告发送**: 通过邮件客户端发送分析报告
+- 📥 **PDF报告下载**: 完整的分析报告下载功能（HTML格式）
+- 📧 **EmailJS邮件发送**: 集成EmailJS服务，支持直接发送邮件报告
+- 🔐 **SMTP集成**: 使用Namecheap Private Email SMTP服务
+- 📧 **邮件模板**: 专业的HTML邮件模板，支持变量替换
 - 🌐 **推广裂变界面**: 社交媒体分享功能，支持Twitter、Facebook、Instagram
 - 🔗 **链接复制功能**: 一键复制分享链接
 - 📱 **响应式设计**: 优化移动端体验
@@ -620,6 +654,9 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 - 📊 **分页支持**: 使用CSS分页控制，确保打印美观
 - 🎯 **状态管理**: 完善页面状态流转逻辑
 - 🌍 **多语言支持**: 中英文界面完整支持
+- 📧 **EmailJS集成**: 完整的邮件发送服务集成
+- 🔐 **SMTP配置**: 专业的邮件服务器配置和错误处理
+- 📧 **邮件模板系统**: 支持HTML内容的邮件模板
 
 ### 📋 功能接口说明
 
@@ -631,12 +668,14 @@ downloadPDFReport(): void
 // 内容: 分析参数、资产影响、策略建议、品牌信息
 ```
 
-#### Email发送接口
+#### EmailJS邮件发送接口
 ```typescript
-emailReport(): void
-// 功能: 通过默认邮件客户端发送报告
-// 方式: mailto:协议
-// 内容: 完整的分析报告内容
+sendEmailReport(): Promise<void>
+// 功能: 通过EmailJS服务发送邮件报告
+// 服务: 集成Namecheap Private Email SMTP
+// 模板: 使用专业HTML邮件模板
+// 内容: 完整的分析报告HTML内容
+// 状态: 实时发送状态显示和错误处理
 ```
 
 #### 社交媒体分享接口
@@ -660,6 +699,35 @@ copyLink(): Promise<void>
 - **社交传播**: 支持主流社交媒体平台分享
 - **病毒传播**: 通过用户分享实现产品推广
 - **品牌曝光**: 所有分享内容都包含"Powered by eclipsever"
+
+### 📧 邮件服务配置详情
+
+#### EmailJS服务配置
+- **Service ID**: `service_4wadqb5`
+- **Template ID**: `template_fp1z1fl`
+- **User ID**: `q0sJaN7orl4-csdon`
+
+#### SMTP服务器配置
+- **Host**: `mail.privateemail.com`
+- **Port**: `587`
+- **Security**: STARTTLS（不勾选SSL）
+- **Authentication**: App Password
+- **From Email**: `noreply@eclipsever.online`
+
+#### 邮件模板变量
+- `{{to_email}}`: 收件人邮箱地址
+- `{{subject}}`: 邮件主题
+- `{{message}}`: 邮件正文内容
+- `{{report_html}}`: 完整的HTML报告内容
+- `{{from_name}}`: 发件人名称
+
+#### 邮件发送流程
+1. 用户点击"Email Report"按钮
+2. 弹出收件人邮箱输入模态框
+3. 用户输入收件人邮箱地址
+4. 系统调用EmailJS服务发送邮件
+5. 实时显示发送状态和进度
+6. 发送完成后显示成功提示
 
 ### 🖨️ 打印功能特性
 - **分页支持**: 自动分页，避免内容割裂

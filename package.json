@@ -33,6 +33,7 @@
   "author": "@eclipsecybertitan",
   "license": "MIT",
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@heroicons/react": "^2.0.18",
     "@supabase/supabase-js": "^2.38.0",
     "clsx": "^2.0.0",
