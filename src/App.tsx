@@ -21,16 +21,16 @@ type PageStep = 'introduction' | 'methodology' | 'configuration' | 'analysis' | 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<PageStep>('introduction')
   const [assetInput, setAssetInput] = useState({
-    realEstate: 0,
-    equity: 0,
-    cash: 0,
-    fund: 0,
-    crypto: 0,
-    insurance: 0
+    realEstate: 100000,  // 10万美元房产
+    equity: 150000,       // 15万美元股票
+    cash: 50000,          // 5万美元现金
+    fund: 80000,          // 8万美元基金
+    crypto: 20000,        // 2万美元加密货币
+    insurance: 30000      // 3万美元保险
   })
   // 新增：投资哲学和风险等级状态
-  const [selectedMethodology, setSelectedMethodology] = useState<string>('')
-  const [selectedRiskLevel, setSelectedRiskLevel] = useState<'low' | 'medium' | 'high'>('medium')
+  const [selectedMethodology, setSelectedMethodology] = useState<string>('business')  // 默认商业派
+  const [selectedRiskLevel, setSelectedRiskLevel] = useState<'low' | 'medium' | 'high'>('medium')  // 默认中等风险
 
   const handleNextPage = () => {
     switch (currentPage) {

@@ -1,0 +1,176 @@
+# 📤 导出功能与推广裂变规则
+
+## 🎯 功能概述
+
+本文档定义了Rate Cut Asset Allocation Tool的导出功能和推广裂变机制，确保产品能够通过用户分享实现病毒式传播。
+
+## 📋 核心功能接口
+
+### 1. PDF报告下载 (downloadPDFReport)
+
+**功能描述**: 生成并下载完整的分析报告
+**技术实现**: 
+- 使用Blob API创建文件
+- 支持TXT格式（轻量级，兼容性好）
+- 自动生成文件名：`rate-cut-analysis-report-YYYY-MM-DD.txt`
+
+**报告内容结构**:
+```
+Rate Cut Asset Allocation Analysis Report
+降息资产配置分析报告
+Generated: [时间戳]
+生成时间: [时间戳]
+
+Analysis Parameters 分析参数:
+- Annual Rate Cut: [基点]
+- Cycle Duration: [年数]
+- Total Cut Degree: [总基点]
+- Risk Level: [风险等级]
+- Investment Philosophy: [投资哲学]
+
+Portfolio Analysis Results 投资组合分析结果:
+[详细资产分析...]
+
+Powered by eclipsever
+https://eclipsever.online
+```
+
+### 2. Email报告发送 (emailReport)
+
+**功能描述**: 通过默认邮件客户端发送分析报告
+**技术实现**:
+- 使用`mailto:`协议
+- 预设邮件主题和内容
+- 支持中英文双语
+
+**邮件参数**:
+- Subject: "Rate Cut Analysis Report" / "降息分析报告"
+- Body: 完整的分析报告内容
+- 编码: UTF-8
+
+### 3. 社交媒体分享 (shareToSocial)
+
+**功能描述**: 分享到主流社交媒体平台
+**支持平台**:
+- Twitter: 使用Twitter Intent API
+- Facebook: 使用Facebook Share API
+- Instagram: 提示手动分享（平台限制）
+
+**分享内容**:
+- 预设文案（中英文）
+- 当前页面链接
+- 相关标签：#Investment #Finance #RateCut
+
+**技术实现**:
+```typescript
+const shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`
+window.open(shareUrl, '_blank', 'width=600,height=400')
+```
+
+### 4. 链接复制 (copyLink)
+
+**功能描述**: 复制当前页面链接到剪贴板
+**技术实现**:
+- 优先使用现代Clipboard API
+- 降级方案：document.execCommand
+- 兼容性：支持所有主流浏览器
+
+## 🌐 推广裂变机制
+
+### 核心策略
+1. **免费解锁**: 用户分享后自动解锁高级功能
+2. **社交传播**: 通过社交媒体实现病毒式传播
+3. **品牌曝光**: 所有分享内容都包含"Powered by eclipsever"
+
+### 裂变流程
+```
+用户使用工具 → 获得分析结果 → 看到推广界面 → 选择分享平台 → 完成分享 → 解锁高级功能
+```
+
+### 激励机制
+- **即时反馈**: 分享成功后立即显示解锁提示
+- **功能奖励**: 分享后自动激活高级分析功能
+- **品牌建设**: 通过用户分享提升品牌知名度
+
+## 🖨️ 打印功能规范
+
+### 打印样式要求
+- **分页支持**: 使用CSS `page-break` 控制分页
+- **品牌Logo**: 每页都显示"Powered by eclipsever"
+- **专业格式**: 适合A4纸张，边距1英寸
+- **内容完整**: 包含所有分析结果和建议
+
+### CSS类定义
+```css
+.no-print { display: none !important; }           /* 隐藏不需要打印的元素 */
+.page-break { page-break-before: always; }        /* 强制分页 */
+.avoid-break { page-break-inside: avoid; }        /* 避免元素内分页 */
+.print-logo { /* 打印Logo样式 */ }               /* 品牌Logo显示 */
+.print-footer { /* 页脚样式 */ }                 /* 页脚信息 */
+```
+
+### 打印内容结构
+1. **第一页**: 报告标题 + 资产影响分析
+2. **第二页**: 策略建议 + 赢家/输家资产
+3. **第三页**: 导出选项 + 高级功能（不打印）
+
+## 🎨 UI设计规范
+
+### 推广界面设计
+- **主色调**: 紫色到粉色的渐变
+- **按钮样式**: 社交媒体品牌色 + 悬停效果
+- **图标设计**: 简洁明了，易于识别
+- **响应式**: 支持移动端和桌面端
+
+### 交互反馈
+- **悬停效果**: 按钮悬停时轻微放大
+- **点击反馈**: 分享成功后显示成功提示
+- **状态变化**: 分享后自动解锁高级功能
+
+## 🔒 安全与隐私
+
+### 数据保护
+- **本地处理**: 所有分析在本地完成，不上传用户数据
+- **链接安全**: 分享链接不包含敏感信息
+- **隐私友好**: 不收集用户个人信息
+
+### 分享安全
+- **内容控制**: 预设分享文案，避免不当内容
+- **链接验证**: 确保分享链接的安全性
+- **平台限制**: 遵守各社交媒体平台的使用条款
+
+## 📱 兼容性要求
+
+### 浏览器支持
+- **现代浏览器**: Chrome 60+, Firefox 55+, Safari 12+
+- **移动浏览器**: iOS Safari 12+, Chrome Mobile 60+
+- **降级支持**: IE11+ (使用降级方案)
+
+### 功能降级
+- **Clipboard API**: 现代浏览器优先，旧版浏览器降级
+- **社交媒体**: 支持平台使用API，不支持平台提示手动分享
+- **打印功能**: 所有浏览器都支持基本打印
+
+## 🚀 未来扩展
+
+### 计划功能
+1. **更多平台**: 支持LinkedIn、微信、微博等
+2. **高级分享**: 支持分享特定分析结果
+3. **数据导出**: 支持Excel、CSV等格式
+4. **云端存储**: 支持将报告保存到云端
+
+### 技术优化
+1. **性能提升**: 优化大文件下载性能
+2. **用户体验**: 改进分享流程和反馈机制
+3. **数据分析**: 收集分享数据，优化裂变效果
+
+---
+
+**文档版本**: v1.0  
+**创建日期**: 2024-12-19  
+**维护者**: @eclipsecybertitan  
+**最后更新**: 2024-12-19
+description:
+globs:
+alwaysApply: false
+---

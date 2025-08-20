@@ -152,3 +152,78 @@
 .dev-signature::before {
   content: "// 开发者: @eclipsecybertitan";
 } 
+
+/* 打印样式 */
+@media print {
+  /* 隐藏不需要打印的元素 */
+  .no-print {
+    display: none !important;
+  }
+  
+  /* 分页设置 */
+  .page-break {
+    page-break-before: always;
+  }
+  
+  .page-break-after {
+    page-break-after: always;
+  }
+  
+  /* 打印页面样式 */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  /* 标题样式 */
+  h1, h2, h3 {
+    color: black !important;
+    page-break-after: avoid;
+  }
+  
+  /* 表格样式 */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  /* 避免在元素中间分页 */
+  .avoid-break {
+    page-break-inside: avoid;
+  }
+  
+  /* Logo样式 */
+  .print-logo {
+    display: block !important;
+    text-align: center;
+    margin: 20px 0;
+    font-size: 14pt;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* 页脚 */
+  .print-footer {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 10pt;
+    color: #666;
+  }
+  
+  /* 页面边距 */
+  @page {
+    margin: 1in;
+    size: A4;
+  }
+} 

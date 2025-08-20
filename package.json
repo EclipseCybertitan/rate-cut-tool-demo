@@ -1,6 +1,6 @@
 {
   "name": "rate-cut-tool-demo",
-  "version": "1.3.6",
+  "version": "1.3.7",
   "description": "专业的降息情景资产配置分析工具，为投资者提供数据驱动的决策支持",
   "type": "module",
   "scripts": {
