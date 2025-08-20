@@ -8,7 +8,11 @@ export const languages = {
         name: 'Academic',
         description: 'Traditional investment method based on modern portfolio theory and efficient market hypothesis',
         longDescription: 'Academic investment philosophy originates from modern portfolio theory, emphasizing portfolio diversification and risk dispersion. This approach is based on Markowitz\'s mean-variance analysis, optimizing investment portfolios through mathematical models to pursue maximum returns at given risk levels. Academic investors typically adopt passive investment strategies such as index fund investing and believe in the efficient market hypothesis.',
-        reasoning: 'Academic approach strictly follows modern portfolio theory, emphasizing long-term stable returns through diversified asset allocation. In a rate-cut environment, suggests increasing equity allocation to capture valuation expansion opportunities from rate cuts, maintaining real estate allocation as inflation hedge, and cash allocation for liquidity buffer.',
+        reasoning: {
+          low: 'Academic low-risk approach emphasizes capital preservation with minimal crypto exposure (1%). Maintains conservative real estate (36%) and equity (30%) allocation, using cash (20%) and funds (10%) for stability. Includes 3% insurance for risk management. In rate-cut cycles, this conservative stance protects against volatility while capturing modest growth opportunities.',
+          medium: 'Academic medium-risk strategy balances growth and stability with 2% crypto allocation. Increases equity exposure to 50% while reducing real estate to 25%, maintaining cash (15%) and funds (5%) for rebalancing. Includes 3% insurance for protection. This approach captures rate-cut benefits while maintaining academic discipline.',
+          high: 'Academic high-risk approach maximizes growth potential with 3% crypto exposure. Heavy equity allocation (70%) captures rate-cut momentum, reduced real estate (14%) and cash (5%) for maximum growth. Maintains fund allocation (5%) and 3% insurance for diversification within academic framework.'
+        },
         riskProfile: 'Based on academic theory, pursuing long-term stable returns',
         specialFeatures: ['Strict CAPM model application', 'Markowitz portfolio theory', 'Efficient market hypothesis application']
       },
@@ -16,7 +20,11 @@ export const languages = {
         name: 'Business Practical',
         description: 'Practical investment strategy based on institutional investor experience and market microstructure',
         longDescription: 'Business practical investment philosophy emphasizes market insight and practical experience, combining macroeconomic analysis, industry trend judgment, and company fundamental research. This method values market timing and is good at capturing investment opportunities brought by market sentiment changes and unexpected events. Business practical investors usually have rich market experience and can quickly adapt to market changes and make corresponding adjustments.',
-        reasoning: 'Wall Street tactics are more aggressive in rate-cut cycles, significantly increasing equity allocation to maximize rate-cut dividends, moderately allocating fund products for professional management returns, reducing cash allocation to lower opportunity costs. Focus on tool application and risk management.',
+        reasoning: {
+          low: 'Business low-risk strategy maintains professional discipline with 3% crypto exposure. Balanced real estate (29%) and equity (40%) allocation, using funds (10%) and cash (15%) for tactical opportunities. Includes 3% insurance for risk management. This approach captures rate-cut momentum while maintaining business risk management standards.',
+          medium: 'Business medium-risk approach leverages market opportunities with 6% crypto allocation. Heavy equity focus (60%) maximizes rate-cut benefits, reduced real estate (16%) and cash (10%) for aggressive positioning. Fund allocation (5%) and 3% insurance provide professional management within business framework.',
+          high: 'Business high-risk strategy maximizes rate-cut opportunities with 9% crypto exposure. Maximum equity allocation (75%) captures full momentum, minimal real estate (3%) and cash (5%) for maximum growth. Fund allocation (5%) and 3% insurance maintain professional diversification standards.'
+        },
         riskProfile: 'Aggressive strategy with professional tools and risk management',
         specialFeatures: ['Quantitative trading strategies', 'Risk management tools', 'Institutional-level portfolios']
       },
@@ -24,7 +32,11 @@ export const languages = {
         name: 'Psychological',
         description: 'Contrarian investment philosophy based on group psychology and macro trends',
         longDescription: 'Psychological history investment philosophy is based on behavioral finance theory, believing that the psychological state and group behavior of market participants are key factors affecting asset prices. This method predicts market trends by analyzing market sentiment, investor psychological biases, and group behavior patterns. Psychological history investors are good at identifying market panic and greed emotions and using these emotional fluctuations for contrarian investment.',
-        reasoning: 'Psychological approach emphasizes contrarian investment based on market sentiment analysis. In rate-cut cycles, focuses on identifying overreactions and market bubbles, using behavioral biases to capture asymmetric opportunities. Maintains flexible allocation to quickly respond to market emotional changes.',
+        reasoning: {
+          low: 'Psychological low-risk approach uses 10% crypto for behavioral analysis while maintaining stability. Balanced real estate (17%) and equity (35%) allocation, with funds (15%) and cash (20%) for emotional market opportunities. Includes 3% insurance for risk management. This strategy identifies market sentiment shifts within conservative parameters.',
+          medium: 'Psychological medium-risk strategy leverages 15% crypto for enhanced behavioral insights. Increased equity (40%) captures sentiment-driven opportunities, reduced real estate (12%) and cash (15%) for dynamic positioning. Fund allocation (15%) and 3% insurance support psychological analysis framework.',
+          high: 'Psychological high-risk approach maximizes behavioral opportunities with 30% crypto exposure. Heavy equity focus (35%) captures full sentiment momentum, minimal real estate (7%) and cash (10%) for maximum flexibility. Fund allocation (15%) and 3% insurance support advanced psychological analysis.'
+        },
         riskProfile: 'Contrarian strategy based on behavioral finance theory',
         specialFeatures: ['Market sentiment analysis', 'Behavioral bias identification', 'Contrarian investment timing']
       },
@@ -66,17 +78,32 @@ export const languages = {
       academic: {
         name: '学院派',
         description: '基于现代投资组合理论和有效市场假说的传统投资方法',
-        longDescription: '学院派投资理念源于现代投资组合理论，强调资产配置的多样化和风险分散。这种方法基于马科维茨的均值-方差分析，通过数学模型优化投资组合，追求在给定风险水平下的最大收益。学院派投资者通常采用被动投资策略，如指数基金投资，并相信市场有效性假说。'
+        longDescription: '学院派投资理念源于现代投资组合理论，强调资产配置的多样化和风险分散。这种方法基于马科维茨的均值-方差分析，通过数学模型优化投资组合，追求在给定风险水平下的最大收益。学院派投资者通常采用被动投资策略，如指数基金投资，并相信市场有效性假说。',
+        reasoning: {
+          low: '学院派低风险策略强调资本保值，加密资产配置最低（1%）。保持保守的房产（36%）和股票（30%）配置，使用现金（20%）和基金（10%）维持稳定性。包含3%保险用于风险管理。在降息周期中，这种保守立场既能抵御波动，又能捕捉适度增长机会。',
+          medium: '学院派中风险策略平衡增长与稳定性，加密资产配置2%。增加股票敞口至50%，同时减少房产至25%，保持现金（15%）和基金（5%）用于再平衡。包含3%保险用于保护。这种方法既能捕捉降息收益，又能保持学院派纪律。',
+          high: '学院派高风险策略最大化增长潜力，加密资产配置3%。重仓股票（70%）捕捉降息动能，减少房产（14%）和现金（5%）以最大化增长。保持基金配置（5%）和3%保险在学院派框架内实现多样化。'
+        }
       },
       business: {
         name: '商业实战派',
         description: '基于机构投资者经验和市场微观结构的实战策略',
-        longDescription: '商业实战派投资理念强调市场洞察力和实战经验，结合宏观经济分析、行业趋势判断和公司基本面研究。这种方法重视市场时机选择，善于捕捉市场情绪变化和突发事件带来的投资机会。商业实战派投资者通常具有丰富的市场经验，能够快速适应市场变化并做出相应调整。'
+        longDescription: '商业实战派投资理念强调市场洞察力和实战经验，结合宏观经济分析、行业趋势判断和公司基本面研究。这种方法重视市场时机选择，善于捕捉市场情绪变化和突发事件带来的投资机会。商业实战派投资者通常具有丰富的市场经验，能够快速适应市场变化并做出相应调整。',
+        reasoning: {
+          low: '商业实战派低风险策略保持专业纪律，加密资产配置3%。平衡的房产（29%）和股票（40%）配置，使用基金（10%）和现金（15%）捕捉战术机会。包含3%保险用于风险管理。这种方法既能捕捉降息动能，又能保持商业风险管理标准。',
+          medium: '商业实战派中风险策略利用市场机会，加密资产配置6%。重仓股票（60%）最大化降息收益，减少房产（16%）和现金（10%）以积极定位。基金配置（5%）和3%保险在商业框架内提供专业管理。',
+          high: '商业实战派高风险策略最大化降息机会，加密资产配置9%。最大股票配置（75%）捕捉全部动能，最少房产（3%）和现金（5%）以最大化增长。基金配置（5%）和3%保险保持专业多样化标准。'
+        }
       },
       psychologic: {
         name: '心理史学派',
         description: '基于群体心理和宏观趋势的逆向投资哲学',
-        longDescription: '心理史学派投资理念基于行为金融学理论，认为市场参与者的心理状态和群体行为是影响资产价格的关键因素。这种方法通过分析市场情绪、投资者心理偏差和群体行为模式来预测市场走势。心理史学派投资者善于识别市场恐慌和贪婪情绪，并利用这些情绪波动进行逆向投资。'
+        longDescription: '心理史学派投资理念基于行为金融学理论，认为市场参与者的心理状态和群体行为是影响资产价格的关键因素。这种方法通过分析市场情绪、投资者心理偏差和群体行为模式来预测市场走势。心理史学派投资者善于识别市场恐慌和贪婪情绪，并利用这些情绪波动进行逆向投资。',
+        reasoning: {
+          low: '心理史学派低风险策略使用10%加密资产进行行为分析，同时保持稳定性。平衡的房产（17%）和股票（35%）配置，基金（15%）和现金（20%）用于情绪市场机会。包含3%保险用于风险管理。这种策略在保守参数内识别市场情绪变化。',
+          medium: '心理史学派中风险策略利用15%加密资产增强行为洞察。增加股票（40%）捕捉情绪驱动机会，减少房产（12%）和现金（15%）以动态定位。基金配置（15%）和3%保险支持心理分析框架。',
+          high: '心理史学派高风险策略最大化行为机会，加密资产配置30%。重仓股票（35%）捕捉全部情绪动能，最少房产（7%）和现金（10%）以最大化灵活性。基金配置（15%）和3%保险支持高级心理分析。'
+        }
       },
       riskLevels: {
         low: '低风险',

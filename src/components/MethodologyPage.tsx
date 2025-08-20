@@ -16,6 +16,7 @@ interface MethodologyPageProps {
   onBack: () => void
   onNext: () => void
   onAssetChange: (assets: any) => void
+  onMethodologySelect: (methodology: string, riskLevel: 'low' | 'medium' | 'high') => void
 }
 
 interface InvestmentBelief {
@@ -58,7 +59,7 @@ interface InvestmentBelief {
   specialFeatures: string[]
 }
 
-export default function MethodologyPage({ onBack, onNext, onAssetChange }: MethodologyPageProps) {
+export default function MethodologyPage({ onBack, onNext, onAssetChange, onMethodologySelect }: MethodologyPageProps) {
   const { t, language } = useLanguage()
   const [selectedBelief, setSelectedBelief] = useState<string>('')
   const [selectedRiskLevel, setSelectedRiskLevel] = useState<'low' | 'medium' | 'high'>('medium')
@@ -78,28 +79,28 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
       musicUrl: 'https://open.spotify.com/embed/track/4uLU6hMCjMI75M1A2tKUQC?utm_source=generator',
       riskLevels: {
         low: {
-          realEstate: 40,
+          realEstate: 36,
           equity: 30,
           cash: 20,
           fund: 10,
-          crypto: 0,
-          insurance: 0
+          crypto: 1,
+          insurance: 3
         },
         medium: {
-          realEstate: 30,
+          realEstate: 25,
           equity: 50,
           cash: 15,
           fund: 5,
-          crypto: 0,
-          insurance: 0
+          crypto: 2,
+          insurance: 3
         },
         high: {
-          realEstate: 20,
+          realEstate: 14,
           equity: 70,
           cash: 5,
           fund: 5,
-          crypto: 0,
-          insurance: 0
+          crypto: 3,
+          insurance: 3
         }
       },
       reasoning: t('methodology.academic.reasoning'),
@@ -119,28 +120,28 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
       musicUrl: 'https://open.spotify.com/embed/track/6rqhFgbbKwnb9MLmUQDhG6?utm_source=generator',
       riskLevels: {
         low: {
-          realEstate: 35,
+          realEstate: 29,
           equity: 40,
           cash: 15,
           fund: 10,
-          crypto: 0,
-          insurance: 0
+          crypto: 3,
+          insurance: 3
         },
         medium: {
-          realEstate: 25,
+          realEstate: 16,
           equity: 60,
           cash: 10,
           fund: 5,
-          crypto: 0,
-          insurance: 0
+          crypto: 6,
+          insurance: 3
         },
         high: {
-          realEstate: 15,
+          realEstate: 3,
           equity: 75,
           cash: 5,
           fund: 5,
-          crypto: 0,
-          insurance: 0
+          crypto: 9,
+          insurance: 3
         }
       },
       reasoning: t('methodology.business.reasoning'),
@@ -155,33 +156,33 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
       description: t('methodology.psychologic.description'),
       longDescription: t('methodology.psychologic.longDescription'),
       icon: SparklesIcon,
-      color: 'from-cyan-400 via-blue-500 to-purple-600',
+      color: 'from-white via-gray-100 to-gray-200',
       imageUrl: '/images/methodology/psychohistory.png',
       musicUrl: 'https://open.spotify.com/embed/track/3HfB5hBU0dmBt8rDxw0ZJc?utm_source=generator',
       riskLevels: {
         low: {
-          realEstate: 25,
+          realEstate: 17,
           equity: 35,
           cash: 20,
           fund: 15,
-          crypto: 5,
-          insurance: 0
+          crypto: 10,
+          insurance: 3
         },
         medium: {
-          realEstate: 20,
+          realEstate: 12,
           equity: 40,
           cash: 15,
           fund: 15,
-          crypto: 10,
-          insurance: 0
+          crypto: 15,
+          insurance: 3
         },
         high: {
-          realEstate: 15,
-          equity: 45,
+          realEstate: 7,
+          equity: 35,
           cash: 10,
-          fund: 20,
-          crypto: 10,
-          insurance: 0
+          fund: 15,
+          crypto: 30,
+          insurance: 3
         }
       },
       reasoning: t('methodology.psychologic.reasoning'),
@@ -261,7 +262,11 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
                 onMouseLeave={() => setHoveredBelief('')}
                 className={`group relative p-8 rounded-3xl border-2 transition-all duration-500 text-left flex flex-col cursor-pointer ${
                   selectedBelief === belief.id
-                    ? `border-purple-500 bg-gradient-to-br ${belief.color} shadow-2xl transform scale-105 ring-4 ring-purple-500/30`
+                    ? `border-purple-500 bg-gradient-to-br ${belief.color} shadow-2xl transform scale-105 ring-4 ${
+                        belief.id === 'academic' ? 'ring-yellow-500/30' :
+                        belief.id === 'business' ? 'ring-red-500/30' :
+                        'ring-purple-500/30'
+                      }`
                     : 'border-gray-600 bg-gray-800 hover:border-gray-500 hover:bg-gray-700 hover:scale-105'
                 }`}
               >
@@ -413,7 +418,12 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
                 <div className="space-y-4">
                   <div className="bg-gray-800 p-4 rounded-lg">
                     <h5 className="font-semibold text-blue-400 mb-2">{t('methodology.reasoning')}</h5>
-                    <p className="text-sm text-gray-300">{selectedBeliefData.reasoning}</p>
+                    <p className="text-sm text-gray-300">
+                      {typeof selectedBeliefData.reasoning === 'string' 
+                        ? selectedBeliefData.reasoning 
+                        : selectedBeliefData.reasoning[selectedRiskLevel]
+                      }
+                    </p>
                   </div>
                   <div className="bg-gray-800 p-4 rounded-lg">
                     <h5 className="font-semibold text-yellow-400 mb-2">{t('methodology.riskProfile')}</h5>
@@ -460,7 +470,12 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange }: Metho
         {/* 继续按钮 - 保持居中 */}
         <div className="text-center">
           <button
-            onClick={onNext}
+            onClick={() => {
+              if (selectedBelief) {
+                onMethodologySelect(selectedBelief, selectedRiskLevel)
+                onNext()
+              }
+            }}
             disabled={!selectedBelief}
             className={`group relative inline-flex items-center justify-center px-12 py-6 text-xl font-bold text-white rounded-2xl shadow-2xl transform transition-all duration-300 overflow-hidden ${
               selectedBelief 

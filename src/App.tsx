@@ -25,6 +25,9 @@ function AppContent() {
     crypto: 0,
     insurance: 0
   })
+  // 新增：投资哲学和风险等级状态
+  const [selectedMethodology, setSelectedMethodology] = useState<string>('')
+  const [selectedRiskLevel, setSelectedRiskLevel] = useState<'low' | 'medium' | 'high'>('medium')
 
   const handleNextPage = () => {
     switch (currentPage) {
@@ -70,6 +73,12 @@ function AppContent() {
     setCurrentPage('analysis')
   }
 
+  // 新增：处理投资哲学选择
+  const handleMethodologySelect = (methodology: string, riskLevel: 'low' | 'medium' | 'high') => {
+    setSelectedMethodology(methodology)
+    setSelectedRiskLevel(riskLevel)
+  }
+
   // 渲染不同页面
   switch (currentPage) {
     case 'introduction':
@@ -81,6 +90,7 @@ function AppContent() {
           onBack={handleBackPage}
           onNext={handleNextPage}
           onAssetChange={setAssetInput}
+          onMethodologySelect={handleMethodologySelect}
         />
       )
     
@@ -91,6 +101,8 @@ function AppContent() {
           onNext={handleNextPage}
           assetInput={assetInput}
           onAssetChange={setAssetInput}
+          selectedMethodology={selectedMethodology}
+          selectedRiskLevel={selectedRiskLevel}
         />
       )
     
