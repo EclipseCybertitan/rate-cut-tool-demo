@@ -1,0 +1,120 @@
+# 品牌规则 (Branding Rules)
+
+## 网站品牌标准 (Website Branding Standards)
+
+### 1. 网站标题 (Website Title)
+- **英文标题**: World of InvestCraft
+- **中文标题**: World of InvestCraft (保持英文)
+- **应用范围**: 所有页面标题、浏览器标签、应用名称
+
+### 2. 网站图标 (Website Icon)
+- **图标文件**: `/public/favicon.svg`
+- **设计理念**: 科技感、投资组合、金融科技
+- **图标元素**:
+  - 中心六边形：代表投资组合
+  - 外围圆点：代表多样化资产
+  - 连接线：代表资产关联
+  - 渐变色彩：蓝色到紫色的科技感
+
+### 3. 语言切换标准 (Language Switching Standards)
+
+#### 语言切换按钮规范
+- **英文**: 🇺🇸 English
+- **中文**: 🇸🇬 简体中文 (使用新加坡国旗，因为新加坡使用简体中文)
+
+#### 语言优先级
+- **默认语言**: 英文 (English)
+- **备选语言**: 简体中文 (Simplified Chinese)
+- **语言标识**: 使用国家/地区旗帜，提高识别度
+
+### 4. 界面语言规则 (Interface Language Rules)
+
+#### 全英文界面
+- **默认状态**: 所有界面默认使用英文
+- **中文支持**: 通过语言切换器提供中文界面
+- **术语保留**: 中文界面下可保留部分英文专业术语
+
+#### 语言一致性
+- **页面标题**: 统一使用英文标题
+- **按钮文字**: 根据语言设置显示对应文字
+- **提示信息**: 所有提示、警告、说明使用对应语言
+
+### 5. 品牌色彩规范 (Brand Color Standards)
+
+#### 主色调
+- **蓝色系**: #1e3a8a, #3b82f6, #60a5fa (专业、可信)
+- **紫色系**: #7c3aed, #8b5cf6, #a855f7 (创新、科技)
+- **金色系**: #fbbf24, #f59e0b (财富、成功)
+
+#### 渐变应用
+- **标题渐变**: from-blue-400 via-purple-400 to-pink-400
+- **按钮渐变**: from-amber-600 via-yellow-500 to-amber-600
+- **背景渐变**: from-gray-900 via-black to-gray-800
+
+### 6. 按钮设计规范 (Button Design Standards)
+
+#### 高级按钮样式
+- **Premium按钮**: 使用金色渐变，体现尊贵感
+- **普通按钮**: 使用蓝色到紫色渐变
+- **危险按钮**: 使用红色渐变
+- **成功按钮**: 使用绿色渐变
+
+#### 按钮交互效果
+- **悬停效果**: hover:scale-105 (轻微放大)
+- **阴影效果**: shadow-lg hover:shadow-xl
+- **边框效果**: border border-amber-400/30 (半透明边框)
+- **动画效果**: transition-all duration-500 (流畅过渡)
+
+### 7. 图标使用规范 (Icon Usage Standards)
+
+#### Heroicons
+- **主要图标**: 使用 @heroicons/react/24/outline
+- **图标大小**: 根据上下文使用 w-4 h-4 到 w-8 h-8
+- **图标颜色**: 使用主题色彩，保持一致性
+
+#### 自定义图标
+- **SVG格式**: 优先使用SVG格式图标
+- **响应式**: 支持不同屏幕尺寸
+- **可访问性**: 包含适当的alt文本和aria标签
+
+### 8. 字体规范 (Typography Standards)
+
+#### 字体层级
+- **主标题**: text-5xl md:text-7xl font-bold
+- **副标题**: text-2xl md:text-4xl font-semibold
+- **正文**: text-base md:text-lg
+- **小字**: text-sm text-xs
+
+#### 字体颜色
+- **主文字**: text-white
+- **副文字**: text-gray-300
+- **强调文字**: text-blue-400, text-purple-400
+- **成功文字**: text-green-400
+- **警告文字**: text-yellow-400
+- **错误文字**: text-red-400
+
+### 9. 响应式设计 (Responsive Design)
+
+#### 断点设置
+- **移动端**: < 768px (md:)
+- **平板端**: 768px - 1024px (lg:)
+- **桌面端**: > 1024px (xl:)
+
+#### 布局适配
+- **网格系统**: 使用 grid lg:grid-cols-2 等响应式网格
+- **间距调整**: 使用 py-8 md:py-12 等响应式间距
+- **字体缩放**: 使用 text-3xl md:text-6xl 等响应式字体
+
+### 10. 更新记录 (Update Log)
+
+- **2024-01-XX**: 创建品牌规则文档
+- **版本 1.3.6**: 
+  - 网站标题改为 "World of InvestCraft"
+  - 创建科技感SVG图标
+  - 语言切换按钮改为 "简体中文+🇸🇬"
+  - 优化Premium按钮设计
+- **品牌定位**: 专业、科技、尊贵的投资工具平台
+description:
+globs:
+alwaysApply: false
+---

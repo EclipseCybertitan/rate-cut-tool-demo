@@ -32,7 +32,7 @@ export default function IntroductionPage({ onNext }: IntroductionPageProps) {
       "Seize rate cut cycles"
     ],
     zh: [
-      "降息资产配置博弈工具",
+              "World of InvestCraft",
       "为什么现在？",
       "2025年下半年美联储降息预期上升",
       "市场环境变化将显著影响资产配置策略",
@@ -89,7 +89,7 @@ export default function IntroductionPage({ onNext }: IntroductionPageProps) {
           <div className="mb-8">
             <SparklesIcon className="w-16 h-16 mx-auto text-yellow-400 mb-4 animate-bounce" />
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
-              {language === 'en' ? 'Interest Rate Cut Asset Allocation Game Tool' : '降息资产配置博弈工具'}
+              {language === 'en' ? 'World of InvestCraft' : 'World of InvestCraft'}
             </h1>
           </div>
 
