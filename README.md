@@ -6,32 +6,32 @@
 
 本项目采用角色分工开发模式，确保代码质量和开发效率：
 
-### 👑 执政官(Orchestrator)
+### 👑 执政官(Orchestrator)——Eclipsever
 - **职责**: 需求分析、任务分配、跨角色协调、质量把控
 - **权限**: 全栈开发、角色切换、架构决策
 - **特点**: 全局视角、高效协调、质量优先
 
-### 🎨 前端工程师(Frontend Engineer)
+### 🎨 前端工程师(Frontend Engineer)——Mars
 - **职责**: React组件开发、UI交互设计、主题系统实现
 - **技术栈**: React 18 + TypeScript + Tailwind CSS
 - **输出**: 组件文件、样式文件、交互逻辑
 
-### ⚙️ 后端工程师(Backend Engineer)
+### ⚙️ 后端工程师(Backend Engineer)——Mart
 - **职责**: API路由开发、数据库操作、业务逻辑实现
 - **技术栈**: Node.js + Express + Prisma + PostgreSQL
 - **输出**: API端点、数据模型、业务服务
 
-### 🧮 算法工程师(Algorithm Engineer)
+### 🧮 算法工程师(Algorithm Engineer)——Coser
 - **职责**: 模拟引擎开发、计算逻辑、数据处理算法
 - **技术栈**: TypeScript + 数学库 + 性能优化
 - **输出**: 核心算法、模拟函数、计算模块
 
-### 🧪 测试工程师(QA Engineer)
+### 🧪 测试工程师(QA Engineer)——HF218
 - **职责**: 单元测试、集成测试、质量保证
 - **技术栈**: Vitest + Testing Library + 测试策略
 - **输出**: 测试用例、测试报告、质量指标
 
-### 🎯 架构师(Architect)
+### 🎯 架构师(Architect)——没头脑和不高兴
 - **职责**: 系统设计、技术选型、架构决策
 - **技术栈**: 系统设计 + 技术评估 + 架构规划
 - **输出**: 架构文档、技术方案、设计决策
