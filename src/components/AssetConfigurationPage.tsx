@@ -18,6 +18,7 @@ import {
 import LanguageSwitcher from './LanguageSwitcher'
 import { useLanguage } from '../contexts/LanguageContext'
 import AssetDiagnosisReport from './AssetDiagnosisReport'
+import AssetRecordingService from '../lib/asset-recording-service'
 
 interface AssetConfigurationPageProps {
   onBack: () => void
@@ -68,6 +69,81 @@ export default function AssetConfigurationPage({
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>('')
   const [ignoreAgeRecommendation, setIgnoreAgeRecommendation] = useState(false)
   const [showAssetDiagnosis, setShowAssetDiagnosis] = useState(false)
+
+  // 生成会话ID（预留未来后台功能）
+  const sessionId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+
+  // 资产数据记录功能
+  const recordAssetData = async () => {
+    try {
+      const assetRecord = {
+        session_id: sessionId,
+        timestamp: new Date().toISOString(),
+        total_assets: totalAssets,
+        asset_allocation: {
+          realEstate: localInput.realEstate,
+          equity: localInput.equity,
+          cash: localInput.cash,
+          fund: localInput.fund,
+          crypto: localInput.crypto,
+          insurance: localInput.insurance
+        },
+        selected_methodology: selectedMethodology,
+        selected_risk_level: selectedRiskLevel,
+        user_agent: navigator.userAgent,
+        language: language
+      }
+
+      // 尝试保存到Supabase
+      const savedRecord = await AssetRecordingService.recordAssetData(assetRecord)
+      
+      if (savedRecord) {
+        console.log('Asset data saved to Supabase:', savedRecord)
+        
+        // 同时保存到localStorage作为备份
+        const existingRecords = JSON.parse(localStorage.getItem('assetRecords') || '[]')
+        existingRecords.push(savedRecord)
+        localStorage.setItem('assetRecords', JSON.stringify(existingRecords))
+      } else {
+        console.log('Failed to save to Supabase, saving to localStorage only')
+        
+        // 如果Supabase保存失败，只保存到localStorage
+        const existingRecords = JSON.parse(localStorage.getItem('assetRecords') || '[]')
+        existingRecords.push(assetRecord)
+        localStorage.setItem('assetRecords', JSON.stringify(existingRecords))
+      }
+      
+    } catch (error) {
+      console.error('Failed to record asset data:', error)
+      
+      // 错误情况下也保存到localStorage
+      try {
+        const assetRecord = {
+          session_id: sessionId,
+          timestamp: new Date().toISOString(),
+          total_assets: totalAssets,
+          asset_allocation: {
+            realEstate: localInput.realEstate,
+            equity: localInput.equity,
+            cash: localInput.cash,
+            fund: localInput.fund,
+            crypto: localInput.crypto,
+            insurance: localInput.insurance
+          },
+          selected_methodology: selectedMethodology,
+          selected_risk_level: selectedRiskLevel,
+          user_agent: navigator.userAgent,
+          language: language
+        }
+        
+        const existingRecords = JSON.parse(localStorage.getItem('assetRecords') || '[]')
+        existingRecords.push(assetRecord)
+        localStorage.setItem('assetRecords', JSON.stringify(existingRecords))
+      } catch (localError) {
+        console.error('Failed to save to localStorage:', localError)
+      }
+    }
+  }
 
 
   // 计算推荐配置数据
@@ -311,6 +387,14 @@ export default function AssetConfigurationPage({
     const newInput = { ...localInput, [field]: numValue }
     setLocalInput(newInput)
     onAssetChange(newInput)
+    
+    // 自动记录资产数据（防抖处理）
+    setTimeout(() => {
+      const totalValue = Object.values(newInput).reduce((sum, val) => sum + val, 0)
+      if (totalValue > 0) {
+        recordAssetData()
+      }
+    }, 1000)
   }
 
   const totalAssets = Object.values(localInput).reduce((sum, value) => sum + value, 0)
@@ -805,16 +889,32 @@ export default function AssetConfigurationPage({
                            asset === 'crypto' ? 'Crypto' : 'Insurance'}
                         </span>
                         <div className="flex items-center space-x-2">
-                          <span className={`text-sm font-medium ${
-                            Math.abs(deviation) <= 10 ? 'text-green-400' :
-                            Math.abs(deviation) <= 25 ? 'text-yellow-400' : 'text-red-400'
-                          }`}>
-                            {deviation > 0 ? '+' : ''}{deviation.toFixed(1)}%
-                          </span>
                           <div className={`w-2 h-2 rounded-full ${
                             Math.abs(deviation) <= 10 ? 'bg-green-400' :
                             Math.abs(deviation) <= 25 ? 'bg-yellow-400' : 'bg-red-400'
                           }`}></div>
+                          <div className="relative group">
+                            <div className="w-4 h-4 bg-gray-600 rounded-full flex items-center justify-center cursor-help">
+                              <span className="text-xs text-white">i</span>
+                            </div>
+                            {/* 悬停提示 */}
+                            <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                              <div className="text-center">
+                                <div className={`font-medium ${
+                                  Math.abs(deviation) <= 10 ? 'text-green-400' :
+                                  Math.abs(deviation) <= 25 ? 'text-yellow-400' : 'text-red-400'
+                                }`}>
+                                  {deviation > 0 ? '+' : ''}{deviation.toFixed(1)}%
+                                </div>
+                                <div className="text-xs text-gray-300 mt-1">
+                                  {Math.abs(deviation) <= 10 ? 'Excellent' :
+                                   Math.abs(deviation) <= 25 ? 'Good' : 'Needs Adjustment'}
+                                </div>
+                              </div>
+                              {/* 箭头 */}
+                              <div className="absolute top-full right-2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       
@@ -871,102 +971,151 @@ export default function AssetConfigurationPage({
             </h3>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="text-center mb-6">
+            <p className="text-gray-300 text-sm">
+              {language === 'en' ? 'Based on deviation analysis' : '基于偏差分析'}
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-4">
             {/* 基础诊断 */}
-            <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/50 rounded-xl p-4 border border-gray-600/30">
-              <div className="flex items-center space-x-3 mb-3">
-                <div className="relative">
-                  <StarIcon className="w-6 h-6 text-blue-400" />
-                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+            <div className="group relative bg-gradient-to-br from-gray-800/50 to-gray-700/50 rounded-xl p-4 border border-gray-600/30 hover:border-gray-500/50 transition-all duration-300 cursor-pointer">
+              <div className="text-center">
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <StarIcon className="w-5 h-5 text-blue-400" />
+                  <span className="text-sm font-medium text-gray-200">Basic Diagnosis</span>
                 </div>
-                <h4 className="text-lg font-semibold text-blue-300">
-                  {language === 'en' ? 'Based on Deviation Analysis' : '基于偏差分析'}
-                </h4>
+                <div className="text-lg font-bold text-green-400 mb-1">FREE</div>
+                <p className="text-xs text-gray-400">Essential portfolio health check</p>
               </div>
-              <p className="text-gray-300 text-sm leading-relaxed">
-                {language === 'en' 
-                  ? 'Comprehensive portfolio health assessment using advanced deviation algorithms.'
-                  : '使用高级偏差算法进行全面的投资组合健康评估。'
-                }
-              </p>
+              
+              {/* 悬停详细说明 */}
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                <div className="text-center">
+                  <div className="text-xs text-gray-300 mb-1">基础投资组合健康检查</div>
+                  <div className="text-xs text-gray-400">• 基础风险评估</div>
+                  <div className="text-xs text-gray-400">• 简单配置建议</div>
+                  <div className="text-xs text-gray-400">• 标准报告</div>
+                </div>
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+              </div>
             </div>
             
             {/* 高级诊断 */}
-            <div className="bg-gradient-to-br from-purple-800/50 to-pink-800/50 rounded-xl p-4 border border-purple-600/30">
-              <div className="flex items-center space-x-3 mb-3">
-                <div className="relative">
-                  <TrophyIcon className="w-6 h-6 text-purple-400" />
-                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+            <button
+              onClick={() => setShowAssetDiagnosis(true)}
+              className="group relative w-full p-4 bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-500 text-white rounded-xl border-2 border-amber-400/50 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+            >
+              <div className="text-center">
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <AcademicCapIcon className="w-6 h-6 text-white" />
+                  <span className="font-bold text-lg">Premium Asset Diagnosis</span>
                 </div>
-                <h4 className="text-lg font-semibold text-purple-300">
-                  {language === 'en' ? 'Premium Asset Diagnosis' : '高级资产诊断'}
-                </h4>
+                <div className="flex items-center justify-center space-x-1 mb-1">
+                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full">PRO</span>
+                  <span className="text-lg font-bold">$29.99</span>
+                </div>
+                <p className="text-xs text-white/90">Advanced portfolio analysis with AI-powered insights</p>
               </div>
-              <p className="text-gray-300 text-sm leading-relaxed">
-                {language === 'en' 
-                  ? 'Exclusive AI-powered insights with personalized optimization strategies.'
-                  : '独家AI驱动的洞察，提供个性化优化策略。'
-                }
-              </p>
+              
+              {/* 悬停详细说明 */}
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-amber-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                <div className="text-center">
+                  <div className="text-xs text-amber-200 mb-1">AI驱动的深度投资组合分析</div>
+                  <div className="text-xs text-amber-100">• AI智能分析引擎</div>
+                  <div className="text-xs text-amber-100">• 高级风险评估模型</div>
+                  <div className="text-xs text-amber-100">• 个性化优化建议</div>
+                  <div className="text-xs text-amber-100">• 实时市场洞察</div>
+                  <div className="text-xs text-amber-100">• 优先客户支持</div>
+                </div>
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-amber-800"></div>
+              </div>
+            </button>
+            
+            {/* 企业级诊断 */}
+            <div className="group relative bg-gradient-to-r from-purple-700/50 to-indigo-600/50 rounded-xl p-4 border border-purple-500/30 hover:border-purple-400/50 transition-all duration-300 cursor-pointer">
+              <div className="text-center">
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <BuildingLibraryIcon className="w-5 h-5 text-purple-400" />
+                  <span className="text-sm font-medium text-gray-200">Enterprise Solution</span>
+                </div>
+                <div className="text-lg font-bold text-purple-400 mb-1">$199.99</div>
+                <p className="text-xs text-gray-400">Custom portfolio strategies for institutions</p>
+              </div>
+              
+              {/* 悬停详细说明 */}
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-purple-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                <div className="text-center">
+                  <div className="text-xs text-purple-200 mb-1">机构级定制投资策略</div>
+                  <div className="text-xs text-purple-100">• 定制化投资策略</div>
+                  <div className="text-xs text-purple-100">• 机构级风险管理</div>
+                  <div className="text-xs text-purple-100">• 专业团队支持</div>
+                  <div className="text-xs text-purple-100">• API集成服务</div>
+                  <div className="text-xs text-purple-100">• 专属客户经理</div>
+                </div>
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-purple-800"></div>
+              </div>
             </div>
           </div>
         </div>
 
         {/* 资产总计和风险分析 */}
         {totalAssets > 0 && (
-          <div className="bg-gradient-to-r from-gray-800 to-gray-700 p-8 rounded-2xl border border-gray-600 mb-8">
-            <div className="flex justify-between items-center mb-6">
-              <span className="text-gray-300 font-semibold text-2xl">Total Assets:</span>
-              <span className="font-bold text-4xl text-white">
-                ${totalAssets.toLocaleString('en-US')}
-              </span>
+          <div className="bg-gradient-to-br from-gray-800/90 via-gray-700/90 to-gray-600/90 p-6 rounded-2xl border border-gray-500/30 mb-8 shadow-xl">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center space-x-4 bg-gradient-to-r from-blue-900/50 to-purple-900/50 px-6 py-4 rounded-xl border border-blue-500/30">
+                <span className="text-gray-300 font-medium text-lg">Total Assets:</span>
+                <span className="font-bold text-3xl text-transparent bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text">
+                  ${totalAssets.toLocaleString('en-US')}
+                </span>
+              </div>
             </div>
             
-            <div className="grid md:grid-cols-4 gap-6">
-              {/* 基础资产占比 */}
-              <div className="space-y-3">
-                <h4 className="text-sm font-medium text-gray-400">Core Assets</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Real Estate:</span>
-                    <span className="text-green-400 font-medium">
+            <div className="grid md:grid-cols-3 gap-6">
+              {/* 核心资产 */}
+              <div className="bg-gradient-to-br from-gray-700/50 to-gray-600/50 p-4 rounded-xl border border-gray-500/30">
+                <h4 className="text-sm font-medium text-gray-300 mb-3 text-center">🏛️ Core Assets</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-2 bg-green-900/20 rounded-lg">
+                    <span className="text-gray-300 text-sm">Real Estate</span>
+                    <span className="text-green-400 font-bold">
                       {getAssetPercentage(localInput.realEstate).toFixed(1)}%
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Equity:</span>
-                    <span className="text-blue-400 font-medium">
+                  <div className="flex items-center justify-between p-2 bg-blue-900/20 rounded-lg">
+                    <span className="text-gray-300 text-sm">Equity</span>
+                    <span className="text-blue-400 font-bold">
                       {getAssetPercentage(localInput.equity).toFixed(1)}%
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Cash:</span>
-                    <span className="text-yellow-400 font-medium">
+                  <div className="flex items-center justify-between p-2 bg-yellow-900/20 rounded-lg">
+                    <span className="text-gray-300 text-sm">Cash</span>
+                    <span className="text-yellow-400 font-bold">
                       {getAssetPercentage(localInput.cash).toFixed(1)}%
                     </span>
                   </div>
                 </div>
               </div>
               
-              {/* 扩展资产占比 */}
-              <div className="space-y-3">
-                <h4 className="text-sm font-medium text-gray-400">Extended Assets</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Funds:</span>
-                    <span className="text-purple-400 font-medium">
+              {/* 扩展资产 */}
+              <div className="bg-gradient-to-br from-gray-700/50 to-gray-600/50 p-4 rounded-xl border border-gray-500/30">
+                <h4 className="text-sm font-medium text-gray-300 mb-3 text-center">🚀 Extended Assets</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-2 bg-purple-900/20 rounded-lg">
+                    <span className="text-gray-300 text-sm">Funds</span>
+                    <span className="text-purple-400 font-bold">
                       {getAssetPercentage(localInput.fund).toFixed(1)}%
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Cryptocurrency:</span>
-                    <span className="text-orange-400 font-medium">
+                  <div className="flex items-center justify-between p-2 bg-orange-900/20 rounded-lg">
+                    <span className="text-gray-300 text-sm">Cryptocurrency</span>
+                    <span className="text-orange-400 font-bold">
                       {getAssetPercentage(localInput.crypto).toFixed(1)}%
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Insurance:</span>
-                    <span className="text-red-400 font-medium">
+                  <div className="flex items-center justify-between p-2 bg-red-900/20 rounded-lg">
+                    <span className="text-gray-300 text-sm">Insurance</span>
+                    <span className="text-red-400 font-bold">
                       {getAssetPercentage(localInput.insurance).toFixed(1)}%
                     </span>
                   </div>
@@ -999,25 +1148,70 @@ export default function AssetConfigurationPage({
               </div>
               
               {/* 综合评价 */}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <h4 className="text-sm font-medium text-gray-400">Comprehensive Assessment</h4>
-                <div className={`p-4 rounded-lg ${getAssessmentStyle()} border border-gray-600`}>
-                  <div className={`text-center text-2xl font-bold ${getAssessmentColor()}`}>
-                    {getAssessmentLevel()}
-                  </div>
-                  <div className="text-center text-sm text-gray-400 mt-1">
-                    Based on deviation analysis
-                  </div>
-                  <button
-                    onClick={() => setShowAssetDiagnosis(true)}
-                    className="mt-3 w-full px-4 py-2 bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 text-white text-sm font-medium rounded-lg hover:from-amber-700 hover:via-yellow-600 hover:to-amber-700 transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-xl border border-amber-400/30"
-                  >
-                    <div className="flex items-center justify-center space-x-2">
-                      <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                      <span className="font-semibold">Premium Asset Diagnosis</span>
-                      <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                <div className={`p-6 rounded-xl ${getAssessmentStyle()} border-2 border-gray-600/50 shadow-lg`}>
+                  <div className="text-center mb-4">
+                    <div className={`text-3xl font-bold ${getAssessmentColor()} mb-2`}>
+                      {getAssessmentLevel()}
                     </div>
-                  </button>
+                    <div className="text-sm text-gray-400">
+                      Based on deviation analysis
+                    </div>
+                  </div>
+                  
+                  {/* 商业付费按钮区域 */}
+                  <div className="space-y-3">
+                    {/* 免费诊断 */}
+                    <div className="p-3 bg-gradient-to-r from-gray-700/50 to-gray-600/50 rounded-lg border border-gray-500/30">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <StarIcon className="w-5 h-5 text-blue-400" />
+                          <span className="text-sm font-medium text-gray-200">Basic Diagnosis</span>
+                        </div>
+                        <span className="text-xs text-green-400 font-medium">FREE</span>
+                      </div>
+                      <p className="text-xs text-gray-400 mt-1">Essential portfolio health check</p>
+                    </div>
+                    
+                    {/* 高级诊断 */}
+                    <button
+                      onClick={() => setShowAssetDiagnosis(true)}
+                      className="w-full p-4 bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-500 text-white rounded-xl border-2 border-amber-400/50 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 group"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                          <AcademicCapIcon className="w-6 h-6 text-white" />
+                          <span className="font-bold text-lg">Premium Asset Diagnosis</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <span className="text-xs bg-white/20 px-2 py-1 rounded-full">PRO</span>
+                          <span className="text-sm font-medium">$29.99</span>
+                        </div>
+                      </div>
+                      <div className="text-left">
+                        <p className="text-sm text-white/90 mb-2">Advanced portfolio analysis with AI-powered insights</p>
+                        <div className="flex items-center space-x-2 text-xs text-white/80">
+                          <span>✓ AI Analysis</span>
+                          <span>✓ Risk Assessment</span>
+                          <span>✓ Optimization Plan</span>
+                        </div>
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                    </button>
+                    
+                    {/* 企业级诊断 */}
+                    <div className="p-3 bg-gradient-to-r from-purple-700/50 to-indigo-600/50 rounded-lg border border-purple-500/30">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <BuildingLibraryIcon className="w-5 h-5 text-purple-400" />
+                          <span className="text-sm font-medium text-gray-200">Enterprise Solution</span>
+                        </div>
+                        <span className="text-xs text-purple-400 font-medium">$199.99</span>
+                      </div>
+                      <p className="text-xs text-gray-400 mt-1">Custom portfolio strategies for institutions</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1049,11 +1243,19 @@ export default function AssetConfigurationPage({
           {/* 策略匹配提示 */}
           {totalAssets > 0 && recommendedAllocation && deviations && (
             <div className="mt-4 p-4 bg-gradient-to-r from-blue-900/20 to-cyan-900/20 rounded-xl border border-blue-600/30">
-              <p className="text-sm text-blue-200 text-center">
+              <p className="text-sm text-blue-200 text-center mb-3">
                 💡 System has generated personalized configuration recommendations based on your investment philosophy and risk level.
                 {Object.values(deviations).some(d => Math.abs(d) > 25) && 
                   ' Some asset allocation deviations are significant, consider adjusting based on recommended ratios.'}
               </p>
+              <div className="text-xs text-blue-300/80 text-center p-3 bg-blue-900/20 rounded-lg border border-blue-500/20">
+                <p className="mb-2">
+                  <span className="font-medium">⚠️ Important Notice:</span> System parameters are dynamically adjusted based on market environment changes.
+                </p>
+                <p>
+                  Parameter settings may vary over time, and the same input values may produce different results in different periods due to market fluctuations, economic conditions, and regulatory changes.
+                </p>
+              </div>
             </div>
           )}
         </div>

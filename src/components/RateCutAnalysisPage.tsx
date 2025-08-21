@@ -12,6 +12,7 @@ import {
 import emailjs from '@emailjs/browser'
 import LanguageSwitcher from './LanguageSwitcher'
 import { useLanguage } from '../contexts/LanguageContext'
+import { financialParamsManager } from '../lib/config'
 
 interface RateCutAnalysisPageProps {
   onBack: () => void
@@ -84,12 +85,30 @@ export default function RateCutAnalysisPage({
 
   // 历史回测数据（基于历史降息周期的资产影响）
   const historicalImpacts = {
-    equity: { baseImpact: 0.15, volatility: 0.08 }, // 股票通常受益于降息
-    realEstate: { baseImpact: 0.12, volatility: 0.06 }, // 房产受益于低利率
-    cash: { baseImpact: -0.05, volatility: 0.02 }, // 现金收益下降
-    fund: { baseImpact: 0.08, volatility: 0.05 }, // 基金混合影响
-    crypto: { baseImpact: 0.25, volatility: 0.15 }, // 加密货币高波动
-    insurance: { baseImpact: -0.02, volatility: 0.03 } // 保险轻微负面
+    equity: { 
+      baseImpact: financialParamsManager.getRateCutImpactCoefficient('equity'), 
+      volatility: financialParamsManager.getAssetMetrics('equity').volatility / 12 // 转换为月度波动率
+    },
+    realEstate: { 
+      baseImpact: financialParamsManager.getRateCutImpactCoefficient('realEstate'), 
+      volatility: financialParamsManager.getAssetMetrics('realEstate').volatility / 12
+    },
+    cash: { 
+      baseImpact: financialParamsManager.getRateCutImpactCoefficient('cash'), 
+      volatility: financialParamsManager.getAssetMetrics('cash').volatility / 12
+    },
+    fund: { 
+      baseImpact: financialParamsManager.getRateCutImpactCoefficient('fund'), 
+      volatility: financialParamsManager.getAssetMetrics('fund').volatility / 12
+    },
+    crypto: { 
+      baseImpact: financialParamsManager.getRateCutImpactCoefficient('crypto'), 
+      volatility: financialParamsManager.getAssetMetrics('crypto').volatility / 12
+    },
+    insurance: { 
+      baseImpact: financialParamsManager.getRateCutImpactCoefficient('insurance'), 
+      volatility: financialParamsManager.getAssetMetrics('insurance').volatility / 12
+    }
   }
 
   // 降息情景分析算法
@@ -181,6 +200,11 @@ export default function RateCutAnalysisPage({
     // 创建PDF报告内容
     const reportContent = generatePDFReportContent()
     
+    // 根据语言设置文件名
+    const fileName = language === 'en' 
+      ? `rate-cut-analysis-report-${new Date().toISOString().split('T')[0]}.html`
+      : `降息资产配置分析报告-${new Date().toISOString().split('T')[0]}.html`
+    
     // 创建Blob对象
     const blob = new Blob([reportContent], { type: 'text/html;charset=utf-8' })
     
@@ -188,7 +212,7 @@ export default function RateCutAnalysisPage({
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `rate-cut-analysis-report-${new Date().toISOString().split('T')[0]}.html`
+    link.download = fileName
     
     // 触发下载
     document.body.appendChild(link)
@@ -207,9 +231,21 @@ export default function RateCutAnalysisPage({
     const timestamp = new Date().toLocaleString()
     const reportDate = new Date().toLocaleDateString()
     
+    // 根据语言设置生成不同的报告内容
+    if (language === 'en') {
+      // 英文界面：生成纯英文报告
+      return generateEnglishReport(timestamp, reportDate)
+    } else {
+      // 中文界面：生成双语报告
+      return generateBilingualReport(timestamp, reportDate)
+    }
+  }
+
+  // 生成纯英文报告
+  const generateEnglishReport = (timestamp: string, reportDate: string) => {
     return `
 <!DOCTYPE html>
-<html lang="${language === 'en' ? 'en' : 'zh-CN'}">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -353,21 +389,21 @@ export default function RateCutAnalysisPage({
     </style>
 </head>
 <body>
-    <!-- 报告头部 -->
+    <!-- Report Header -->
     <div class="header">
         <div class="logo">🏦 Rate Cut Asset Allocation Analysis</div>
-        <div class="subtitle">降息资产配置分析报告</div>
+        <div class="subtitle">Federal Reserve Rate Cut Impact Analysis Report</div>
         <div style="margin-top: 10px; color: #6b7280;">
-            Generated: ${timestamp} | 生成时间: ${timestamp}
+            Generated: ${timestamp}
         </div>
     </div>
 
-    <!-- 分析参数 -->
+    <!-- Analysis Parameters -->
     <div class="section">
-        <div class="section-title">📊 Analysis Parameters | 分析参数</div>
+        <div class="section-title">📊 Analysis Parameters</div>
         <div class="grid">
             <div class="card">
-                <div class="card-title">Rate Cut Scenario | 降息情景</div>
+                <div class="card-title">Rate Cut Scenario</div>
                 <div class="metric">
                     <span class="label">Annual Rate Cut:</span>
                     <span class="value">${scenario.basisPoints} basis points</span>
@@ -382,7 +418,7 @@ export default function RateCutAnalysisPage({
                 </div>
             </div>
             <div class="card">
-                <div class="card-title">Investment Profile | 投资配置</div>
+                <div class="card-title">Investment Profile</div>
                 <div class="metric">
                     <span class="label">Risk Level:</span>
                     <span class="value">${selectedRiskLevel}</span>
@@ -399,9 +435,9 @@ export default function RateCutAnalysisPage({
         </div>
     </div>
 
-    <!-- 投资组合影响分析 -->
+    <!-- Portfolio Impact Analysis -->
     <div class="section">
-        <div class="section-title">💼 Portfolio Impact Analysis | 投资组合影响分析</div>
+        <div class="section-title">💼 Portfolio Impact Analysis</div>
         <div class="grid">
             ${analysisResults.map((result) => `
                 <div class="card">
@@ -433,12 +469,12 @@ export default function RateCutAnalysisPage({
         </div>
     </div>
 
-    <!-- 策略建议 -->
+    <!-- Strategic Recommendations -->
     <div class="section page-break">
-        <div class="section-title">🎯 Strategic Recommendations | 策略建议</div>
+        <div class="section-title">🎯 Strategic Recommendations</div>
         <div class="summary-grid">
             <div class="winners">
-                <div class="section-title">Rate Cut Winners | 降息受益资产</div>
+                <div class="section-title">Rate Cut Winners</div>
                 ${analysisResults
                     .filter(result => result.projectedChange > 0)
                     .sort((a, b) => b.projectedChange - a.projectedChange)
@@ -452,7 +488,7 @@ export default function RateCutAnalysisPage({
                     `).join('')}
             </div>
             <div class="losers">
-                <div class="section-title">Rate Cut Losers | 降息受损资产</div>
+                <div class="section-title">Rate Cut Losers</div>
                 ${analysisResults
                     .filter(result => result.projectedChange < 0)
                     .sort((a, b) => a.projectedChange - b.projectedChange)
@@ -468,7 +504,285 @@ export default function RateCutAnalysisPage({
         </div>
     </div>
 
-    <!-- 页脚 -->
+    <!-- Footer -->
+    <div class="footer">
+        <div style="margin-bottom: 10px;">
+            <strong>Powered by eclipsever</strong>
+        </div>
+        <div>https://eclipsever.online</div>
+        <div style="margin-top: 10px; font-size: 10px;">
+            This report was generated by the Rate Cut Asset Allocation Tool.
+        </div>
+    </div>
+</body>
+</html>
+    `
+  }
+
+  // 生成双语报告
+  const generateBilingualReport = (timestamp: string, reportDate: string) => {
+    return `
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Cut Asset Allocation Analysis Report | 降息资产配置分析报告</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1in;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1f2937;
+            border-left: 4px solid #2563eb;
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f9fafb;
+        }
+        
+        .card-title {
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 10px;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+        }
+        
+        .label {
+            color: #6b7280;
+        }
+        
+        .value {
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        .positive { color: #059669; }
+        .negative { color: #dc2626; }
+        .neutral { color: #2563eb; }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 12px;
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .winners, .losers {
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .winners {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+        
+        .losers {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+        }
+        
+        .winners .section-title {
+            color: #059669;
+            border-left-color: #059669;
+        }
+        
+        .losers .section-title {
+            color: #dc2626;
+            border-left-color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <!-- 报告头部 | Report Header -->
+    <div class="header">
+        <div class="logo">🏦 Rate Cut Asset Allocation Analysis | 降息资产配置分析</div>
+        <div class="subtitle">Federal Reserve Rate Cut Impact Analysis Report | 美联储降息影响分析报告</div>
+        <div style="margin-top: 10px; color: #6b7280;">
+            Generated: ${timestamp} | 生成时间: ${timestamp}
+        </div>
+    </div>
+
+    <!-- 分析参数 | Analysis Parameters -->
+    <div class="section">
+        <div class="section-title">📊 Analysis Parameters | 分析参数</div>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Rate Cut Scenario | 降息情景</div>
+                <div class="metric">
+                    <span class="label">Annual Rate Cut | 年度降息:</span>
+                    <span class="value">${scenario.basisPoints} basis points | 基点</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Cycle Duration | 周期持续时间:</span>
+                    <span class="value">${scenario.cycleDuration} years | 年</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Total Cut Degree | 总降息程度:</span>
+                    <span class="value">${scenario.totalCutDegree} basis points | 基点</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Investment Profile | 投资配置</div>
+                <div class="metric">
+                    <span class="label">Risk Level | 风险等级:</span>
+                    <span class="value">${selectedRiskLevel}</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Investment Philosophy | 投资哲学:</span>
+                    <span class="value">${selectedMethodology}</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Analysis Date | 分析日期:</span>
+                    <span class="value">${reportDate}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 投资组合影响分析 | Portfolio Impact Analysis -->
+    <div class="section">
+        <div class="section-title">💼 Portfolio Impact Analysis | 投资组合影响分析</div>
+        <div class="grid">
+            ${analysisResults.map((result) => `
+                <div class="card">
+                    <div class="card-title">${getAssetDisplayName(result.asset)} | ${getAssetChineseName(result.asset)}</div>
+                    <div class="metric">
+                        <span class="label">Current Value | 当前价值:</span>
+                        <span class="value">$${result.currentValue.toLocaleString()}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="label">Projected Change | 预期变化:</span>
+                        <span class="value ${result.projectedChange > 0 ? 'positive' : result.projectedChange < 0 ? 'negative' : 'neutral'}">
+                            ${result.projectedChange > 0 ? '+' : ''}$${result.projectedChange.toLocaleString()}
+                        </span>
+                    </div>
+                    <div class="metric">
+                        <span class="label">New Value | 新价值:</span>
+                        <span class="value">$${result.newValue.toLocaleString()}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="label">Confidence | 置信度:</span>
+                        <span class="value">${result.confidence}%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="label">Reasoning | 分析依据:</span>
+                        <span class="value" style="font-size: 12px;">${result.reasoning}</span>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    </div>
+
+    <!-- 策略建议 | Strategic Recommendations -->
+    <div class="section page-break">
+        <div class="section-title">🎯 Strategic Recommendations | 策略建议</div>
+        <div class="summary-grid">
+            <div class="winners">
+                <div class="section-title">Rate Cut Winners | 降息受益资产</div>
+                ${analysisResults
+                    .filter(result => result.projectedChange > 0)
+                    .sort((a, b) => b.projectedChange - a.projectedChange)
+                    .map((result) => `
+                        <div class="metric">
+                            <span class="label">${getAssetDisplayName(result.asset)} | ${getAssetChineseName(result.asset)}</span>
+                            <span class="value positive">
+                                +${((result.projectedChange / result.currentValue) * 100).toFixed(1)}%
+                            </span>
+                        </div>
+                    `).join('')}
+            </div>
+            <div class="losers">
+                <div class="section-title">Rate Cut Losers | 降息受损资产</div>
+                ${analysisResults
+                    .filter(result => result.projectedChange < 0)
+                    .sort((a, b) => a.projectedChange - b.projectedChange)
+                    .map((result) => `
+                        <div class="metric">
+                            <span class="label">${getAssetDisplayName(result.asset)} | ${getAssetChineseName(result.asset)}</span>
+                            <span class="value negative">
+                                ${((result.projectedChange / result.currentValue) * 100).toFixed(1)}%
+                            </span>
+                        </div>
+                    `).join('')}
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 | Footer -->
     <div class="footer">
         <div style="margin-bottom: 10px;">
             <strong>Powered by eclipsever</strong>
@@ -480,8 +794,7 @@ export default function RateCutAnalysisPage({
         </div>
     </div>
 </body>
-</html>
-    `
+</html>`
   }
 
   // EmailJS邮件发送功能
@@ -628,6 +941,19 @@ export default function RateCutAnalysisPage({
       insurance: language === 'en' ? 'Insurance' : '保险'
     }
     return names[asset as keyof typeof names] || asset
+  }
+
+  // 获取资产中文名称（用于双语报告）
+  const getAssetChineseName = (asset: string) => {
+    const chineseNames = {
+      equity: '股票',
+      realEstate: '房产',
+      cash: '现金',
+      fund: '基金',
+      crypto: '加密货币',
+      insurance: '保险'
+    }
+    return chineseNames[asset as keyof typeof chineseNames] || asset
   }
 
   // 获取影响颜色
