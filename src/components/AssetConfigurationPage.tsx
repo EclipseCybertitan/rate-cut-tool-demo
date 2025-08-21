@@ -13,7 +13,8 @@ import {
   SparklesIcon,
   StarIcon,
   AcademicCapIcon,
-  TrophyIcon
+  TrophyIcon,
+  CogIcon
 } from '@heroicons/react/24/outline'
 import LanguageSwitcher from './LanguageSwitcher'
 import { useLanguage } from '../contexts/LanguageContext'
@@ -230,6 +231,10 @@ export default function AssetConfigurationPage({
   //   return selectedBeliefData.riskLevels[adjustedRiskLevel]
   // }
 
+  // 智能配置状态
+  const [realEstateExemption, setRealEstateExemption] = useState(false)
+  const [debtBurdenLevel, setDebtBurdenLevel] = useState<'low' | 'medium' | 'high'>('low')
+  
   // 年龄组配置
   const ageGroups = [
     { value: 'young', label: { en: '25-35 years', zh: '25-35岁' }, description: { en: 'Young professional, can take higher risks', zh: '年轻专业人士，可承担较高风险' } },
@@ -399,6 +404,69 @@ export default function AssetConfigurationPage({
 
   const totalAssets = Object.values(localInput).reduce((sum, value) => sum + value, 0)
 
+  // 智能配置调整函数
+  const getSmartAdjustedAllocation = (baseAllocation: Record<string, number>) => {
+    if (!baseAllocation) return baseAllocation
+    
+    const adjusted = { ...baseAllocation }
+    
+    // 房产豁免逻辑
+    if (realEstateExemption) {
+      const exemptionRatio = 0.8 // 豁免80%的房产配置
+      const maxExemptionAmount = Math.min(50000, totalAssets * 0.5) // 最大豁免5万或总资产50%
+      
+      if (adjusted.realEstate > 0) {
+        const exemptedAmount = Math.min(
+          adjusted.realEstate * exemptionRatio,
+          maxExemptionAmount / totalAssets * 100
+        )
+        adjusted.realEstate = Math.max(0, adjusted.realEstate - exemptedAmount)
+        
+        // 将豁免的配置重新分配给其他资产
+        const remainingAssets = ['equity', 'cash', 'fund', 'crypto', 'insurance']
+        const redistributionRatio = exemptedAmount / remainingAssets.length
+        remainingAssets.forEach(asset => {
+          if (adjusted[asset as keyof typeof adjusted] !== undefined) {
+            adjusted[asset as keyof typeof adjusted] += redistributionRatio
+          }
+        })
+      }
+    }
+    
+    // 债务负担率调整
+    const debtConfig = {
+      low: { maxRiskAssets: 0.8, cashBuffer: 0.1 },
+      medium: { maxRiskAssets: 0.6, cashBuffer: 0.15 },
+      high: { maxRiskAssets: 0.4, cashBuffer: 0.25 }
+    }
+    
+    const currentConfig = debtConfig[debtBurdenLevel]
+    
+    // 调整现金缓冲
+    if (adjusted.cash < currentConfig.cashBuffer * 100) {
+      adjusted.cash = currentConfig.cashBuffer * 100
+    }
+    
+    // 限制风险资产（股票+加密货币）
+    const riskAssets = adjusted.equity + adjusted.crypto
+    const maxRiskAssets = currentConfig.maxRiskAssets * 100
+    if (riskAssets > maxRiskAssets) {
+      const reduction = riskAssets - maxRiskAssets
+      if (adjusted.equity > 0) {
+        const equityReduction = Math.min(reduction, adjusted.equity * 0.7)
+        adjusted.equity -= equityReduction
+        adjusted.cash += equityReduction
+      }
+      if (adjusted.crypto > 0 && riskAssets - adjusted.equity > maxRiskAssets) {
+        const cryptoReduction = Math.min(reduction - adjusted.equity, adjusted.crypto)
+        adjusted.crypto -= cryptoReduction
+        adjusted.cash += cryptoReduction
+      }
+    }
+    
+    return adjusted
+  }
+  
   // 根据投资哲学和风险等级计算推荐配置
   const getRecommendedAllocation = () => {
     if (!selectedMethodology) return null
@@ -421,7 +489,8 @@ export default function AssetConfigurationPage({
       }
     }
     
-    return baseAllocations[selectedMethodology]?.[selectedRiskLevel] || null
+    const baseAllocation = baseAllocations[selectedMethodology]?.[selectedRiskLevel] || null
+    return baseAllocation ? getSmartAdjustedAllocation(baseAllocation) : null
   }
 
   const recommendedAllocation = getRecommendedAllocation()
@@ -949,9 +1018,112 @@ export default function AssetConfigurationPage({
                     <span className="text-yellow-400">●</span> 
                     Deviation ≤25%: Good configuration
                   </p>
-                  <p>
+                  <p className="mb-2">
                     <span className="text-red-400">●</span> 
                     Deviation {'>'}25%: Needs adjustment
+                  </p>
+                  {(realEstateExemption || debtBurdenLevel !== 'low') && (
+                    <div className="mt-3 pt-3 border-t border-gray-600">
+                      <p className="text-blue-300 font-medium">
+                        {language === 'en' ? 'Smart Adjustments Applied:' : '已应用智能调整：'}
+                      </p>
+                      {realEstateExemption && (
+                        <p className="text-blue-200 text-xs mt-1">
+                          🏠 {language === 'en' ? 'Real estate allocation reduced' : '房产配置已减少'}
+                        </p>
+                      )}
+                      {debtBurdenLevel !== 'low' && (
+                        <p className="text-blue-200 text-xs mt-1">
+                          💰 {language === 'en' ? `Debt burden adjustment: ${debtBurdenLevel}` : `债务负担调整：${debtBurdenLevel === 'medium' ? '中等' : '高'}`}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 智能配置选择 */}
+        <div className="bg-gradient-to-br from-blue-900/20 via-indigo-900/20 to-purple-900/20 border border-blue-600/30 rounded-2xl p-6 mb-8">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="relative">
+              <CogIcon className="w-8 h-8 text-blue-400" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
+            </div>
+            <h3 className="text-xl font-bold text-blue-300">
+              {language === 'en' ? 'Smart Configuration Options' : '智能配置选项'}
+            </h3>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* 房产豁免选择 */}
+            <div className="space-y-4">
+              <h4 className="text-lg font-medium text-blue-200">
+                🏠 {language === 'en' ? 'Real Estate Strategy' : '房产策略'}
+              </h4>
+              <div className="space-y-3">
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={realEstateExemption}
+                    onChange={(e) => setRealEstateExemption(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+                  />
+                  <span className="text-gray-300 text-sm">
+                    {language === 'en' 
+                      ? 'I prefer to skip real estate investment (rent coverage/income constraint)' 
+                      : '我选择跳过房产投资（房租覆盖/收入约束）'}
+                  </span>
+                </label>
+                {realEstateExemption && (
+                  <div className="ml-7 p-3 bg-blue-900/30 rounded-lg border border-blue-500/30">
+                    <p className="text-xs text-blue-200">
+                      {language === 'en' 
+                        ? '✓ Real estate allocation will be reduced by 80%' 
+                        : '✓ 房产配置将减少80%'}
+                    </p>
+                    <p className="text-xs text-blue-200 mt-1">
+                      {language === 'en' 
+                        ? '✓ Freed allocation will be redistributed to other assets' 
+                        : '✓ 释放的配置将重新分配给其他资产'}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* 债务负担率选择 */}
+            <div className="space-y-4">
+              <h4 className="text-lg font-medium text-blue-200">
+                💰 {language === 'en' ? 'Debt Burden Level' : '债务负担水平'}
+              </h4>
+              <div className="space-y-3">
+                {[
+                  { value: 'low', label: { en: 'Low or No Debt', zh: '债务负担很低或无' }, color: 'from-green-500 to-emerald-500' },
+                  { value: 'medium', label: { en: 'Moderate Debt (50% income)', zh: '中等债务负担（50%收入）' }, color: 'from-yellow-500 to-orange-500' },
+                  { value: 'high', label: { en: 'High Debt (Most income)', zh: '高债务负担（大部分收入）' }, color: 'from-red-500 to-pink-500' }
+                ].map((option) => (
+                  <label key={option.value} className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="debtBurden"
+                      value={option.value}
+                      checked={debtBurdenLevel === option.value}
+                      onChange={(e) => setDebtBurdenLevel(e.target.value as 'low' | 'medium' | 'high')}
+                      className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <span className={`text-sm px-3 py-2 rounded-lg bg-gradient-to-r ${option.color} bg-clip-text text-transparent font-medium`}>
+                      {language === 'en' ? option.label.en : option.label.zh}
+                    </span>
+                  </label>
+                ))}
+                <div className="ml-7 p-3 bg-blue-900/30 rounded-lg border border-blue-500/30">
+                  <p className="text-xs text-blue-200">
+                    {language === 'en' 
+                      ? '✓ Higher debt burden = More cash buffer, Less risk assets' 
+                      : '✓ 债务负担越高 = 现金缓冲越多，风险资产越少'}
                   </p>
                 </div>
               </div>
