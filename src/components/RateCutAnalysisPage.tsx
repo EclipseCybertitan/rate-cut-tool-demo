@@ -458,7 +458,7 @@ export default function RateCutAnalysisPage({
                     </div>
                     <div class="metric">
                         <span class="label">Confidence:</span>
-                        <span class="value">${result.confidence}%</span>
+                        <span class="value">${parseFloat(result.confidence).toFixed(2)}%</span>
                     </div>
                     <div class="metric">
                         <span class="label">Reasoning:</span>
@@ -736,7 +736,7 @@ export default function RateCutAnalysisPage({
                     </div>
                     <div class="metric">
                         <span class="label">Confidence | 置信度:</span>
-                        <span class="value">${result.confidence}%</span>
+                        <span class="value">${parseFloat(result.confidence).toFixed(2)}%</span>
                     </div>
                     <div class="metric">
                         <span class="label">Reasoning | 分析依据:</span>
@@ -873,7 +873,7 @@ export default function RateCutAnalysisPage({
       content += `   Current Value: $${result.currentValue.toLocaleString()}\n`
       content += `   Projected Change: $${result.projectedChange.toLocaleString()}\n`
       content += `   New Value: $${result.newValue.toLocaleString()}\n`
-      content += `   Confidence: ${result.confidence}%\n`
+      content += `   Confidence: ${parseFloat(result.confidence).toFixed(2)}%\n`
       content += `   Reasoning: ${result.reasoning}\n\n`
     })
     
@@ -1215,7 +1215,7 @@ export default function RateCutAnalysisPage({
                     {language === 'en' ? 'Confidence:' : '置信度:'}
                   </span>
                   <span className="text-blue-400 font-medium">
-                    {result.confidence}%
+                    {parseFloat(result.confidence).toFixed(2)}%
                   </span>
                 </div>
 

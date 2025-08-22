@@ -249,9 +249,9 @@ export default function AssetConfigurationPage({
     
     const maxDeviation = Math.max(...Object.values(deviations).map(d => Math.abs(d)))
     
-    if (maxDeviation <= 10) return 'Strong Recommendation'
-    if (maxDeviation <= 25) return 'Recommendation'
-    return 'Asset Diagnosis Required'
+    if (maxDeviation <= 10) return language === 'en' ? 'Excellent' : '优秀'
+    if (maxDeviation <= 25) return language === 'en' ? 'Good' : '良好'
+    return language === 'en' ? 'Needs Optimization' : '需要优化'
   }
 
   const getAssessmentColor = () => {
@@ -1131,105 +1131,7 @@ export default function AssetConfigurationPage({
           </div>
         </div>
 
-        {/* 资产诊断需求 */}
-        <div className="bg-gradient-to-br from-amber-900/20 via-yellow-900/20 to-orange-900/20 border border-amber-600/30 rounded-2xl p-6 mb-8">
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="relative">
-              <AcademicCapIcon className="w-8 h-8 text-amber-400" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
-            </div>
-            <h3 className="text-xl font-bold text-amber-300">
-              {language === 'en' ? 'Asset Diagnosis Required' : '资产诊断需求'}
-            </h3>
-          </div>
-          
-          <div className="text-center mb-6">
-            <p className="text-gray-300 text-sm">
-              {language === 'en' ? 'Based on deviation analysis' : '基于偏差分析'}
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-4">
-            {/* 基础诊断 */}
-            <div className="group relative bg-gradient-to-br from-gray-800/50 to-gray-700/50 rounded-xl p-4 border border-gray-600/30 hover:border-gray-500/50 transition-all duration-300 cursor-pointer">
-              <div className="text-center">
-                <div className="flex items-center justify-center space-x-2 mb-2">
-                  <StarIcon className="w-5 h-5 text-blue-400" />
-                  <span className="text-sm font-medium text-gray-200">Basic Diagnosis</span>
-                </div>
-                <div className="text-lg font-bold text-green-400 mb-1">FREE</div>
-                <p className="text-xs text-gray-400">Essential portfolio health check</p>
-              </div>
-              
-              {/* 悬停详细说明 */}
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                <div className="text-center">
-                  <div className="text-xs text-gray-300 mb-1">基础投资组合健康检查</div>
-                  <div className="text-xs text-gray-400">• 基础风险评估</div>
-                  <div className="text-xs text-gray-400">• 简单配置建议</div>
-                  <div className="text-xs text-gray-400">• 标准报告</div>
-                </div>
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
-              </div>
-            </div>
-            
-            {/* 高级诊断 */}
-            <button
-              onClick={() => setShowAssetDiagnosis(true)}
-              className="group relative w-full p-4 bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-500 text-white rounded-xl border-2 border-amber-400/50 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
-            >
-              <div className="text-center">
-                <div className="flex items-center justify-center space-x-2 mb-2">
-                  <AcademicCapIcon className="w-6 h-6 text-white" />
-                  <span className="font-bold text-lg">Premium Asset Diagnosis</span>
-                </div>
-                <div className="flex items-center justify-center space-x-1 mb-1">
-                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full">PRO</span>
-                  <span className="text-lg font-bold">$29.99</span>
-                </div>
-                <p className="text-xs text-white/90">Advanced portfolio analysis with AI-powered insights</p>
-              </div>
-              
-              {/* 悬停详细说明 */}
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-amber-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                <div className="text-center">
-                  <div className="text-xs text-amber-200 mb-1">AI驱动的深度投资组合分析</div>
-                  <div className="text-xs text-amber-100">• AI智能分析引擎</div>
-                  <div className="text-xs text-amber-100">• 高级风险评估模型</div>
-                  <div className="text-xs text-amber-100">• 个性化优化建议</div>
-                  <div className="text-xs text-amber-100">• 实时市场洞察</div>
-                  <div className="text-xs text-amber-100">• 优先客户支持</div>
-                </div>
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-amber-800"></div>
-              </div>
-            </button>
-            
-            {/* 企业级诊断 */}
-            <div className="group relative bg-gradient-to-r from-purple-700/50 to-indigo-600/50 rounded-xl p-4 border border-purple-500/30 hover:border-purple-400/50 transition-all duration-300 cursor-pointer">
-              <div className="text-center">
-                <div className="flex items-center justify-center space-x-2 mb-2">
-                  <BuildingLibraryIcon className="w-5 h-5 text-purple-400" />
-                  <span className="text-sm font-medium text-gray-200">Enterprise Solution</span>
-                </div>
-                <div className="text-lg font-bold text-purple-400 mb-1">$199.99</div>
-                <p className="text-xs text-gray-400">Custom portfolio strategies for institutions</p>
-              </div>
-              
-              {/* 悬停详细说明 */}
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-purple-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                <div className="text-center">
-                  <div className="text-xs text-purple-200 mb-1">机构级定制投资策略</div>
-                  <div className="text-xs text-purple-100">• 定制化投资策略</div>
-                  <div className="text-xs text-purple-100">• 机构级风险管理</div>
-                  <div className="text-xs text-purple-100">• 专业团队支持</div>
-                  <div className="text-xs text-purple-100">• API集成服务</div>
-                  <div className="text-xs text-purple-100">• 专属客户经理</div>
-                </div>
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-purple-800"></div>
-              </div>
-            </div>
-          </div>
-        </div>
+
 
         {/* 资产总计和风险分析 */}
         {totalAssets > 0 && (
@@ -1319,69 +1221,124 @@ export default function AssetConfigurationPage({
                 </div>
               </div>
               
-              {/* 综合评价 */}
-              <div className="space-y-4">
-                <h4 className="text-sm font-medium text-gray-400">Comprehensive Assessment</h4>
-                <div className={`p-6 rounded-xl ${getAssessmentStyle()} border-2 border-gray-600/50 shadow-lg`}>
-                  <div className="text-center mb-4">
-                    <div className={`text-3xl font-bold ${getAssessmentColor()} mb-2`}>
+              {/* 综合评价与诊断服务 */}
+              <div className="space-y-6">
+                <div className="text-center">
+                  <h4 className="text-lg font-semibold text-gray-300 mb-3">
+                    {language === 'en' ? 'Portfolio Analysis Services' : '投资组合分析服务'}
+                  </h4>
+                  <div className={`inline-flex items-center px-4 py-2 rounded-full ${getAssessmentStyle()} border border-gray-600/50`}>
+                    <div className={`text-lg font-bold ${getAssessmentColor()} mr-2`}>
                       {getAssessmentLevel()}
                     </div>
-                    <div className="text-sm text-gray-400">
-                      Based on deviation analysis
+                    <span className="text-sm text-gray-400">
+                      {language === 'en' ? 'Current Status' : '当前状态'}
+                    </span>
+                  </div>
+                </div>
+                
+                {/* 科技感付费服务选项 */}
+                <div className="grid md:grid-cols-3 gap-6">
+                  {/* 基础诊断 - 科技简约风格 */}
+                  <div className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-2xl p-6 border border-slate-600/40 hover:border-slate-500/60 transition-all duration-300 cursor-pointer backdrop-blur-sm">
+                    <div className="text-center">
+                      <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center border border-blue-500/30">
+                        <StarIcon className="w-6 h-6 text-blue-400" />
+                      </div>
+                      <h3 className="text-base font-semibold text-slate-200 mb-2">
+                        {language === 'en' ? 'Basic Diagnosis' : '基础诊断'}
+                      </h3>
+                      <div className="text-2xl font-bold text-emerald-400 mb-2">FREE</div>
+                      <p className="text-sm text-slate-400 leading-relaxed">
+                        {language === 'en' ? 'Essential portfolio health check' : '基础投资组合健康检查'}
+                      </p>
+                    </div>
+                    
+                    {/* 悬停详细说明 */}
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 px-4 py-3 bg-slate-900/95 text-white text-sm rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 border border-slate-700/50 backdrop-blur-sm">
+                      <div className="text-center">
+                        <div className="text-sm text-slate-200 mb-2 font-medium">
+                          {language === 'en' ? 'Basic Portfolio Analysis' : '基础投资组合分析'}
+                        </div>
+                        <div className="text-xs text-slate-300 space-y-1">
+                          <div>• {language === 'en' ? 'Basic risk assessment' : '基础风险评估'}</div>
+                          <div>• {language === 'en' ? 'Simple allocation advice' : '简单配置建议'}</div>
+                          <div>• {language === 'en' ? 'Standard report' : '标准报告'}</div>
+                        </div>
+                      </div>
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-slate-900/95"></div>
                     </div>
                   </div>
                   
-                  {/* 商业付费按钮区域 */}
-                  <div className="space-y-3">
-                    {/* 免费诊断 */}
-                    <div className="p-3 bg-gradient-to-r from-gray-700/50 to-gray-600/50 rounded-lg border border-gray-500/30">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <StarIcon className="w-5 h-5 text-blue-400" />
-                          <span className="text-sm font-medium text-gray-200">Basic Diagnosis</span>
-                        </div>
-                        <span className="text-xs text-green-400 font-medium">FREE</span>
+                  {/* 高级诊断 - 专业科技风格 */}
+                  <button
+                    onClick={() => setShowAssetDiagnosis(true)}
+                    className="group relative w-full bg-gradient-to-br from-blue-600/90 to-blue-700/90 rounded-2xl p-6 border border-blue-500/50 hover:border-blue-400/70 transition-all duration-300 transform hover:scale-[1.02] backdrop-blur-sm shadow-xl hover:shadow-2xl"
+                  >
+                    <div className="text-center">
+                      <div className="w-12 h-12 mx-auto mb-4 bg-white/10 rounded-xl flex items-center justify-center border border-white/20">
+                        <AcademicCapIcon className="w-6 h-6 text-white" />
                       </div>
-                      <p className="text-xs text-gray-400 mt-1">Essential portfolio health check</p>
+                      <h3 className="text-base font-semibold text-white mb-2">
+                        {language === 'en' ? 'Premium Diagnosis' : '高级诊断'}
+                      </h3>
+                      <div className="flex items-center justify-center space-x-2 mb-2">
+                        <span className="text-xs bg-white/20 px-3 py-1 rounded-full text-white/90 font-medium">PRO</span>
+                        <span className="text-2xl font-bold text-white">$29.99</span>
+                      </div>
+                      <p className="text-sm text-blue-100 leading-relaxed">
+                        {language === 'en' ? 'AI-powered advanced analysis' : 'AI驱动的深度分析'}
+                      </p>
                     </div>
                     
-                    {/* 高级诊断 */}
-                    <button
-                      onClick={() => setShowAssetDiagnosis(true)}
-                      className="w-full p-4 bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-500 text-white rounded-xl border-2 border-amber-400/50 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 group"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-2">
-                          <AcademicCapIcon className="w-6 h-6 text-white" />
-                          <span className="font-bold text-lg">Premium Asset Diagnosis</span>
+                    {/* 悬停详细说明 */}
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 px-4 py-3 bg-blue-900/95 text-white text-sm rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 border border-blue-700/50 backdrop-blur-sm">
+                      <div className="text-center">
+                        <div className="text-sm text-blue-100 mb-2 font-medium">
+                          {language === 'en' ? 'Advanced AI Analysis' : 'AI智能深度分析'}
                         </div>
-                        <div className="flex items-center space-x-1">
-                          <span className="text-xs bg-white/20 px-2 py-1 rounded-full">PRO</span>
-                          <span className="text-sm font-medium">$29.99</span>
-                        </div>
-                      </div>
-                      <div className="text-left">
-                        <p className="text-sm text-white/90 mb-2">Advanced portfolio analysis with AI-powered insights</p>
-                        <div className="flex items-center space-x-2 text-xs text-white/80">
-                          <span>✓ AI Analysis</span>
-                          <span>✓ Risk Assessment</span>
-                          <span>✓ Optimization Plan</span>
+                        <div className="text-xs text-blue-200 space-y-1">
+                          <div>• {language === 'en' ? 'AI analysis engine' : 'AI智能分析引擎'}</div>
+                          <div>• {language === 'en' ? 'Advanced risk models' : '高级风险评估模型'}</div>
+                          <div>• {language === 'en' ? 'Personalized optimization' : '个性化优化建议'}</div>
+                          <div>• {language === 'en' ? 'Real-time market insights' : '实时市场洞察'}</div>
+                          <div>• {language === 'en' ? 'Priority support' : '优先客户支持'}</div>
                         </div>
                       </div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-                    </button>
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-blue-900/95"></div>
+                    </div>
+                  </button>
+                  
+                  {/* 企业级诊断 - 高端科技风格 */}
+                  <div className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-2xl p-6 border border-slate-600/40 hover:border-slate-500/60 transition-all duration-300 cursor-pointer backdrop-blur-sm">
+                    <div className="text-center">
+                      <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-slate-500/20 to-slate-600/20 rounded-xl flex items-center justify-center border border-slate-500/30">
+                        <BuildingLibraryIcon className="w-6 h-6 text-slate-400" />
+                      </div>
+                      <h3 className="text-base font-semibold text-slate-200 mb-2">
+                        {language === 'en' ? 'Enterprise Solution' : '企业级方案'}
+                      </h3>
+                      <div className="text-2xl font-bold text-slate-300 mb-2">$199.99</div>
+                      <p className="text-sm text-slate-400 leading-relaxed">
+                        {language === 'en' ? 'Custom institutional strategies' : '定制化机构策略'}
+                      </p>
+                    </div>
                     
-                    {/* 企业级诊断 */}
-                    <div className="p-3 bg-gradient-to-r from-purple-700/50 to-indigo-600/50 rounded-lg border border-purple-500/30">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <BuildingLibraryIcon className="w-5 h-5 text-purple-400" />
-                          <span className="text-sm font-medium text-gray-200">Enterprise Solution</span>
+                    {/* 悬停详细说明 */}
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 px-4 py-3 bg-slate-900/95 text-white text-sm rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 border border-slate-700/50 backdrop-blur-sm">
+                      <div className="text-center">
+                        <div className="text-sm text-slate-200 mb-2 font-medium">
+                          {language === 'en' ? 'Enterprise-Grade Solutions' : '企业级定制解决方案'}
                         </div>
-                        <span className="text-xs text-purple-400 font-medium">$199.99</span>
+                        <div className="text-xs text-slate-300 space-y-1">
+                          <div>• {language === 'en' ? 'Custom investment strategies' : '定制化投资策略'}</div>
+                          <div>• {language === 'en' ? 'Institutional risk management' : '机构级风险管理'}</div>
+                          <div>• {language === 'en' ? 'Professional team support' : '专业团队支持'}</div>
+                          <div>• {language === 'en' ? 'API integration services' : 'API集成服务'}</div>
+                          <div>• {language === 'en' ? 'Dedicated account manager' : '专属客户经理'}</div>
+                        </div>
                       </div>
-                      <p className="text-xs text-gray-400 mt-1">Custom portfolio strategies for institutions</p>
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-slate-900/95"></div>
                     </div>
                   </div>
                 </div>
