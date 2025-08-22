@@ -404,11 +404,70 @@ export default function AssetConfigurationPage({
 
   const totalAssets = Object.values(localInput).reduce((sum, value) => sum + value, 0)
 
-  // 智能配置调整函数
+  // 智能配置调整函数 - 包含年龄调整逻辑
   const getSmartAdjustedAllocation = (baseAllocation: Record<string, number>) => {
     if (!baseAllocation) return baseAllocation
     
     const adjusted = { ...baseAllocation }
+    
+    // 年龄调整逻辑 - 只有在未忽略年龄建议时生效
+    if (!ignoreAgeRecommendation && selectedAgeGroup) {
+      const ageAdjustments = {
+        young: {
+          // 年轻专业人士：增加风险资产，减少保守资产
+          equity: 1.15,    // 股票配置增加15%
+          crypto: 1.2,     // 加密货币配置增加20%
+          cash: 0.9,       // 现金配置减少10%
+          insurance: 0.95  // 保险配置减少5%
+        },
+        middle: {
+          // 职业生涯中期：保持平衡
+          equity: 1.0,     // 保持原配置
+          crypto: 1.0,
+          cash: 1.0,
+          insurance: 1.0
+        },
+        senior: {
+          // 退休前：适度保守
+          equity: 0.9,     // 股票配置减少10%
+          crypto: 0.8,     // 加密货币配置减少20%
+          cash: 1.1,       // 现金配置增加10%
+          insurance: 1.05  // 保险配置增加5%
+        },
+        elderly: {
+          // 退休年龄：保守策略
+          equity: 0.8,     // 股票配置减少20%
+          crypto: 0.6,     // 加密货币配置减少40%
+          cash: 1.2,       // 现金配置增加20%
+          insurance: 1.1   // 保险配置增加10%
+        }
+      }
+      
+      const currentAgeAdjustment = ageAdjustments[selectedAgeGroup as keyof typeof ageAdjustments]
+      if (currentAgeAdjustment) {
+        // 应用年龄调整
+        Object.keys(currentAgeAdjustment).forEach(asset => {
+          if (adjusted[asset as keyof typeof adjusted] !== undefined) {
+            adjusted[asset as keyof typeof adjusted] = Math.round(
+              adjusted[asset as keyof typeof adjusted] * currentAgeAdjustment[asset as keyof typeof currentAgeAdjustment]
+            )
+          }
+        })
+        
+        // 重新平衡总配置为100%
+        const total = Object.values(adjusted).reduce((sum, val) => sum + val, 0)
+        if (total !== 100) {
+          const adjustmentFactor = 100 / total
+          Object.keys(adjusted).forEach(asset => {
+            if (adjusted[asset as keyof typeof adjusted] !== undefined) {
+              adjusted[asset as keyof typeof adjusted] = Math.round(
+                adjusted[asset as keyof typeof adjusted] * adjustmentFactor
+              )
+            }
+          })
+        }
+      }
+    }
     
     // 房产豁免逻辑
     if (realEstateExemption) {
@@ -559,149 +618,168 @@ export default function AssetConfigurationPage({
       <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
 
-      <div className="relative z-10 container mx-auto px-4 py-8">
-        {/* 页面头部 */}
-        <div className="flex items-center justify-between mb-12">
+      <div className="relative z-10 container mx-auto px-3 sm:px-4 py-6 sm:py-8">
+        {/* 页面头部 - 优化手机端显示 */}
+        <div className="flex flex-col sm:flex-row items-center justify-between mb-8 sm:mb-12 space-y-4 sm:space-y-0">
           <button
             onClick={onBack}
-            className="flex items-center text-gray-300 hover:text-white transition-colors"
+            className="flex items-center text-gray-300 hover:text-white transition-colors self-start sm:self-auto"
           >
             <ArrowLeftIcon className="w-6 h-6 mr-2" />
-            {language === 'en' ? 'Back to Methodology' : '返回方法论'}
+            <span className="text-sm sm:text-base">
+              {language === 'en' ? 'Back to Methodology' : '返回方法论'}
+            </span>
           </button>
-          <h1 className="text-4xl font-bold text-white text-center flex-1">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white text-center flex-1">
             {language === 'en' ? 'Asset Configuration Input' : '资产配置输入'}
           </h1>
           {/* 语言切换器 */}
-          <LanguageSwitcher />
+          <div className="self-end sm:self-auto">
+            <LanguageSwitcher />
+          </div>
         </div>
 
         {/* 投资策略匹配分析 */}
         {selectedMethodology && (
-          <div className="bg-gradient-to-r from-green-900/20 to-emerald-900/20 p-6 rounded-2xl border border-green-600/30 mb-8">
-            <div className="flex items-start">
-              <AnalysisIcon className="w-6 h-6 text-green-400 mr-3 mt-1 flex-shrink-0" />
-              <div className="text-green-200 w-full">
+          <div className="bg-gradient-to-r from-green-900/20 to-emerald-900/20 p-4 sm:p-6 rounded-2xl border border-green-600/30 mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row items-start space-y-3 sm:space-y-0">
+              <AnalysisIcon className="w-6 h-6 text-green-400 mr-0 sm:mr-3 mt-1 flex-shrink-0 self-center sm:self-start" />
+              <div className="text-green-200 w-full text-center sm:text-left">
                 <h3 className="text-lg font-semibold mb-4">
-                  🎯 Investment Strategy Analysis
+                  🎯 {language === 'en' ? 'Investment Strategy Analysis' : '投资策略分析'}
                 </h3>
                 
-                {/* 基础策略信息 */}
-                <div className="grid md:grid-cols-2 gap-6 mb-6">
-                  <div className="bg-green-800/20 p-4 rounded-lg border border-green-600/30">
-                    <h4 className="font-semibold text-green-300 mb-2">
+                {/* 基础策略信息 - 优化手机端布局 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6">
+                  <div className="bg-green-800/20 p-3 sm:p-4 rounded-lg border border-green-600/30">
+                    <h4 className="font-semibold text-green-300 mb-2 text-center sm:text-left">
                       {language === 'en' ? 'Investment Philosophy' : '投资哲学'}
                     </h4>
-                    <p className="text-white text-sm">
+                    <p className="text-white text-sm text-center sm:text-left">
                       {selectedMethodology === 'academic' ? 
-                        'Academic School - Based on rigorous financial theory and long-term value investment principles' :
+                        (language === 'en' ? 'Academic School - Based on rigorous financial theory and long-term value investment principles' : '学院派 - 基于严谨金融理论和长期价值投资原则') :
                        selectedMethodology === 'business' ? 
-                        'Business Practical School - Focus on market timing and quantitative trading strategies' : 
-                        'Psychological History School - Leveraging market sentiment and behavioral finance insights'}
+                        (language === 'en' ? 'Business Practical School - Focus on market timing and quantitative trading strategies' : '商业实践派 - 专注于市场时机和量化交易策略') : 
+                        (language === 'en' ? 'Psychological History School - Leveraging market sentiment and behavioral finance insights' : '心理史学派 - 利用市场情绪和行为金融洞察')}
                     </p>
                   </div>
                   
-                  <div className="bg-green-800/20 p-4 rounded-lg border border-green-600/30">
-                    <h4 className="font-semibold text-green-300 mb-2">
+                  <div className="bg-green-800/20 p-3 sm:p-4 rounded-lg border border-green-600/30">
+                    <h4 className="font-semibold text-green-300 mb-2 text-center sm:text-left">
                       {language === 'en' ? 'Risk Profile' : '风险档案'}
                     </h4>
-                    <p className="text-white text-sm">
+                    <p className="text-white text-sm text-center sm:text-left">
                       {selectedRiskLevel === 'low' ? 
-                        'Conservative Strategy - Capital preservation with stable returns' :
+                        (language === 'en' ? 'Conservative Strategy - Capital preservation with stable returns' : '保守策略 - 资本保值，稳定收益') :
                        selectedRiskLevel === 'medium' ? 
-                        'Balanced Strategy - Moderate risk with growth potential' : 
-                        'Aggressive Strategy - Higher risk for maximum growth'}
+                        (language === 'en' ? 'Balanced Strategy - Moderate risk with growth potential' : '平衡策略 - 适度风险，增长潜力') : 
+                        (language === 'en' ? 'Aggressive Strategy - Higher risk for maximum growth' : '激进策略 - 较高风险，最大增长')}
                     </p>
                   </div>
                 </div>
 
-                {/* 年龄风险调整建议 */}
-                <div className="bg-blue-800/20 p-4 rounded-lg border border-blue-600/30 mb-4">
-                  <h4 className="font-semibold text-blue-300 mb-3">
-                    Age-Based Risk Adjustment
+                {/* 年龄风险调整建议 - 优化手机端显示 */}
+                <div className="bg-blue-800/20 p-3 sm:p-4 rounded-lg border border-blue-600/30 mb-4">
+                  <h4 className="font-semibold text-blue-300 mb-3 text-center sm:text-left">
+                    {language === 'en' ? 'Age-Based Risk Adjustment' : '基于年龄的风险调整'}
                   </h4>
                   
-                  {/* 年龄选择 */}
-                  <div className="grid md:grid-cols-4 gap-3 mb-4">
+                  {/* 年龄选择 - 改进的UI，优化手机端 */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
                     {ageGroups.map((ageGroup) => (
-                      <label key={ageGroup.value} className="flex items-center space-x-2 cursor-pointer">
+                      <label 
+                        key={ageGroup.value} 
+                        className={`relative p-3 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
+                          selectedAgeGroup === ageGroup.value
+                            ? 'border-blue-500 bg-blue-900/30 shadow-lg'
+                            : 'border-gray-600 bg-gray-800/50 hover:border-gray-500 hover:bg-gray-700/50'
+                        }`}
+                      >
                         <input
                           type="radio"
                           name="ageGroup"
                           value={ageGroup.value}
                           checked={selectedAgeGroup === ageGroup.value}
                           onChange={(e) => setSelectedAgeGroup(e.target.value)}
-                          className="text-blue-500"
+                          className="sr-only"
                         />
-                        <div className="text-sm">
-                          <div className="text-white font-medium">
+                        <div className="text-center">
+                          <div className="text-white font-semibold text-sm mb-1">
                             {language === 'en' ? ageGroup.label.en : ageGroup.label.zh}
                           </div>
-                          <div className="text-blue-200 text-xs">
+                          <div className="text-blue-200 text-xs leading-tight">
                             {language === 'en' ? ageGroup.description.en : ageGroup.description.zh}
                           </div>
                         </div>
+                        {/* 选中状态指示器 */}
+                        {selectedAgeGroup === ageGroup.value && (
+                          <div className="absolute top-2 right-2 w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
+                        )}
                       </label>
                     ))}
                   </div>
 
-                  {/* 年龄调整说明 */}
+                  {/* 年龄调整说明 - 优化手机端布局 */}
                   {selectedAgeGroup && (
                     <div className="bg-blue-900/30 p-3 rounded-lg border border-blue-500/30">
-                      <div className="flex items-center justify-between">
-                        <div className="text-blue-200 text-sm">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
+                        <div className="text-blue-200 text-sm text-center sm:text-left">
                           <span className="font-semibold">
-                            Age Parameters:
+                            {language === 'en' ? 'Age Parameters:' : '年龄参数:'}
                           </span>
                           <span className="text-white ml-2">
-                            {selectedAgeGroup === 'young' ? 'Young Professional' :
-                             selectedAgeGroup === 'middle' ? 'Mid-Career' :
-                             selectedAgeGroup === 'senior' ? 'Pre-Retirement' : 'Retirement Age'}
+                            {selectedAgeGroup === 'young' ? (language === 'en' ? 'Young Professional' : '年轻专业人士') :
+                             selectedAgeGroup === 'middle' ? (language === 'en' ? 'Mid-Career' : '职业生涯中期') :
+                             selectedAgeGroup === 'senior' ? (language === 'en' ? 'Pre-Retirement' : '退休前') : 
+                             (language === 'en' ? 'Retirement Age' : '退休年龄')}
                           </span>
                         </div>
                         <button
                           onClick={() => setIgnoreAgeRecommendation(!ignoreAgeRecommendation)}
-                          className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+                          className={`px-3 py-2 rounded text-xs font-medium transition-colors ${
                             ignoreAgeRecommendation
                               ? 'bg-yellow-600 text-white'
                               : 'bg-blue-600 text-white hover:bg-blue-700'
                           }`}
                         >
-                          Ignore Age
+                          {language === 'en' ? 'Ignore Age' : '忽略年龄'}
                         </button>
                       </div>
                       {!ignoreAgeRecommendation && (
-                        <p className="text-blue-200 text-xs mt-2">
-                          Age-based adjustments will optimize asset allocation parameters for your life stage
+                        <p className="text-blue-200 text-xs mt-2 text-center sm:text-left">
+                          {language === 'en' 
+                            ? 'Age-based adjustments will optimize asset allocation parameters for your life stage'
+                            : '基于年龄的调整将根据您的人生阶段优化资产配置参数'
+                          }
                         </p>
                       )}
                     </div>
                   )}
                 </div>
 
-                {/* 策略特点总结 */}
-                <div className="bg-purple-800/20 p-4 rounded-lg border border-purple-600/30">
-                  <h4 className="font-semibold text-purple-300 mb-2">
-                    Strategy Highlights
+                {/* 策略特点总结 - 优化手机端显示 */}
+                <div className="bg-purple-800/20 p-3 sm:p-4 rounded-lg border border-purple-600/30">
+                  <h4 className="font-semibold text-purple-300 mb-3 text-center sm:text-left">
+                    {language === 'en' ? 'Strategy Highlights' : '策略特点总结'}
                   </h4>
-                  <div className="grid md:grid-cols-2 gap-4 text-sm">
-                    <div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
+                    <div className="text-center sm:text-left">
                       <span className="font-semibold text-purple-200">
-                        Crypto Allocation: 
+                        {language === 'en' ? 'Crypto Allocation:' : '加密货币配置:'}
                       </span>
-                      <span className="text-white">
+                      <span className="text-white ml-2">
                         {selectedMethodology === 'academic' ? '1%' : 
                          selectedMethodology === 'business' ? '5%' : '7%'}
                       </span>
                     </div>
-                    <div>
+                    <div className="text-center sm:text-left">
                       <span className="font-semibold text-purple-200">
-                        Focus Area: 
+                        {language === 'en' ? 'Focus Area:' : '重点领域:'}
                       </span>
-                      <span className="text-white">
-                        {selectedMethodology === 'academic' ? 'Long-term value, CAPM theory' : 
-                         selectedMethodology === 'business' ? 'Market timing, quantitative' : 
-                         'Sentiment analysis, contrarian'}
+                      <span className="text-white ml-2">
+                        {selectedMethodology === 'academic' ? (language === 'en' ? 'Long-term value, CAPM theory' : '长期价值，CAPM理论') : 
+                         selectedMethodology === 'business' ? (language === 'en' ? 'Market timing, quantitative' : '市场时机，量化分析') : 
+                         (language === 'en' ? 'Sentiment analysis, contrarian' : '情绪分析，逆向投资')}
                       </span>
                     </div>
                   </div>
@@ -711,52 +789,59 @@ export default function AssetConfigurationPage({
           </div>
         )}
 
-        {/* 资产配置说明 */}
-        <div className="bg-gradient-to-r from-blue-900/20 to-cyan-900/20 p-6 rounded-2xl border border-blue-600/30 mb-8">
-          <div className="flex items-start">
-            <InformationCircleIcon className="w-6 h-6 text-blue-400 mr-3 mt-1 flex-shrink-0" />
-            <div className="text-blue-200">
-              <h3 className="text-lg font-semibold mb-2">
-                💡 Asset Classification Guide
+        {/* 资产配置说明 - 优化手机端显示 */}
+        <div className="bg-gradient-to-r from-blue-900/20 to-cyan-900/20 p-4 sm:p-6 rounded-2xl border border-blue-600/30 mb-8">
+          <div className="flex flex-col sm:flex-row items-start space-y-3 sm:space-y-0">
+            <InformationCircleIcon className="w-6 h-6 text-blue-400 mr-0 sm:mr-3 mt-1 flex-shrink-0 self-center sm:self-start" />
+            <div className="text-blue-200 text-center sm:text-left">
+              <h3 className="text-base sm:text-lg font-semibold mb-2">
+                {language === 'en' ? '💡 Asset Classification Guide' : '💡 资产分类指南'}
               </h3>
-              <p className="text-sm leading-relaxed">
-                Please accurately input your asset allocation according to the following categories. Each input field has detailed descriptions and examples to help you correctly classify various assets. The system will provide precise rate-cut scenario analysis based on your configuration.
+              <p className="text-xs sm:text-sm leading-relaxed">
+                {language === 'en' 
+                  ? 'Please accurately input your asset allocation according to the following categories. Each input field has detailed descriptions and examples to help you correctly classify various assets. The system will provide precise rate-cut scenario analysis based on your configuration.'
+                  : '请根据以下类别准确输入您的资产配置。每个输入字段都有详细描述和示例，帮助您正确分类各种资产。系统将根据您的配置提供精确的降息情景分析。'
+                }
               </p>
             </div>
           </div>
         </div>
 
-        {/* 资产配置表单 */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+        {/* 资产配置表单 - 优化手机端布局 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mb-8">
           {/* 左侧：基础资产 */}
-          <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-blue-300 mb-6">
-              🏠 Core Assets
+          <div className="space-y-4 sm:space-y-6">
+            <h3 className="text-lg sm:text-xl font-semibold text-blue-300 mb-4 sm:mb-6 text-center lg:text-left">
+              🏠 {language === 'en' ? 'Core Assets' : '核心资产'}
             </h3>
             
             {assetCategories.slice(0, 3).map((category) => (
-              <div key={category.id} className="space-y-3">
-                <label className="block text-sm font-medium text-gray-300 flex items-center">
-                  <category.icon className={`w-5 h-5 mr-2 text-${category.color.split('-')[1]}-400`} />
-                  {category.name} (USD)
+              <div key={category.id} className="space-y-2 sm:space-y-3">
+                <label className="block text-sm font-medium text-gray-300 flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0">
+                  <div className="flex items-center justify-center sm:justify-start">
+                    <category.icon className={`w-5 h-5 mr-2 text-${category.color.split('-')[1]}-400`} />
+                    <span className="text-center sm:text-left">
+                      {category.name} {language === 'en' ? '(USD)' : '(美元)'}
+                    </span>
+                  </div>
                   <button
                     onMouseEnter={() => setShowTooltip(category.id)}
                     onMouseLeave={() => setShowTooltip(null)}
-                    className="ml-2 text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-400 hover:text-white transition-colors self-center sm:self-start"
                   >
                     <InformationCircleIcon className="w-4 h-4" />
                   </button>
                 </label>
                 
                 {showTooltip === category.id && (
-                  <div className="absolute z-20 bg-gray-800 p-4 rounded-lg border border-gray-600 shadow-2xl max-w-xs">
+                  <div className="absolute z-20 bg-gray-800 p-4 rounded-lg border border-gray-600 shadow-2xl max-w-xs left-1/2 transform -translate-x-1/2 sm:left-auto sm:transform-none">
                     <h4 className="font-semibold text-white mb-2">{category.name}</h4>
                     <p className="text-sm text-gray-300 mb-2">{category.description}</p>
                     <div className="text-sm text-gray-400">
-                      <strong>Contains:</strong> {category.examples.join(', ')}
+                      <strong>{language === 'en' ? 'Contains:' : '包含:'}</strong> {category.examples.join(', ')}
                     </div>
                     <div className="text-sm text-blue-300 mt-2">
-                      <strong>Rate Cut Impact:</strong> {category.tooltip}
+                      <strong>{language === 'en' ? 'Rate Cut Impact:' : '降息影响:'}</strong> {category.tooltip}
                     </div>
                   </div>
                 )}
@@ -772,28 +857,32 @@ export default function AssetConfigurationPage({
                       handleInputChange(category.id as keyof typeof localInput, e.target.value)
                     }
                   }}
-                  placeholder={`Enter ${category.name}`}
-                  className="w-full px-4 py-4 bg-gray-800 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  placeholder={language === 'en' ? `Enter ${category.name}` : `输入${category.name}`}
+                  className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-800 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-center sm:text-left"
                 />
               </div>
             ))}
           </div>
 
           {/* 右侧：扩展资产 */}
-          <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-purple-300 mb-6">
-              🚀 Extended Assets
+          <div className="space-y-4 sm:space-y-6">
+            <h3 className="text-lg sm:text-xl font-semibold text-purple-300 mb-4 sm:mb-6 text-center lg:text-left">
+              🚀 {language === 'en' ? 'Extended Assets' : '扩展资产'}
             </h3>
             
             {assetCategories.slice(3).map((category) => (
-              <div key={category.id} className="space-y-3">
-                <label className="block text-sm font-medium text-gray-300 flex items-center">
-                  <category.icon className={`w-5 h-5 mr-2 text-${category.color.split('-')[1]}-400`} />
-                  {category.name} (USD)
+              <div key={category.id} className="space-y-2 sm:space-y-3">
+                <label className="block text-sm font-medium text-gray-300 flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0">
+                  <div className="flex items-center justify-center sm:justify-start">
+                    <category.icon className={`w-5 h-5 mr-2 text-${category.color.split('-')[1]}-400`} />
+                    <span className="text-center sm:text-left">
+                      {category.name} {language === 'en' ? '(USD)' : '(美元)'}
+                    </span>
+                  </div>
                   <button
                     onMouseEnter={() => setShowTooltip(category.id)}
                     onMouseLeave={() => setShowTooltip(null)}
-                    className="ml-2 text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-400 hover:text-white transition-colors self-center sm:self-start"
                   >
                     <InformationCircleIcon className="w-4 h-4" />
                   </button>
@@ -810,8 +899,8 @@ export default function AssetConfigurationPage({
                       handleInputChange(category.id as keyof typeof localInput, e.target.value)
                     }
                   }}
-                  placeholder={`Enter ${category.name}`}
-                  className="w-full px-4 py-4 bg-gray-800 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  placeholder={language === 'en' ? `Enter ${category.name}` : `输入${category.name}`}
+                  className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-800 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-center sm:text-left"
                 />
               </div>
             ))}
@@ -819,7 +908,7 @@ export default function AssetConfigurationPage({
         </div>
 
         {/* 推荐配置 */}
-        <div className="bg-gradient-to-br from-green-900/20 via-emerald-900/20 to-green-800/20 border border-green-600/30 rounded-2xl p-6 mb-8">
+        <div className="bg-gradient-to-br from-green-900/20 via-emerald-900/20 to-green-800/20 border border-green-600/30 rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="flex items-center space-x-3 mb-4">
             <div className="relative">
               <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
@@ -832,9 +921,52 @@ export default function AssetConfigurationPage({
             </h3>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-4">
+          {/* 年龄调整状态显示 */}
+          {selectedAgeGroup && !ignoreAgeRecommendation && (
+            <div className="mb-4 p-4 bg-blue-900/30 rounded-xl border border-blue-600/30">
+              <div className="flex items-center space-x-2 mb-2">
+                <div className="w-4 h-4 bg-blue-400 rounded-full"></div>
+                <span className="text-blue-300 font-medium text-sm">
+                  {language === 'en' ? 'Age-Based Adjustment Applied' : '已应用年龄调整'}
+                </span>
+              </div>
+              <div className="text-blue-200 text-xs text-center sm:text-left">
+                {selectedAgeGroup === 'young' && (language === 'en' ? 
+                  'Young Professional: Increased risk assets, reduced conservative assets' : 
+                  '年轻专业人士：增加风险资产，减少保守资产')}
+                {selectedAgeGroup === 'middle' && (language === 'en' ? 
+                  'Mid-Career: Balanced approach maintained' : 
+                  '职业生涯中期：保持平衡策略')}
+                {selectedAgeGroup === 'senior' && (language === 'en' ? 
+                  'Pre-Retirement: Moderately conservative adjustments' : 
+                  '退休前：适度保守调整')}
+                {selectedAgeGroup === 'elderly' && (language === 'en' ? 
+                  'Retirement Age: Conservative strategy applied' : 
+                  '退休年龄：应用保守策略')}
+              </div>
+            </div>
+          )}
+          
+          {/* 年龄调整被忽略的提示 */}
+          {selectedAgeGroup && ignoreAgeRecommendation && (
+            <div className="mb-4 p-4 bg-yellow-900/30 rounded-xl border border-yellow-600/30">
+              <div className="flex items-center space-x-2 mb-2">
+                <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
+                <span className="text-yellow-300 font-medium text-sm">
+                  {language === 'en' ? 'Age Adjustments Ignored' : '年龄调整已忽略'}
+                </span>
+              </div>
+              <div className="text-yellow-200 text-xs text-center sm:text-left">
+                {language === 'en' ? 
+                  'Using base allocation without age-based modifications' : 
+                  '使用基础配置，不应用年龄调整'}
+              </div>
+            </div>
+          )}
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {recommendedAllocation && Object.entries(recommendedAllocation).map(([asset, percentage]) => (
-              <div key={asset} className="bg-gradient-to-br from-gray-800/50 to-gray-700/50 rounded-xl p-4 border border-gray-600/30">
+              <div key={asset} className="bg-gradient-to-br from-gray-800/50 to-gray-700/50 rounded-xl p-3 sm:p-4 border border-gray-600/30">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-300 font-medium text-sm">
                     {getAssetDisplayName(asset)}
@@ -854,17 +986,21 @@ export default function AssetConfigurationPage({
           </div>
         </div>
 
-        {/* 偏差分析 */}
-        <div className="bg-gradient-to-r from-purple-900/20 to-pink-900/20 p-8 rounded-2xl border border-purple-600/30 mb-8">
-          <h3 className="text-xl font-semibold text-white mb-6 flex items-center">
-            <SparklesIcon className="w-6 h-6 mr-3 text-purple-400" />
-            Configuration Deviation Analysis
+        {/* 偏差分析 - 优化手机端布局 */}
+        <div className="bg-gradient-to-r from-purple-900/20 to-pink-900/20 p-4 sm:p-8 rounded-2xl border border-purple-600/30 mb-6 sm:mb-8">
+          <h3 className="text-xl font-semibold text-white mb-6 flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0">
+            <SparklesIcon className="w-6 h-6 mr-0 sm:mr-3 text-purple-400" />
+            <span className="text-center sm:text-left">
+              {language === 'en' ? 'Configuration Deviation Analysis' : '配置偏差分析'}
+            </span>
           </h3>
           
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             {/* 推荐配置 */}
             <div className="space-y-4">
-              <h4 className="text-lg font-medium text-purple-300">🎯 Recommended Allocation</h4>
+              <h4 className="text-lg font-medium text-purple-300 text-center sm:text-left">
+                🎯 {language === 'en' ? 'Recommended Allocation' : '推荐配置'}
+              </h4>
               <div className="space-y-4">
                 {recommendedAllocation && Object.entries(recommendedAllocation).map(([asset, percentage]) => {
                   const currentValue = localInput[asset as keyof typeof localInput] || 0
@@ -875,11 +1011,12 @@ export default function AssetConfigurationPage({
                     <div key={asset} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-gray-300 capitalize text-sm font-medium">
-                          {asset === 'realEstate' ? 'Real Estate' : 
-                           asset === 'equity' ? 'Equity' : 
-                           asset === 'cash' ? 'Cash' : 
-                           asset === 'fund' ? 'Funds' : 
-                           asset === 'crypto' ? 'Crypto' : 'Insurance'}
+                          {asset === 'realEstate' ? (language === 'en' ? 'Real Estate' : '房产') : 
+                           asset === 'equity' ? (language === 'en' ? 'Equity' : '股票') : 
+                           asset === 'cash' ? (language === 'en' ? 'Cash' : '现金') : 
+                           asset === 'fund' ? (language === 'en' ? 'Funds' : '基金') : 
+                           asset === 'crypto' ? (language === 'en' ? 'Crypto' : '加密货币') : 
+                           (language === 'en' ? 'Insurance' : '保险')}
                         </span>
                         <div className="flex items-center space-x-2">
                           <span className="text-white font-medium text-sm">{percentage}%</span>
@@ -926,9 +1063,12 @@ export default function AssetConfigurationPage({
                       </div>
                       
                       {/* 对比说明 */}
-                      <div className="text-xs text-gray-400 ml-2">
-                        {Math.abs(deviation) <= 10 ? '✅ Optimal' : 
-                         Math.abs(deviation) <= 25 ? '⚠️ Consider adjustment' : '🚨 Significant deviation'}
+                      <div className="text-xs text-gray-400 ml-2 text-center sm:text-left">
+                        {Math.abs(deviation) <= 10 ? 
+                          (language === 'en' ? '✅ Optimal' : '✅ 最优') : 
+                         Math.abs(deviation) <= 25 ? 
+                          (language === 'en' ? '⚠️ Consider adjustment' : '⚠️ 考虑调整') : 
+                          (language === 'en' ? '🚨 Significant deviation' : '🚨 显著偏差')}
                       </div>
                     </div>
                   )
@@ -938,8 +1078,8 @@ export default function AssetConfigurationPage({
             
             {/* 偏差分析 */}
             <div className="space-y-4">
-              <h4 className="text-lg font-medium text-purple-300">
-                📊 Configuration Deviation Analysis
+              <h4 className="text-lg font-medium text-purple-300 text-center sm:text-left">
+                📊 {language === 'en' ? 'Configuration Deviation Analysis' : '配置偏差分析'}
               </h4>
               <div className="space-y-3">
                 {deviations && Object.entries(deviations).map(([asset, deviation]) => {
@@ -951,11 +1091,12 @@ export default function AssetConfigurationPage({
                     <div key={asset} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-gray-300 capitalize">
-                          {asset === 'realEstate' ? 'Real Estate' : 
-                           asset === 'equity' ? 'Equity' : 
-                           asset === 'cash' ? 'Cash' : 
-                           asset === 'fund' ? 'Funds' : 
-                           asset === 'crypto' ? 'Crypto' : 'Insurance'}
+                          {asset === 'realEstate' ? (language === 'en' ? 'Real Estate' : '房产') : 
+                           asset === 'equity' ? (language === 'en' ? 'Equity' : '股票') : 
+                           asset === 'cash' ? (language === 'en' ? 'Cash' : '现金') : 
+                           asset === 'fund' ? (language === 'en' ? 'Funds' : '基金') : 
+                           asset === 'crypto' ? (language === 'en' ? 'Crypto' : '加密货币') : 
+                           (language === 'en' ? 'Insurance' : '保险')}
                         </span>
                         <div className="flex items-center space-x-2">
                           <div className={`w-2 h-2 rounded-full ${
@@ -976,8 +1117,11 @@ export default function AssetConfigurationPage({
                                   {deviation > 0 ? '+' : ''}{deviation.toFixed(1)}%
                                 </div>
                                 <div className="text-xs text-gray-300 mt-1">
-                                  {Math.abs(deviation) <= 10 ? 'Excellent' :
-                                   Math.abs(deviation) <= 25 ? 'Good' : 'Needs Adjustment'}
+                                  {Math.abs(deviation) <= 10 ? 
+                                    (language === 'en' ? 'Excellent' : '优秀') :
+                                   Math.abs(deviation) <= 25 ? 
+                                    (language === 'en' ? 'Good' : '良好') : 
+                                    (language === 'en' ? 'Needs Adjustment' : '需要调整')}
                                 </div>
                               </div>
                               {/* 箭头 */}
@@ -988,18 +1132,24 @@ export default function AssetConfigurationPage({
                       </div>
                       
                       {/* 具体金额建议 */}
-                      <div className="ml-4 text-sm">
+                      <div className="ml-2 sm:ml-4 text-sm text-center sm:text-left">
                         {adjustmentAmount > 0 ? (
                           <div className="text-green-400">
-                            Recommend increasing by ${adjustmentAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                            {language === 'en' 
+                              ? `Recommend increasing by $${adjustmentAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+                              : `建议增加 $${adjustmentAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+                            }
                           </div>
                         ) : adjustmentAmount < 0 ? (
                           <div className="text-red-400">
-                            Recommend reducing by ${Math.abs(adjustmentAmount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                            {language === 'en' 
+                              ? `Recommend reducing by $${Math.abs(adjustmentAmount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+                              : `建议减少 $${Math.abs(adjustmentAmount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+                            }
                           </div>
                         ) : (
                           <div className="text-green-400">
-                            Configuration optimal
+                            {language === 'en' ? 'Configuration optimal' : '配置最优'}
                           </div>
                         )}
                       </div>
@@ -1009,18 +1159,18 @@ export default function AssetConfigurationPage({
               </div>
               
               <div className="mt-4 p-3 bg-gray-800/50 rounded-lg border border-gray-600">
-                <div className="text-sm text-gray-300">
+                <div className="text-sm text-gray-300 text-center sm:text-left">
                   <p className="mb-2">
                     <span className="text-green-400">●</span> 
-                    Deviation ≤10%: Excellent configuration
+                    {language === 'en' ? 'Deviation ≤10%: Excellent configuration' : '偏差 ≤10%: 优秀配置'}
                   </p>
                   <p className="mb-2">
                     <span className="text-yellow-400">●</span> 
-                    Deviation ≤25%: Good configuration
+                    {language === 'en' ? 'Deviation ≤25%: Good configuration' : '偏差 ≤25%: 良好配置'}
                   </p>
                   <p className="mb-2">
                     <span className="text-red-400">●</span> 
-                    Deviation {'>'}25%: Needs adjustment
+                    {language === 'en' ? 'Deviation >25%: Needs adjustment' : '偏差 >25%: 需要调整'}
                   </p>
                   {(realEstateExemption || debtBurdenLevel !== 'low') && (
                     <div className="mt-3 pt-3 border-t border-gray-600">
@@ -1045,22 +1195,22 @@ export default function AssetConfigurationPage({
           </div>
         </div>
 
-        {/* 智能配置选择 */}
-        <div className="bg-gradient-to-br from-blue-900/20 via-indigo-900/20 to-purple-900/20 border border-blue-600/30 rounded-2xl p-4 mb-6">
-          <div className="flex items-center space-x-3 mb-4">
+        {/* 智能配置选择 - 优化手机端布局 */}
+        <div className="bg-gradient-to-br from-blue-900/20 via-indigo-900/20 to-purple-900/20 border border-blue-600/30 rounded-2xl p-3 sm:p-4 mb-6">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-3 sm:space-y-0 sm:space-x-3 mb-4">
             <div className="relative">
               <CogIcon className="w-6 h-6 text-blue-400" />
               <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
             </div>
-            <h3 className="text-lg font-bold text-blue-300">
+            <h3 className="text-lg font-bold text-blue-300 text-center sm:text-left">
               {language === 'en' ? 'Smart Configuration Options' : '智能配置选项'}
             </h3>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* 房产豁免选择 */}
             <div className="space-y-3">
-              <h4 className="text-base font-medium text-blue-200 flex items-center">
+              <h4 className="text-base font-medium text-blue-200 flex items-center justify-center sm:justify-start">
                 🏠 <span className="ml-2">{language === 'en' ? 'Real Estate Strategy' : '房产策略'}</span>
               </h4>
               <div className="space-y-2">
@@ -1094,7 +1244,7 @@ export default function AssetConfigurationPage({
             
             {/* 债务负担率选择 */}
             <div className="space-y-3">
-              <h4 className="text-base font-medium text-blue-200 flex items-center">
+              <h4 className="text-base font-medium text-blue-200 flex items-center justify-center sm:justify-start">
                 💰 <span className="ml-2">{language === 'en' ? 'Debt Burden Level' : '债务负担水平'}</span>
               </h4>
               <div className="space-y-2">
@@ -1135,35 +1285,45 @@ export default function AssetConfigurationPage({
 
         {/* 资产总计和风险分析 */}
         {totalAssets > 0 && (
-          <div className="bg-gradient-to-br from-gray-800/90 via-gray-700/90 to-gray-600/90 p-6 rounded-2xl border border-gray-500/30 mb-8 shadow-xl">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center space-x-4 bg-gradient-to-r from-blue-900/50 to-purple-900/50 px-6 py-4 rounded-xl border border-blue-500/30">
-                <span className="text-gray-300 font-medium text-lg">Total Assets:</span>
-                <span className="font-bold text-3xl text-transparent bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text">
+          <div className="bg-gradient-to-br from-gray-800/90 via-gray-700/90 to-gray-600/90 p-4 sm:p-6 rounded-2xl border border-gray-500/30 mb-6 sm:mb-8 shadow-xl">
+            <div className="text-center mb-6 sm:mb-8">
+              <div className="inline-flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 bg-gradient-to-r from-blue-900/50 to-purple-900/50 px-4 sm:px-6 py-3 sm:py-4 rounded-xl border border-blue-500/30">
+                <span className="text-gray-300 font-medium text-base sm:text-lg">
+                  {language === 'en' ? 'Total Assets:' : '总资产:'}
+                </span>
+                <span className="font-bold text-2xl sm:text-3xl text-transparent bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text">
                   ${totalAssets.toLocaleString('en-US')}
                 </span>
               </div>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {/* 核心资产 */}
-              <div className="bg-gradient-to-br from-gray-700/50 to-gray-600/50 p-4 rounded-xl border border-gray-500/30">
-                <h4 className="text-sm font-medium text-gray-300 mb-3 text-center">🏛️ Core Assets</h4>
+              <div className="bg-gradient-to-br from-gray-700/50 to-gray-600/50 p-3 sm:p-4 rounded-xl border border-gray-500/30">
+                <h4 className="text-sm font-medium text-gray-300 mb-3 text-center">
+                  🏛️ {language === 'en' ? 'Core Assets' : '核心资产'}
+                </h4>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-2 bg-green-900/20 rounded-lg">
-                    <span className="text-gray-300 text-sm">Real Estate</span>
+                    <span className="text-gray-300 text-sm">
+                      {language === 'en' ? 'Real Estate' : '房产'}
+                    </span>
                     <span className="text-green-400 font-bold">
                       {getAssetPercentage(localInput.realEstate).toFixed(1)}%
                     </span>
                   </div>
                   <div className="flex items-center justify-between p-2 bg-blue-900/20 rounded-lg">
-                    <span className="text-gray-300 text-sm">Equity</span>
+                    <span className="text-gray-300 text-sm">
+                      {language === 'en' ? 'Equity' : '股票'}
+                    </span>
                     <span className="text-blue-400 font-bold">
                       {getAssetPercentage(localInput.equity).toFixed(1)}%
                     </span>
                   </div>
                   <div className="flex items-center justify-between p-2 bg-yellow-900/20 rounded-lg">
-                    <span className="text-gray-300 text-sm">Cash</span>
+                    <span className="text-gray-300 text-sm">
+                      {language === 'en' ? 'Cash' : '现金'}
+                    </span>
                     <span className="text-yellow-400 font-bold">
                       {getAssetPercentage(localInput.cash).toFixed(1)}%
                     </span>
@@ -1172,23 +1332,31 @@ export default function AssetConfigurationPage({
               </div>
               
               {/* 扩展资产 */}
-              <div className="bg-gradient-to-br from-gray-700/50 to-gray-600/50 p-4 rounded-xl border border-gray-500/30">
-                <h4 className="text-sm font-medium text-gray-300 mb-3 text-center">🚀 Extended Assets</h4>
+              <div className="bg-gradient-to-br from-gray-700/50 to-gray-600/50 p-3 sm:p-4 rounded-xl border border-gray-500/30">
+                <h4 className="text-sm font-medium text-gray-300 mb-3 text-center">
+                  🚀 {language === 'en' ? 'Extended Assets' : '扩展资产'}
+                </h4>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-2 bg-purple-900/20 rounded-lg">
-                    <span className="text-gray-300 text-sm">Funds</span>
+                    <span className="text-gray-300 text-sm">
+                      {language === 'en' ? 'Funds' : '基金'}
+                    </span>
                     <span className="text-purple-400 font-bold">
                       {getAssetPercentage(localInput.fund).toFixed(1)}%
                     </span>
                   </div>
                   <div className="flex items-center justify-between p-2 bg-orange-900/20 rounded-lg">
-                    <span className="text-gray-300 text-sm">Cryptocurrency</span>
+                    <span className="text-gray-300 text-sm">
+                      {language === 'en' ? 'Cryptocurrency' : '加密货币'}
+                    </span>
                     <span className="text-orange-400 font-bold">
                       {getAssetPercentage(localInput.crypto).toFixed(1)}%
                     </span>
                   </div>
                   <div className="flex items-center justify-between p-2 bg-red-900/20 rounded-lg">
-                    <span className="text-gray-300 text-sm">Insurance</span>
+                    <span className="text-gray-300 text-sm">
+                      {language === 'en' ? 'Insurance' : '保险'}
+                    </span>
                     <span className="text-red-400 font-bold">
                       {getAssetPercentage(localInput.insurance).toFixed(1)}%
                     </span>
@@ -1197,23 +1365,31 @@ export default function AssetConfigurationPage({
               </div>
               
               {/* 风险分布 */}
-              <div className="space-y-3">
-                <h4 className="text-sm font-medium text-gray-400">Risk Distribution</h4>
+              <div className="space-y-3 p-3 sm:p-4 bg-gradient-to-br from-gray-700/50 to-gray-600/50 rounded-xl border border-gray-500/30">
+                <h4 className="text-sm font-medium text-gray-400 text-center">
+                  {language === 'en' ? 'Risk Distribution' : '风险分布'}
+                </h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Conservative:</span>
+                    <span className="text-gray-400">
+                      {language === 'en' ? 'Conservative:' : '保守:'}
+                    </span>
                     <span className="text-green-400 font-medium">
                       {getAssetPercentage(localInput.cash + localInput.insurance).toFixed(1)}%
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Balanced:</span>
+                    <span className="text-gray-400">
+                      {language === 'en' ? 'Balanced:' : '平衡:'}
+                    </span>
                     <span className="text-blue-400 font-medium">
                       {getAssetPercentage(localInput.realEstate + localInput.fund).toFixed(1)}%
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Aggressive:</span>
+                    <span className="text-gray-400">
+                      {language === 'en' ? 'Aggressive:' : '激进:'}
+                    </span>
                     <span className="text-orange-400 font-medium">
                       {getAssetPercentage(localInput.equity + localInput.crypto).toFixed(1)}%
                     </span>
@@ -1237,10 +1413,10 @@ export default function AssetConfigurationPage({
                   </div>
                 </div>
                 
-                {/* 科技感付费服务选项 */}
-                <div className="grid md:grid-cols-3 gap-6">
+                {/* 科技感付费服务选项 - 优化手机端布局 */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {/* 基础诊断 - 科技简约风格 */}
-                  <div className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-2xl p-6 border border-slate-600/40 hover:border-slate-500/60 transition-all duration-300 cursor-pointer backdrop-blur-sm">
+                  <div className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-2xl p-4 sm:p-6 border border-slate-600/40 hover:border-slate-500/60 transition-all duration-300 cursor-pointer backdrop-blur-sm">
                     <div className="text-center">
                       <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center border border-blue-500/30">
                         <StarIcon className="w-6 h-6 text-blue-400" />
@@ -1273,7 +1449,7 @@ export default function AssetConfigurationPage({
                   {/* 高级诊断 - 专业科技风格 */}
                   <button
                     onClick={() => setShowAssetDiagnosis(true)}
-                    className="group relative w-full bg-gradient-to-br from-blue-600/90 to-blue-700/90 rounded-2xl p-6 border border-blue-500/50 hover:border-blue-400/70 transition-all duration-300 transform hover:scale-[1.02] backdrop-blur-sm shadow-xl hover:shadow-2xl"
+                    className="group relative w-full bg-gradient-to-br from-blue-600/90 to-blue-700/90 rounded-2xl p-4 sm:p-6 border border-blue-500/50 hover:border-blue-400/70 transition-all duration-300 transform hover:scale-[1.02] backdrop-blur-sm shadow-xl hover:shadow-2xl"
                   >
                     <div className="text-center">
                       <div className="w-12 h-12 mx-auto mb-4 bg-white/10 rounded-xl flex items-center justify-center border border-white/20">
@@ -1310,7 +1486,7 @@ export default function AssetConfigurationPage({
                   </button>
                   
                   {/* 企业级诊断 - 高端科技风格 */}
-                  <div className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-2xl p-6 border border-slate-600/40 hover:border-slate-500/60 transition-all duration-300 cursor-pointer backdrop-blur-sm">
+                  <div className="group relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-2xl p-4 sm:p-6 border border-slate-600/40 hover:border-slate-500/60 transition-all duration-300 cursor-pointer backdrop-blur-sm">
                     <div className="text-center">
                       <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-slate-500/20 to-slate-600/20 rounded-xl flex items-center justify-center border border-slate-500/30">
                         <BuildingLibraryIcon className="w-6 h-6 text-slate-400" />
@@ -1347,42 +1523,53 @@ export default function AssetConfigurationPage({
           </div>
         )}
 
-        {/* 继续按钮 */}
+        {/* 继续按钮 - 优化手机端显示 */}
         <div className="text-center">
           <button
             onClick={onNext}
             disabled={totalAssets === 0 || !selectedMethodology}
-            className={`group relative inline-flex items-center justify-center px-12 py-6 text-xl font-bold text-white rounded-2xl shadow-2xl transform transition-all duration-300 overflow-hidden ${
+            className={`group relative inline-flex items-center justify-center px-6 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl font-bold text-white rounded-2xl shadow-2xl transform transition-all duration-300 overflow-hidden ${
               totalAssets > 0 && selectedMethodology
                 ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:scale-105' 
                 : 'bg-gray-600 cursor-not-allowed'
             }`}
           >
             <span className="relative z-10 flex items-center">
-              Start Rate Cut Analysis
+              {language === 'en' ? 'Start Rate Cut Analysis' : '开始降息分析'}
               <ArrowRightIcon className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform duration-300" />
             </span>
           </button>
-          <p className="text-gray-400 mt-4 text-lg">
-            {!selectedMethodology ? 'Please select investment philosophy and risk level first' :
-             totalAssets === 0 ? 'Please input asset configuration first' : 
-             'Configuration complete, start 4-basis point rate cut analysis'}
+          <p className="text-gray-400 mt-4 text-base sm:text-lg px-4">
+            {!selectedMethodology ? 
+              (language === 'en' ? 'Please select investment philosophy and risk level first' : '请先选择投资哲学和风险等级') :
+             totalAssets === 0 ? 
+              (language === 'en' ? 'Please input asset configuration first' : '请先输入资产配置') : 
+              (language === 'en' ? 'Configuration complete, start 4-basis point rate cut analysis' : '配置完成，开始4基点降息分析')}
           </p>
           
-          {/* 策略匹配提示 */}
+          {/* 策略匹配提示 - 优化手机端显示 */}
           {totalAssets > 0 && recommendedAllocation && deviations && (
-            <div className="mt-4 p-4 bg-gradient-to-r from-blue-900/20 to-cyan-900/20 rounded-xl border border-blue-600/30">
+            <div className="mt-4 p-3 sm:p-4 bg-gradient-to-r from-blue-900/20 to-cyan-900/20 rounded-xl border border-blue-600/30">
               <p className="text-sm text-blue-200 text-center mb-3">
-                💡 System has generated personalized configuration recommendations based on your investment philosophy and risk level.
+                💡 {language === 'en' 
+                  ? 'System has generated personalized configuration recommendations based on your investment philosophy and risk level.'
+                  : '系统已根据您的投资哲学和风险等级生成个性化配置建议。'}
                 {Object.values(deviations).some(d => Math.abs(d) > 25) && 
-                  ' Some asset allocation deviations are significant, consider adjusting based on recommended ratios.'}
+                  (language === 'en' 
+                    ? ' Some asset allocation deviations are significant, consider adjusting based on recommended ratios.'
+                    : ' 部分资产配置偏差显著，建议根据推荐比例进行调整。')}
               </p>
               <div className="text-xs text-blue-300/80 text-center p-3 bg-blue-900/20 rounded-lg border border-blue-500/20">
                 <p className="mb-2">
-                  <span className="font-medium">⚠️ Important Notice:</span> System parameters are dynamically adjusted based on market environment changes.
+                  <span className="font-medium">⚠️ {language === 'en' ? 'Important Notice:' : '重要提示:'}</span> 
+                  {language === 'en' 
+                    ? ' System parameters are dynamically adjusted based on market environment changes.'
+                    : ' 系统参数根据市场环境变化动态调整。'}
                 </p>
                 <p>
-                  Parameter settings may vary over time, and the same input values may produce different results in different periods due to market fluctuations, economic conditions, and regulatory changes.
+                  {language === 'en' 
+                    ? 'Parameter settings may vary over time, and the same input values may produce different results in different periods due to market fluctuations, economic conditions, and regulatory changes.'
+                    : '参数设置可能随时间变化，由于市场波动、经济状况和监管变化，相同的输入值在不同时期可能产生不同结果。'}
                 </p>
               </div>
             </div>

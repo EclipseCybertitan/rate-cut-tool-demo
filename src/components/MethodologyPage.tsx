@@ -370,28 +370,28 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange, onMetho
           <LanguageSwitcher />
         </div>
 
-        {/* 基地三部曲风格标语 */}
-        <div className="max-w-6xl mx-auto mb-12">
-          <div className="text-center space-y-6">
-            {/* 主标题 */}
+        {/* 基地三部曲风格标语 - 优化手机端显示 */}
+        <div className="max-w-6xl mx-auto mb-8 md:mb-12">
+          <div className="text-center space-y-4 md:space-y-6">
+            {/* 主标题 - 手机端优化 */}
             <div className="relative">
-              <h2 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-400 mb-4">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-400 mb-2 md:mb-4">
                 {language === 'en' ? 'CHOOSE YOUR' : '选择你的'}
               </h2>
-              <h2 className="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-4">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-2 md:mb-4">
                 {language === 'en' ? 'FOUNDATION' : 'FOUNDATION'}
               </h2>
               <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 via-yellow-300/20 to-orange-400/20 blur-3xl -z-10"></div>
             </div>
             
-            {/* 副标题 */}
-            <div className="space-y-4">
-              <p className="text-2xl md:text-3xl text-gray-300 font-medium">
+            {/* 副标题 - 手机端优化 */}
+            <div className="space-y-3 md:space-y-4 px-2">
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-300 font-medium leading-tight">
                 {language === 'en' 
                   ? 'Navigate the Federal Reserve "Crisis" - Where Danger Meets Opportunity' 
                   : '渡过美联储"危机"——危险与机遇并存'}
               </p>
-              <p className="text-lg text-gray-400 max-w-4xl mx-auto leading-relaxed">
+              <p className="text-sm sm:text-base md:text-lg text-gray-400 max-w-4xl mx-auto leading-relaxed">
                 {language === 'en' 
                   ? 'Three distinct investment philosophies, each with their own musical signature. Let the rhythm guide your choice as you build your financial empire.' 
                   : '三种截然不同的投资哲学，每种都有其独特的音乐印记。让节奏指引您的选择，构建您的金融帝国。'}
@@ -437,16 +437,16 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange, onMetho
           </div>
         </div>
 
-        {/* 投资信念选择 - 大卡片化居中显示 */}
+        {/* 投资信念选择 - 大卡片化居中显示，优化手机端 */}
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 md:mb-12">
             {investmentBeliefs.map((belief) => (
               <button
                 key={belief.id}
                 onClick={() => handleBeliefSelection(belief.id)}
                 onMouseEnter={() => setHoveredBelief(belief.id)}
                 onMouseLeave={() => setHoveredBelief('')}
-                className={`group relative p-8 rounded-3xl border-2 transition-all duration-500 text-left flex flex-col cursor-pointer ${
+                className={`group relative p-4 sm:p-6 lg:p-8 rounded-2xl lg:rounded-3xl border-2 transition-all duration-500 text-left flex flex-col cursor-pointer ${
                   selectedBelief === belief.id
                     ? `border-purple-500 bg-gradient-to-br ${belief.color} shadow-2xl transform scale-105 ring-4 ${
                         belief.id === 'academic' ? 'ring-yellow-500/30' :
@@ -459,19 +459,19 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange, onMetho
                 {/* 闪光边框效果 */}
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm -z-10"></div>
                 
-                {/* 图片区域 - 扑克牌比例 (3:4) */}
-                <div className={`w-full aspect-[3/4] rounded-2xl mb-6 flex items-center justify-center relative overflow-hidden ${
+                {/* 图片区域 - 扑克牌比例 (3:4)，优化手机端 */}
+                <div className={`w-full aspect-[3/4] rounded-xl lg:rounded-2xl mb-4 sm:mb-6 flex items-center justify-center relative overflow-hidden ${
                   selectedBelief === belief.id ? 'bg-white/20' : 'bg-gray-700'
                 }`}>
                   {/* 真实图片 */}
                   <img 
                     src={belief.imageUrl} 
                     alt={belief.name}
-                    className="w-full h-full object-cover rounded-2xl"
+                    className="w-full h-full object-cover rounded-xl lg:rounded-2xl"
                   />
                   
-                  {/* 音乐试听按钮 */}
-                  <div className="absolute top-3 right-3">
+                  {/* 音乐试听按钮 - 手机端优化 */}
+                  <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
                     <button
                       onClick={(e) => {
                         e.stopPropagation()
@@ -491,33 +491,31 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange, onMetho
                           })
                         }
                       }}
-                      className={`w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-2xl backdrop-blur-sm ${
+                      className={`w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-2xl backdrop-blur-sm ${
                         selectedMusic === belief.id 
                           ? 'bg-gradient-to-r from-green-500 to-emerald-500 ring-2 ring-green-300' 
                           : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600'
                       }`}
                     >
                       {selectedMusic === belief.id ? (
-                        <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-                          <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 bg-white rounded-full flex items-center justify-center">
+                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 lg:w-2 lg:h-2 bg-green-600 rounded-full"></div>
                         </div>
                       ) : (
-                        <PlayIcon className="w-6 h-6 text-white" />
+                        <PlayIcon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
                       )}
                     </button>
                   </div>
-                  
-
                 </div>
                 
-                {/* 文字说明区域 - 右侧文字说明 */}
+                {/* 文字说明区域 - 优化手机端显示 */}
                 <div className="flex-1">
-                  <h3 className={`text-xl font-bold mb-3 ${
+                  <h3 className={`text-lg sm:text-xl font-bold mb-2 sm:mb-3 ${
                     selectedBelief === belief.id ? 'text-white' : 'text-white'
                   }`}>
                     {belief.name}
                   </h3>
-                  <p className={`text-sm font-medium ${
+                  <p className={`text-xs sm:text-sm font-medium ${
                     selectedBelief === belief.id ? 'text-white' : 'text-gray-100'
                   }`}>
                     {belief.description}
@@ -547,57 +545,106 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange, onMetho
           </div>
         </div>
 
-        {/* 投资建议展示 */}
-        {showRecommendations && selectedBeliefData && (
-          <div className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-3xl p-8 border border-gray-600 mb-8">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-bold text-white flex items-center">
-                <LightBulbIcon className="w-8 h-8 mr-2 text-yellow-400" />
-{selectedBeliefData.name} - {language === 'en' ? 'Investment Configuration Advice' : '投资配置建议'}
-              </h3>
-              <div className="flex items-center space-x-4">
-                {/* 风险等级选择 */}
-                <div className="flex items-center space-x-2">
-                  <span className="text-gray-300 text-sm">{language === 'en' ? 'Risk Level:' : '风险等级:'}</span>
-                  <div className="flex bg-gray-800 rounded-lg p-1">
-                    {(['low', 'medium', 'high'] as const).map((level) => (
-                      <button
-                        key={level}
-                        onClick={() => setSelectedRiskLevel(level)}
-                        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                          selectedRiskLevel === level
-                            ? 'bg-purple-600 text-white'
-                            : 'text-gray-300 hover:text-white'
-                        }`}
-                      >
-                        {level === 'low' ? t('methodology.riskLevels.low') : level === 'medium' ? t('methodology.riskLevels.medium') : t('methodology.riskLevels.high')}
-                      </button>
-                    ))}
-                  </div>
+        {/* 投资流派选择确认区域 */}
+        {selectedBelief && (
+          <div className={`max-w-4xl mx-auto mb-8 transition-all duration-700 ease-out ${
+            showRecommendations ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-8'
+          }`}>
+            <div className="bg-gradient-to-r from-gray-800/90 to-gray-700/90 rounded-3xl p-8 border border-gray-600/50 backdrop-blur-sm shadow-2xl">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-full flex items-center justify-center border border-green-500/30">
+                  <LightBulbIcon className="w-8 h-8 text-green-400" />
                 </div>
-                
+                <h3 className="text-2xl font-bold text-white mb-2">
+                  {selectedBeliefData?.name} - {language === 'en' ? 'Investment Philosophy Selected' : '投资哲学已选择'}
+                </h3>
+                <p className="text-gray-300 text-lg">
+                  {language === 'en' ? 'Your foundation is set. Now choose your risk tolerance level.' : '您的基础已确定。现在选择您的风险承受水平。'}
+                </p>
+              </div>
+              
+              {/* 风险等级选择 */}
+              <div className="mb-8">
+                <h4 className="text-lg font-semibold text-white mb-4 text-center">
+                  {language === 'en' ? 'Risk Tolerance Level' : '风险承受水平'}
+                </h4>
+                <div className="grid grid-cols-3 gap-4 max-w-md mx-auto">
+                  {(['low', 'medium', 'high'] as const).map((level) => (
+                    <button
+                      key={level}
+                      onClick={() => setSelectedRiskLevel(level)}
+                      className={`p-4 rounded-2xl border-2 transition-all duration-300 transform hover:scale-105 ${
+                        selectedRiskLevel === level
+                          ? 'border-purple-500 bg-gradient-to-br from-purple-600/80 to-purple-700/80 text-white shadow-lg'
+                          : 'border-gray-600 bg-gray-800/50 text-gray-300 hover:border-gray-500 hover:bg-gray-700/50'
+                      }`}
+                    >
+                      <div className="text-center">
+                        <div className={`w-8 h-8 mx-auto mb-2 rounded-full flex items-center justify-center ${
+                          level === 'low' ? 'bg-green-500/20 text-green-400' :
+                          level === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                          'bg-red-500/20 text-red-400'
+                        }`}>
+                          {level === 'low' ? '🛡️' : level === 'medium' ? '⚖️' : '🚀'}
+                        </div>
+                        <div className="font-semibold text-sm">
+                          {level === 'low' ? t('methodology.riskLevels.low') : 
+                           level === 'medium' ? t('methodology.riskLevels.medium') : 
+                           t('methodology.riskLevels.high')}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* 确认按钮 */}
+              <div className="text-center">
                 <button
-                  onClick={() => setShowRiskTest(true)}
-                  className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-2 rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 font-semibold"
+                  onClick={() => setShowRecommendations(true)}
+                  className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-8 py-4 rounded-2xl hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 font-bold text-lg transform hover:scale-105 shadow-xl"
                 >
-                  {language === 'en' ? 'Risk Assessment Test' : '风险认知测试'}
+                  {language === 'en' ? 'Confirm Selection & Continue' : '确认选择并继续'}
                 </button>
               </div>
             </div>
-            
-            {/* 风险等级投资逻辑描述 */}
-            <div className="mb-8 p-6 bg-gradient-to-r from-gray-900/50 to-gray-800/50 rounded-xl border border-gray-600">
-              <h4 className="text-lg font-semibold text-white mb-3">💡 {selectedRiskLevel === 'low' ? t('methodology.riskLevels.low') : selectedRiskLevel === 'medium' ? t('methodology.riskLevels.medium') : t('methodology.riskLevels.high')}{t('methodology.investmentLogic')}</h4>
-              <p className="text-gray-300 leading-relaxed">
-                {selectedRiskLevel === 'low' && t('methodology.riskLevels.lowLogic')}
-                {selectedRiskLevel === 'medium' && t('methodology.riskLevels.mediumLogic')}
-                {selectedRiskLevel === 'high' && t('methodology.riskLevels.highLogic')}
-              </p>
-            </div>
+          </div>
+        )}
 
-            {/* 投资逻辑展示 - 现代化设计 */}
-            <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-600/50 shadow-2xl">
-              <div className="flex items-center mb-6">
+        {/* 投资建议展示 - 重构为独立页面风格 */}
+        {showRecommendations && selectedBeliefData && (
+          <div className={`max-w-6xl mx-auto transition-all duration-1000 ease-out ${
+            showRecommendations ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-8'
+          }`}>
+            <div className="bg-gradient-to-r from-gray-800/90 to-gray-700/90 rounded-3xl p-8 border border-gray-600/50 backdrop-blur-sm shadow-2xl mb-8">
+              <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+                <h3 className="text-2xl font-bold text-white flex items-center">
+                  <LightBulbIcon className="w-8 h-8 mr-3 text-yellow-400" />
+                  {selectedBeliefData.name} - {language === 'en' ? 'Investment Configuration Advice' : '投资配置建议'}
+                </h3>
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={() => setShowRiskTest(true)}
+                    className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 font-semibold"
+                  >
+                    {language === 'en' ? 'Risk Assessment Test' : '风险认知测试'}
+                  </button>
+                </div>
+              </div>
+              
+              {/* 风险等级投资逻辑描述 */}
+              <div className="mb-8 p-6 bg-gradient-to-r from-gray-900/50 to-gray-800/50 rounded-xl border border-gray-600">
+                <h4 className="text-lg font-semibold text-white mb-3">💡 {selectedRiskLevel === 'low' ? t('methodology.riskLevels.low') : selectedRiskLevel === 'medium' ? t('methodology.riskLevels.medium') : t('methodology.riskLevels.high')}{t('methodology.investmentLogic')}</h4>
+                <p className="text-gray-300 leading-relaxed">
+                  {selectedRiskLevel === 'low' && t('methodology.riskLevels.lowLogic')}
+                  {selectedRiskLevel === 'medium' && t('methodology.riskLevels.mediumLogic')}
+                  {selectedRiskLevel === 'high' && t('methodology.riskLevels.highLogic')}
+                </p>
+              </div>
+
+              {/* 投资逻辑展示 - 现代化设计 */}
+              <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-600/50 shadow-2xl">
+                <div className="flex items-center mb-6">
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-4">
                   <LightBulbIcon className="w-7 h-7 text-white" />
                 </div>
@@ -999,6 +1046,31 @@ export default function MethodologyPage({ onBack, onNext, onAssetChange, onMetho
                     {language === 'en' ? 'Apply Results' : '应用结果'}
                   </button>
                 </div>
+              </div>
+            </div>
+            
+            {/* Continue Asset Configuration 按钮 */}
+            <div className="text-center mt-8">
+              <div className="bg-gradient-to-r from-green-900/30 to-emerald-900/30 p-6 rounded-2xl border border-green-600/30 backdrop-blur-sm">
+                <h4 className="text-xl font-semibold text-green-300 mb-4">
+                  {language === 'en' ? 'Selection Completed, Continue to Next Step' : '选择完成，继续下一步'}
+                </h4>
+                <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
+                  {language === 'en' 
+                    ? 'Your investment philosophy and risk tolerance have been configured. Proceed to asset allocation configuration to complete your portfolio setup.' 
+                    : '您的投资哲学和风险承受能力已配置完成。继续资产配置设置以完成您的投资组合搭建。'}
+                </p>
+                <button
+                  onClick={() => {
+                    if (selectedBelief && selectedRiskLevel) {
+                      onMethodologySelect(selectedBelief, selectedRiskLevel)
+                      onNext()
+                    }
+                  }}
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-4 rounded-2xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 font-bold text-lg transform hover:scale-105 shadow-xl"
+                >
+                  {language === 'en' ? 'Continue Asset Configuration' : '继续资产配置'}
+                </button>
               </div>
             </div>
           </div>
