@@ -1046,85 +1046,85 @@ export default function AssetConfigurationPage({
         </div>
 
         {/* 智能配置选择 */}
-        <div className="bg-gradient-to-br from-blue-900/20 via-indigo-900/20 to-purple-900/20 border border-blue-600/30 rounded-2xl p-6 mb-8">
-          <div className="flex items-center space-x-3 mb-6">
+        <div className="bg-gradient-to-br from-blue-900/20 via-indigo-900/20 to-purple-900/20 border border-blue-600/30 rounded-2xl p-4 mb-6">
+          <div className="flex items-center space-x-3 mb-4">
             <div className="relative">
-              <CogIcon className="w-8 h-8 text-blue-400" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
+              <CogIcon className="w-6 h-6 text-blue-400" />
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
             </div>
-            <h3 className="text-xl font-bold text-blue-300">
+            <h3 className="text-lg font-bold text-blue-300">
               {language === 'en' ? 'Smart Configuration Options' : '智能配置选项'}
             </h3>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-4">
             {/* 房产豁免选择 */}
-            <div className="space-y-4">
-              <h4 className="text-lg font-medium text-blue-200">
-                🏠 {language === 'en' ? 'Real Estate Strategy' : '房产策略'}
+            <div className="space-y-3">
+              <h4 className="text-base font-medium text-blue-200 flex items-center">
+                🏠 <span className="ml-2">{language === 'en' ? 'Real Estate Strategy' : '房产策略'}</span>
               </h4>
-              <div className="space-y-3">
-                <label className="flex items-center space-x-3 cursor-pointer">
+              <div className="space-y-2">
+                <label className="flex items-start space-x-2 cursor-pointer group">
                   <input
                     type="checkbox"
                     checked={realEstateExemption}
                     onChange={(e) => setRealEstateExemption(e.target.checked)}
-                    className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+                    className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2 mt-0.5 flex-shrink-0"
                   />
-                  <span className="text-gray-300 text-sm">
+                  <span className="text-gray-300 text-xs leading-relaxed">
                     {language === 'en' 
                       ? 'I prefer to skip real estate investment (rent coverage/income constraint)' 
                       : '我选择跳过房产投资（房租覆盖/收入约束）'}
                   </span>
                 </label>
                 {realEstateExemption && (
-                  <div className="ml-7 p-3 bg-blue-900/30 rounded-lg border border-blue-500/30">
-                    <p className="text-xs text-blue-200">
-                      {language === 'en' 
-                        ? '✓ Real estate allocation will be reduced by 80%' 
-                        : '✓ 房产配置将减少80%'}
-                    </p>
-                    <p className="text-xs text-blue-200 mt-1">
-                      {language === 'en' 
-                        ? '✓ Freed allocation will be redistributed to other assets' 
-                        : '✓ 释放的配置将重新分配给其他资产'}
-                    </p>
+                  <div className="ml-6 p-2 bg-blue-900/30 rounded-lg border border-blue-500/30">
+                    <div className="flex items-center space-x-2 text-xs text-blue-200">
+                      <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                      <span>{language === 'en' ? 'Real estate allocation reduced by 80%' : '房产配置减少80%'}</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-xs text-blue-200 mt-1">
+                      <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
+                      <span>{language === 'en' ? 'Freed allocation redistributed to other assets' : '释放配置重新分配'}</span>
+                    </div>
                   </div>
                 )}
               </div>
             </div>
             
             {/* 债务负担率选择 */}
-            <div className="space-y-4">
-              <h4 className="text-lg font-medium text-blue-200">
-                💰 {language === 'en' ? 'Debt Burden Level' : '债务负担水平'}
+            <div className="space-y-3">
+              <h4 className="text-base font-medium text-blue-200 flex items-center">
+                💰 <span className="ml-2">{language === 'en' ? 'Debt Burden Level' : '债务负担水平'}</span>
               </h4>
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {[
-                  { value: 'low', label: { en: 'Low or No Debt', zh: '债务负担很低或无' }, color: 'from-green-500 to-emerald-500' },
-                  { value: 'medium', label: { en: 'Moderate Debt (50% income)', zh: '中等债务负担（50%收入）' }, color: 'from-yellow-500 to-orange-500' },
-                  { value: 'high', label: { en: 'High Debt (Most income)', zh: '高债务负担（大部分收入）' }, color: 'from-red-500 to-pink-500' }
+                  { value: 'low', label: { en: 'Low or No Debt', zh: '债务负担很低或无' }, color: 'from-green-500 to-emerald-500', icon: '🟢' },
+                  { value: 'medium', label: { en: 'Moderate Debt (50% income)', zh: '中等债务负担（50%收入）' }, color: 'from-yellow-500 to-orange-500', icon: '🟡' },
+                  { value: 'high', label: { en: 'High Debt (Most income)', zh: '高债务负担（大部分收入）' }, color: 'from-red-500 to-pink-500', icon: '🔴' }
                 ].map((option) => (
-                  <label key={option.value} className="flex items-center space-x-3 cursor-pointer">
+                  <label key={option.value} className="flex items-center space-x-2 cursor-pointer group hover:bg-blue-900/20 rounded-lg p-1 transition-colors">
                     <input
                       type="radio"
                       name="debtBurden"
                       value={option.value}
                       checked={debtBurdenLevel === option.value}
                       onChange={(e) => setDebtBurdenLevel(e.target.value as 'low' | 'medium' | 'high')}
-                      className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-2"
+                      className="w-3 h-3 text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-2 flex-shrink-0"
                     />
-                    <span className={`text-sm px-3 py-2 rounded-lg bg-gradient-to-r ${option.color} bg-clip-text text-transparent font-medium`}>
+                    <span className="text-xs mr-2">{option.icon}</span>
+                    <span className={`text-xs font-medium ${option.value === debtBurdenLevel ? 'text-white' : 'text-gray-300'}`}>
                       {language === 'en' ? option.label.en : option.label.zh}
                     </span>
                   </label>
                 ))}
-                <div className="ml-7 p-3 bg-blue-900/30 rounded-lg border border-blue-500/30">
-                  <p className="text-xs text-blue-200">
-                    {language === 'en' 
-                      ? '✓ Higher debt burden = More cash buffer, Less risk assets' 
-                      : '✓ 债务负担越高 = 现金缓冲越多，风险资产越少'}
-                  </p>
+                <div className="ml-6 p-2 bg-blue-900/30 rounded-lg border border-blue-500/30">
+                  <div className="flex items-center space-x-2 text-xs text-blue-200">
+                    <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
+                    <span>{language === 'en' 
+                      ? 'Higher debt burden = More cash buffer, Less risk assets' 
+                      : '债务负担越高 = 现金缓冲越多，风险资产越少'}</span>
+                  </div>
                 </div>
               </div>
             </div>
